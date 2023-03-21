@@ -8,3 +8,4 @@ Run as command line tool: `bpmnsignal <path_to_file>`, e.g.
 `bpmnsignal ./examples/Invoice\ processing\ _\ SAP\ Signavio.json`
 for the example provided.
 
+Run tests with `pytest`.

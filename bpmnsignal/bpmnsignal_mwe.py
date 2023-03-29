@@ -1,4 +1,7 @@
-from bpmnsignal.matching_templates import *
+"""
+A minimal working example for parsing JSON and constructing SiGNAL constraints.
+"""
+from bpmnsignal.matching_templates import starts_with, ends_with, leads_to
 
 
 def parse_bpmn(j_bpmn):

@@ -1,3 +1,4 @@
+"""Entry point for bpmnsignal command. Verifies argument and runs parser."""
 import json
 import sys
 import os
@@ -42,3 +43,4 @@ def run():
     verify_arg()
     sequence, json_output = generate_sequence(path)
     print(json.dumps(json_output, indent=2))
+    print(sequence)

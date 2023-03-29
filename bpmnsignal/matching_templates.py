@@ -3,25 +3,33 @@
 """
 
 
-def starts_with(a):
-    return f"(^'{a}')"
+def starts_with(element):
+    """Declare constraint for the first element in diagram"""
+    return f"(^'{element}')"
 
 
-def ends_with(a):
-    return f"('{a}'$)"
+def ends_with(element):
+    """Declare constraint for the last element in diagram"""
+    return f"('{element}'$)"
 
 
-def precedes(a, b):
-    return f"(^ (NOT '{a}' | ('{a}' (NOT '{a}')* '{b}'))*$)"
+def precedes(predecessor, successor):
+    """Kind of like leads_to."""
+    return f"(^ (NOT '{predecessor}' | ('{predecessor}' (NOT '{predecessor}')* '{successor}'))*$)"
 
 
-def leads_to(a, b):
-    return f"(^NOT('{a}'|'{b}')*('{a}'~>'{b}')*NOT('{a}'|'{b}')*$)"
+def leads_to(predecessor, successor):
+    """Declare constraint for one element being another elements successor"""
+    return f"(^NOT('{predecessor}'|'{successor}')*('{predecessor}'~>'{successor}')\
+            *NOT('{predecessor}'|'{successor}')*$)"
 
 
-def lor(a, b):
-    return f"({a}|{b})"
+def lor(element_right, element_left):
+    """Declare function for the OR gateway"""
+    return f"({element_right}|{element_left})"
 
 
-def lxor(a, b):
-    return f"(^(((NOT('{a}')*) ('{b}' NOT('{a}')*)*)|((NOT('{b}')*)('{a}' NOT('{b}')*)*))$)"
+def lxor(element_right, element_left):
+    """Declare function for the XOR gateway"""
+    return f"(^(((NOT('{element_right}')*) ('{element_left}' NOT('{element_right}')*)*)|\
+    ((NOT('{element_left}')*)('{element_right}' NOT('{element_left}')*)*))$)"

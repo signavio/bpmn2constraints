@@ -21,7 +21,7 @@ def precedes(predecessor, successor):
 def leads_to(predecessor, successor):
     """Declare constraint for one element being another elements successor"""
     return f"(^NOT('{predecessor}'|'{successor}')*('{predecessor}'~>'{successor}')\
-            *NOT('{predecessor}'|'{successor}')*$)"
+*NOT('{predecessor}'|'{successor}')*$)"
 
 
 def lor(element_right, element_left):
@@ -32,4 +32,4 @@ def lor(element_right, element_left):
 def lxor(element_right, element_left):
     """Declare function for the XOR gateway"""
     return f"(^(((NOT('{element_right}')*) ('{element_left}' NOT('{element_right}')*)*)|\
-    ((NOT('{element_left}')*)('{element_right}' NOT('{element_left}')*)*))$)"
+((NOT('{element_left}')*)('{element_right}' NOT('{element_left}')*)*))$)"

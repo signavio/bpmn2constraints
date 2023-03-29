@@ -22,6 +22,10 @@ jobs:
           pip install pytest
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           pip install .
+          
+      - name: Installing package
+        run: pip install .
+        working-directory: ./bpmnsignal
       - name: Test with pytest
         working-directory: ./tests
         run: |

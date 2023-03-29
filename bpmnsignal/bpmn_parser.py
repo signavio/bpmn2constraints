@@ -132,7 +132,11 @@ def get_list_type(sequence):
 def get_element_by_id(successor_element_id, bpmn):
     """Gets element by id"""
 
-    return next((element for element in get_bpmn_elements(bpmn) if get_element_id(element) == successor_element_id), None)
+    return next(
+        (
+            element for element in get_bpmn_elements(bpmn)
+            if get_element_id(element) == successor_element_id
+        ), None)
 
 
 def get_gateway_outgoing_elements(bpmn, element):

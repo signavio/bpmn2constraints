@@ -1,5 +1,5 @@
-from pathlib import Path
 from bpmnsignal.matching_templates import *
+
 
 def parse_bpmn(j_bpmn):
     """Takes a BPMN model in Signavio's proprietary JSON format and
@@ -19,12 +19,14 @@ def parse_bpmn(j_bpmn):
             has_successor = len(successors) > 0
             while has_successor:
                 successor = successors[0]['resourceId']
-                element = [element for element in elements if element['resourceId'] == successor][0]
+                element = [
+                    element for element in elements if element['resourceId'] == successor][0]
                 if not element['stencil']['id'] in ['SequenceFlow', 'EndNoneEvent']:
                     sequence.append(element['properties']['name'])
                 successors = element['outgoing']
                 has_successor = len(successors) > 0
     return sequence
+
 
 def construct_linear_constraints(sequence):
     """Generates SIGNAL constraints from a linear sequence of activities
@@ -32,7 +34,7 @@ def construct_linear_constraints(sequence):
     Args:
         sequence (List): Activity sequence
 
-    Returns:
+    Returns: 
         List: List of SIGNAL constraints
     """
     constraints = []

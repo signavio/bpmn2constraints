@@ -1,23 +1,44 @@
-import json, sys
+import json
+import sys
+import os
 from pathlib import Path
-from bpmnsignal.bpmnsignal import *
+from bpmnsignal.bpmn_parser import generate_sequence
 
-expected_args_count = 1
+EXPECTED_ARGS_COUNT = 1
 
-def run():
-    """ Takes the provided BPMN JSON file and returns a list
-    of extracted SIGNAL constraints
+
+def verify_arg():
+    """
+    Verifies the argument supplied to program
 
     Raises:
         SystemExit: Incorrect number of arguments provided
     """
-    if not len(sys.argv) == expected_args_count + 1:
-        print(f'Expected {expected_args_count} arg(s), got {len(sys.argv) - 1}')
+
+    if len(sys.argv) != EXPECTED_ARGS_COUNT + 1:
+        print(
+            f'Expected {EXPECTED_ARGS_COUNT} arg(s), got {len(sys.argv) - 1}')
         raise SystemExit(2)
 
     path = Path(sys.argv[1])
-    with open(path, 'r') as file:
-        j_bpmn = json.loads(file.read())
-        sequence = parse_bpmn(j_bpmn)
-        print('Sequence: ', sequence)
-        print('Constraints: ', construct_linear_constraints(sequence))
+    if not os.path.isfile(path):
+        print(f'File {path} does not exist.')
+        raise SystemExit(2)
+
+    try:
+        with open(path, "r", encoding='utf-8') as file:
+            json.load(file)
+    except ValueError as exc:
+        print(f'File {path} is not of JSON format.')
+        raise SystemExit(2) from exc
+
+
+def run():
+    """ Takes the provided BPMN JSON file and returns a list
+    of extracted SIGNAL constraints
+    """
+
+    path = Path(sys.argv[1])
+    verify_arg()
+    sequence, json_output = generate_sequence(path)
+    print(json.dumps(json_output, indent=2))

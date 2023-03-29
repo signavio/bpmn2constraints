@@ -1,5 +1,9 @@
 # bpmn-to-signal
 
+![CI status](https://github.com/signavio/bpmn-to-signal/actions/workflows/pylint.yml/badge.svg)
+![CI status](https://github.com/signavio/bpmn-to-signal/actions/workflows/main.yml/badge.svg)
+
+
 Work-in-progress prototype for compiling BPMN control flow to SIGNAL constraints.
 Works with SAP Signavio JSON files of BPMN process diagrams.
 

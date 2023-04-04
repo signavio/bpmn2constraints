@@ -1,7 +1,7 @@
 """
 A minimal working example for parsing JSON and constructing SiGNAL constraints.
 """
-from bpmnsignal.matching_templates import starts_with, ends_with, leads_to
+from bpmnsignal.matching_templates import init, end, succession
 
 
 def parse_bpmn(j_bpmn):
@@ -43,9 +43,9 @@ def construct_linear_constraints(sequence):
     constraints = []
     for index, element in enumerate(sequence):
         if index == 0:
-            constraints.append(starts_with(element))
+            constraints.append(init(element))
         if index == len(sequence) - 1:
-            constraints.append(ends_with(element))
+            constraints.append(end(element))
             break
-        constraints.append(leads_to(element, sequence[index + 1]))
+        constraints.append(succession(element, sequence[index + 1]))
     return constraints

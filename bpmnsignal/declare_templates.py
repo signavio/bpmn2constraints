@@ -18,35 +18,48 @@ def precedence(predecessor, successor):
 
 
 def alternate_precedence(predecessor, successor):
-    """each time {successor} occurs, it is preceded by {predecessor} and no other {successor} can recur in between.
-    Activated by {successor}"""
+    """each time {successor} occurs, it is preceded by {predecessor} and no other {successor}
+    can recur in between. Activated by {successor}"""
     return f"Alternate Precedence({predecessor},{successor})"
 
 
 def chain_precedence(predecessor, successor):
-    """each time {successor} occurs, then {predecessor} occurs immediately beforehand. Activated by {successor}"""
+    """
+    each time {successor} occurs, then {predecessor} occurs immediately beforehand.
+    Activated by {successor}
+    """
     return f"Chain Precedence({predecessor},{successor})"
 
 
 def response(predecessor, successor):
-    """if {predecessor} occurs, then {successor} occurs at some point after {predecessor}. Activated by {predecessor}"""
+    """
+    if {predecessor} occurs, then {successor} occurs at some point after {predecessor}.
+    Activated by {predecessor}
+    """
     return f"Response({predecessor},{successor})"
 
 
 def alternate_response(predecessor, successor):
-    """if {predecessor} occurs, then {successor} occurs at some point after {predecessor} and no other {predecessor}
-    can recur in between. Activated by {predecessor}"""
+    """
+    if {predecessor} occurs, then {successor} occurs at some point after {predecessor} 
+    and no other {predecessor} can recur in between. Activated by {predecessor}
+    """
     return f"Alternate Response({predecessor},{successor})"
 
 
 def chain_response(predecessor, successor):
-    """if {predecessor} occurs, then {successor} occurs immediately after {predecessor} and no other {predecessor}
-    can recur in between. Activated by {predecessor}"""
+    """
+    if {predecessor} occurs, then {successor} occurs immediately after {predecessor}
+    and no other {predecessor} can recur in between. Activated by {predecessor}
+    """
     return f"Chain Response({predecessor},{successor})"
 
 
 def succession(predecessor, successor):
-    """{predecessor} occurs if and only if it is followed by {successor}. Activated by {predecessor} and {successor}"""
+    """
+    {predecessor} occurs if and only if it is followed by {successor}. 
+    Activated by {predecessor} and {successor}
+    """
     return f"Succession({predecessor},{successor})"
 
 
@@ -63,14 +76,20 @@ def chain_succession(predecessor, successor):
 
 
 def choice(element_right, element_left):
-    """{element_right} or {element_left} or both eventually occur in the same process instance (OR gateway).
-    Activated by {element_right} and {element_left}"""
+    """
+    {element_right} or {element_left} or both eventually occur 
+    in the same process instance (OR gateway).
+    Activated by {element_right} and {element_left}
+    """
     return f"Choice({element_left},{element_right})"
 
 
 def exclusive_choice(element_right, element_left):
-    """{element_right} or {element_left} occurs, but never both in the same process instance (XOR gateway).
-    Also called 'not co-existence'. Activated by {element_right} and {element_left}"""
+    """
+    {element_right} or {element_left} occurs, but never both in the same process 
+    instance (XOR gateway). Also called 'not co-existence'. 
+    Activated by {element_right} and {element_left}
+    """
     return f"Exclusive Choice({element_left},{element_right})"
 
 

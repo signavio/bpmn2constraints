@@ -207,7 +207,7 @@ def generate_left_and_right_paths(bpmn, element, visited):
 
 
 def handle_xor_gateway(bpmn, element, path, visited):
-    """Explores boths outgoing XOR paths and adds them to path."""
+    """Explores both outgoing XOR paths and adds them to path."""
 
     # right_path, left_path = generate_left_and_right_paths(
     #     bpmn, element, visited)
@@ -226,11 +226,12 @@ def handle_xor_gateway(bpmn, element, path, visited):
         paths.append(alt_path)
 
     if paths:
-        path.append(['XOR', paths])
+        paths.insert(0, 'XOR')
+        path.append(paths)
 
 
 def handle_and_gateway(bpmn, element, path, visited):
-    """Explores boths outgoing AND paths and adds them to path."""
+    """Explores both outgoing AND paths and adds them to path."""
 
     right_path, left_path = generate_left_and_right_paths(
         bpmn, element, visited)

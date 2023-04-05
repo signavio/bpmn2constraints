@@ -12,7 +12,7 @@ def parse_bpmn(j_bpmn):
         j_bpmn (json): BPMN model in Signavio's proprietary JSON format
 
     Returns:
-        list: List of activities ordered by occurence
+        list: List of activities ordered by occurrence
     """
     elements = j_bpmn['childShapes']
     sequence = []

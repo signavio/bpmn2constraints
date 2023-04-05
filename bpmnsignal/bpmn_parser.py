@@ -163,13 +163,13 @@ def add_to_path(path, element):
 def handle_gateway_split(bpmn, element, path, visited):
     """Handles a gateway split"""
     if get_element_type(element) == GATEWAYS[0]:
-        handle_xor_gateway(bpmn, element, path, visited)
+        handle_gateway(bpmn, element, path, visited, 'XOR')
 
     if get_element_type(element) == GATEWAYS[1]:
-        handle_and_gateway(bpmn, element, path, visited)
+        handle_gateway(bpmn, element, path, visited, 'AND')
 
     if get_element_type(element) == GATEWAYS[2]:
-        handle_or_gateway(bpmn, element, path, visited)
+        handle_gateway(bpmn, element, path, visited, 'OR')
 
 
 def traverse_outgoing_path(bpmn, element, path, visited):
@@ -206,29 +206,8 @@ def generate_left_and_right_paths(bpmn, element, visited):
     return right_path, left_path
 
 
-def handle_xor_gateway(bpmn, element, path, visited):
-    """Explores boths outgoing XOR paths and adds them to path."""
-
-    right_path, left_path = generate_left_and_right_paths(
-        bpmn, element, visited)
-
-    if right_path and left_path:
-        path.append(['XOR', right_path, left_path])
-
-
-def handle_and_gateway(bpmn, element, path, visited):
-    """Explores boths outgoing AND paths and adds them to path."""
-
-    right_path, left_path = generate_left_and_right_paths(
-        bpmn, element, visited)
-
-    if right_path and left_path:
-        path.append(['AND', right_path + left_path])
-
-
-def handle_or_gateway(bpmn, element, path, visited):
-    """Explores all outgoing OR paths and adds them to path"""
-
+def handle_gateway(bpmn, element, path, visited, gateway_type):
+    """Explores both outgoing AND paths and adds them to path."""
     successors = get_gateway_outgoing_elements(bpmn, element)
 
     paths = []
@@ -236,10 +215,13 @@ def handle_or_gateway(bpmn, element, path, visited):
         alt_path = []
         alt_path = traverse_outgoing_path(
             bpmn, successor, alt_path, visited)
+        if not alt_path:
+            continue
         paths.append(alt_path)
 
     if paths:
-        path.append(['OR', paths])
+        paths.insert(0, gateway_type)
+        path.append(paths)
 
 
 def parse_bpmn(bpmn, path, visited, element):

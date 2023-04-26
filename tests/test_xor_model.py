@@ -1,37 +1,15 @@
-"""Test suite for bpmn_parser"""
-from bpmnsignal.bpmn_parser import load_bpmn, get_root_element, parse_bpmn
-
-PATHS = [
-    'examples/single_xor_gate.json',
-    'examples/multiple_xor_gates.json',
-    'examples/nested_XOR_gateways.json',
-]
-
-SEQUENCES = [
-    ['activity0', ['XOR', ['activity2'], ['activity1']], 'activity3'],
-    [['XOR', ['activity2'], ['activity1']], 'activity3',
-        ['XOR', ['activity4'], ['activity5']]],
-    ['0', ['XOR', [['XOR', ['3'], ['4']]], [['XOR', ['1'], ['2']]]], '5']
-]
+# pylint: disable=too-many-lines
+# pylint: disable=duplicate-code
+"""Test suite for the XOR gateway"""
+from json import dumps
+from expected.expected_xor_result import EXPECTED_SINGLE_XOR_GATEWAY
+from bpmnsignal.parser.bpmn_element_parser import extract_parsed_tokens
 
 
-def run_test(bpmn):
-    """Runs a test on current JSON object representing a BPMN diagram"""
-    visited = set()
-    start_element = get_root_element(bpmn)
-    path = parse_bpmn(bpmn, [], visited, start_element)
-    return path
+def test_single_xor_gateway():
+    """Single XOR gateway test"""
+    test_file_path = "examples/xor_gates/single_xor.json"
+    output = extract_parsed_tokens(test_file_path)
 
-
-def test_xor_constraints():
-    """Performs three tests:
-        1. Single XOR gateway,
-        2. Multiple XOR gateways,
-        3. Nested XOR gateways
-
-        TODO: Create working XOR constriants.
-    """
-    for i, path in enumerate(PATHS):
-        bpmn = load_bpmn(path)
-        sequence = run_test(bpmn)
-        assert sequence == SEQUENCES[i]
+    assert dumps(output, indent=2) == dumps(EXPECTED_SINGLE_XOR_GATEWAY,
+                                            indent=2)

@@ -41,7 +41,7 @@ def response(predecessor, successor):
 
 def alternate_response(predecessor, successor):
     """
-    if {predecessor} occurs, then {successor} occurs at some point after {predecessor} 
+    if {predecessor} occurs, then {successor} occurs at some point after {predecessor}
     and no other {predecessor} can recur in between. Activated by {predecessor}
     """
     return f"Alternate Response({predecessor},{successor})"
@@ -57,7 +57,7 @@ def chain_response(predecessor, successor):
 
 def succession(predecessor, successor):
     """
-    {predecessor} occurs if and only if it is followed by {successor}. 
+    {predecessor} occurs if and only if it is followed by {successor}.
     Activated by {predecessor} and {successor}
     """
     return f"Succession({predecessor},{successor})"
@@ -77,7 +77,7 @@ def chain_succession(predecessor, successor):
 
 def choice(element_right, element_left):
     """
-    {element_right} or {element_left} or both eventually occur 
+    {element_right} or {element_left} or both eventually occur
     in the same process instance (OR gateway).
     Activated by {element_right} and {element_left}
     """
@@ -86,8 +86,8 @@ def choice(element_right, element_left):
 
 def exclusive_choice(element_right, element_left):
     """
-    {element_right} or {element_left} occurs, but never both in the same process 
-    instance (XOR gateway). Also called 'not co-existence'. 
+    {element_right} or {element_left} occurs, but never both in the same process
+    instance (XOR gateway). Also called 'not co-existence'.
     Activated by {element_right} and {element_left}
     """
     return f"Exclusive Choice({element_left},{element_right})"

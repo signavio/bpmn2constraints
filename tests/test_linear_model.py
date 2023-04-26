@@ -1,30 +1,14 @@
-"""Simple test for the bpmnsignal_mwe program"""
-# pylint: disable=line-too-long
-import json
-from bpmnsignal.bpmnsignal_mwe import parse_bpmn, construct_linear_constraints
-
-ACTIVITY_LIST = ['register invoice', 'check invoice', 'accept invoice']
-CONSTRAINT_LIST = \
-    [
-        "(^'register invoice')",
-        "(^NOT('register invoice'|'check invoice')*('register invoice'~>'check invoice')*NOT('register invoice'|'check invoice')*$)",
-        "(^NOT('check invoice'|'accept invoice')*('check invoice'~>'accept invoice')*NOT('check invoice'|'accept invoice')*$)",
-        "('accept invoice'$)"
-    ]
-PATH = 'examples/Invoice_processing_SAP_Signavio.json'
+# pylint: disable=duplicate-code
+"""Test suite for linear sequences"""
+from json import dumps
+from expected.expected_linear_result import EXPECTED_LINEAR_SEQUENCE_RESULT
+from bpmnsignal.parser.bpmn_element_parser import extract_parsed_tokens
 
 
-def test_parse_bpmn():
-    """Testing parsing the BPMN diagram"""
-    with open(PATH, 'r', encoding='utf-8') as file:
-        j_bpmn = json.loads(file.read())
-        assert parse_bpmn(j_bpmn) == ACTIVITY_LIST
+def test_linear_diagram():
+    """Test for a linear sequence"""
+    test_file_path = "examples/linear/linear_sequence.json"
+    output = extract_parsed_tokens(test_file_path)
 
-
-def test_construct_linear_constraints():
-    """Testing constructing constraitns from the sequence"""
-    with open(PATH, 'r', encoding='utf-8') as file:
-        j_bpmn = json.loads(file.read())
-        print(construct_linear_constraints(parse_bpmn(j_bpmn)))
-        assert construct_linear_constraints(
-            parse_bpmn(j_bpmn)) == CONSTRAINT_LIST
+    assert dumps(output, indent=2) == dumps(EXPECTED_LINEAR_SEQUENCE_RESULT,
+                                            indent=2)

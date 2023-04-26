@@ -9,7 +9,7 @@
 import sys
 from json import load, JSONDecodeError
 from bpmnsignal.utils.constants import *
-from bpmnsignal.utils.log import log_critical_error
+from bpmnsignal.utils.log import log_critical_error, log_error
 
 
 def find_successors(elem,
@@ -196,7 +196,7 @@ def get_start_element(bpmn):
     try:
         return next(e for e in get_bpmn_elements(bpmn) if is_start_event(e))
     except StopIteration:
-        log_critical_error("No start element found, merging childShapes..")
+        return find_first_element(bpmn)
 
 
 def merge_child_shapes(bpmn):
@@ -394,10 +394,10 @@ def add_element(elem, seq, seen, bpmn):
     e_id = get_id(elem)
 
     if not is_element_seen(seen, elem):
-
         seen.add(e_id)
-
-        successors = get_successor_activities(elem, bpmn, seen)
+        successors = []
+        if len(get_outgoing(elem)) > 0:
+            successors = get_successor_activities(elem, bpmn, seen)
         predecessors = get_predecessors_activities(elem, seq)
 
         seq_elem = {
@@ -431,8 +431,10 @@ def parse_bpmn(elem, seq, seen, bpmn, predecessor):
     """
     Main parsing loop. Parses the diagram until it hits its end event.
     """
-    if is_end_event(elem):
+    if is_end_event(elem) or len(get_outgoing(elem)) == 0:
         # This may potentially lead to unfinished parsing.
+        if get_element_type(elem) in ALLOWED_ACTIVITIES:
+            add_element(elem, seq, seen, bpmn)
         return seq
 
     if is_gateway(elem) and is_gateway_splitting(elem):
@@ -492,6 +494,7 @@ def update_tokens(parsed_tokens):
         token.update({
             "is_end":
             any(element in successors for element in ALLOWED_END_EVENTS)
+            or len(token["successors"]) == 0
         })
 
         if token.get("leads_to_gateway"):
@@ -526,6 +529,27 @@ def replay_tokens(parsed_tokens):
                         })
 
 
+def find_first_element(bpmn):
+    """
+    Finds element that has an ID that no other element has as outgoing ID.
+    """
+    all_elem_id = []
+
+    for elem in get_bpmn_elements(bpmn):
+
+        if get_element_type(elem) in ALLOWED_ACTIVITIES:
+            all_elem_id.extend(get_outgoing(elem))
+
+    for elem in get_bpmn_elements(bpmn):
+
+        if get_element_type(elem) in ALLOWED_ACTIVITIES:
+            if get_id(elem) not in all_elem_id:
+                log_error(
+                    "Diagram missing start event, using first element instead."
+                )
+                return elem
+
+
 def extract_parsed_tokens(file_path):
     """
     Entry point for the diagram parsing.
@@ -537,7 +561,7 @@ def extract_parsed_tokens(file_path):
     seen = set()
 
     if start_elem is None:
-        handle_error("No start element found!")
+        handle_error("No element is assignable as start element.")
 
     parsed_tokens = parse_bpmn(start_elem, [], seen, bpmn, None)
     replay_tokens(parsed_tokens)

@@ -339,6 +339,54 @@ def split_paths(elem, seq, seen, bpmn, predecessor):
         parse_branch(successor, seq, seen, bpmn, predecessor)
 
 
+def split_loop_paths(elem, seq, seen, bpmn, starting_point):
+    """
+    Gets the successor of potential loop element and visits each branch.
+    """
+    successors = get_gateway_successors(bpmn, elem)
+
+    for successor in successors:
+
+        parse_loop(successor, seq, seen, bpmn, starting_point)
+
+
+def parse_loop(elem, seq, seen, bpmn, starting_point):
+    """
+    Parses outgoing connection. If an element matches the starting element,
+    a loop has been detected.
+    """
+
+    if is_end_event(elem):
+        return None
+
+    if elem == starting_point:
+        return True
+
+    if is_gateway(elem) and is_gateway_splitting(elem):
+        split_loop_paths(elem, seq, seen, bpmn, starting_point)
+
+    successor = get_next_element(elem, bpmn)
+
+    return parse_loop(successor, seq, seen, bpmn, starting_point)
+
+
+def detect_loop(elem, seq, seen, bpmn, starting_point):
+    """
+    Detects if there is an outgoing loop from given element.
+    """
+
+    successors = get_gateway_successors(bpmn, elem)
+
+    outgoing_loops = []
+
+    for successor in successors:
+        successor_is_loop = parse_loop(successor, seq, seen, bpmn,
+                                       starting_point)
+        if successor_is_loop:
+            outgoing_loops.append([successor_is_loop, successor])
+    return outgoing_loops
+
+
 def add_element(elem, seq, seen, bpmn):
     """
     Adds an element to sequence.
@@ -368,6 +416,13 @@ def add_element(elem, seq, seen, bpmn):
                 get_next_gateway_type(elem, bpmn,
                                       len(successors) > 1)
             })
+
+            gateway = get_next_element(get_next_element(elem, bpmn), bpmn)
+
+            has_loop = detect_loop(gateway, seq, seen, bpmn, elem)
+
+            if has_loop:
+                seq_elem.update({"is_loop": len(has_loop) > 0})
 
         seq.append(seq_elem)
 

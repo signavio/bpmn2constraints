@@ -12,7 +12,6 @@ import os
 
 from tqdm import tqdm
 from pandas import read_csv
-import matplotlib.pyplot as plt
 
 from bpmnsignal.parser.bpmn_element_parser import (
     extract_parsed_tokens,

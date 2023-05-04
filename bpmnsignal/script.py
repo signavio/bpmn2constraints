@@ -6,6 +6,7 @@ from pathlib import Path
 from json import dumps
 import pytest
 from bpmnsignal.parser.bpmn_element_parser import extract_parsed_tokens
+from bpmnsignal.compiler.bpmn_element_compiler import compile_parsed_tokens
 from bpmnsignal.dataset_script import run_script
 
 
@@ -42,10 +43,18 @@ def run():
     parser.add_argument('--script', type=str, help='path to directory')
     parser.add_argument('--test', action='store_true', help='run test')
     parser.add_argument('--path', action='store_true', help='run test')
+    parser.add_argument('--compile', type=str, help='Runs the compiler')
 
     args = parser.parse_args()
     if args.test:
         run_test()
+
+    elif args.compile:
+        path = Path(args.compile)
+        if is_file(path):
+            parsed_tokens = extract_parsed_tokens(path, True)
+            compiled_tokens = compile_parsed_tokens(parsed_tokens)
+            print(dumps(compiled_tokens, indent=2))
 
     elif args.parse:
         path = Path(args.parse)

@@ -129,34 +129,6 @@ def load_chunked_models(chunk):
     return chunk["Model JSON"].apply(json.loads)
 
 
-def plot_correlation(correlation, type_of_correlation):
-    """
-    Plot function for plotting the correlation between number of elements
-    in a diagram and the number of successful/failed/partially parsed
-    models.
-    """
-
-    x_values = list(correlation.keys())
-    y_values = list(correlation.values())
-
-    plt.bar(x_values, y_values)
-
-    plt.xlabel('Number of Elements')
-    plt.ylabel(f'Number of {type_of_correlation} Parses')
-
-    plt.show()
-
-
-def inc_occurrence(correlation, elements):
-    """
-    Increments the occurrence of number of elements.
-    """
-    if elements in correlation:
-        correlation[elements] += 1
-    else:
-        correlation[elements] = 1
-
-
 def create_scatter_object(model_outcome, element_count, type_count):
     """
     Creates a dictionary item for plotting.

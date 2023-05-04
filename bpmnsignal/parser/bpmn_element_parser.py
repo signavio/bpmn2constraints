@@ -184,7 +184,9 @@ def get_element_name(elem):
         KeyError: If name is not found, use elements activity type instead.
     """
     try:
-        return elem[PROPERTIES][NAME]
+        if PROPERTIES in elem:
+            return elem[PROPERTIES][NAME]
+        return get_activity_type(elem)
     except KeyError:
         return get_activity_type(elem)
 
@@ -410,6 +412,10 @@ def add_element(elem, seq, seen, bpmn):
             "predecessors": predecessors,
         }
 
+        successor = get_next_element(get_next_element(elem, bpmn), bpmn)
+        if is_gateway(successor) and is_gateway_joining(successor):
+            seq_elem.update({"leads_to_joining_gateway": True})
+
         if seq_elem["leads_to_gateway"]:
             seq_elem.update({
                 "type_of_gateway":
@@ -417,9 +423,7 @@ def add_element(elem, seq, seen, bpmn):
                                       len(successors) > 1)
             })
 
-            gateway = get_next_element(get_next_element(elem, bpmn), bpmn)
-
-            has_loop = detect_loop(gateway, seq, seen, bpmn, elem)
+            has_loop = detect_loop(successor, seq, seen, bpmn, elem)
 
             if has_loop:
                 seq_elem.update({"is_loop": len(has_loop) > 0})

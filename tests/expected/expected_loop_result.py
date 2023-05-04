@@ -1,7 +1,7 @@
 """Expected results for loop tests"""
 # pylint: disable=duplicate-code
 
-EXPECTED_SIMPLE_LOOP_RESULT = [{
+EXPECTED_PARSED_SIMPLE_LOOP_RESULT = [{
     "type":
     "Task",
     "name":
@@ -18,6 +18,8 @@ EXPECTED_SIMPLE_LOOP_RESULT = [{
         "id": "sid-07735648-495B-411E-BD2D-3191A4DD79A6"
     }],
     "predecessors": [],
+    "leads_to_joining_gateway":
+    True,
     "is_start":
     True,
     "is_end":
@@ -78,4 +80,28 @@ EXPECTED_SIMPLE_LOOP_RESULT = [{
     False,
     "is_end":
     True
+}]
+
+EXPECTED_COMPILED_SIMPLE_LOOP_RESULT = [{
+    "desc": "Starts with a",
+    "declare": "Init(a)",
+    "signal": "(^'a')"
+}, {
+    "desc":
+    "a responds to b",
+    "declare":
+    "Response(a,b)",
+    "signal":
+    "(^NOT('a')* ('a' ANY*'b')* NOT('a')*$)"
+}, {
+    "desc":
+    "c responds to b",
+    "declare":
+    "Response(c,b)",
+    "signal":
+    "(^NOT('c')* ('c' ANY*'b')* NOT('c')*$)"
+}, {
+    "desc": "Ends with c",
+    "declare": "End(c)",
+    "signal": "('c'$)"
 }]

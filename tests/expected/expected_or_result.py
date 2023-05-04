@@ -1,7 +1,7 @@
 """Expected results for OR tests"""
 # pylint: disable=duplicate-code
 
-EXPECTED_SINGLE_OR_GATEWAY_RESULT = [{
+EXPECTED_PARSED_SINGLE_OR_GATEWAY_RESULT = [{
     "type":
     "Task",
     "name":
@@ -54,6 +54,8 @@ EXPECTED_SINGLE_OR_GATEWAY_RESULT = [{
     "predecessors": [{
         "name": "0"
     }],
+    "leads_to_joining_gateway":
+    True,
     "is_start":
     False,
     "is_end":
@@ -102,6 +104,8 @@ EXPECTED_SINGLE_OR_GATEWAY_RESULT = [{
     "predecessors": [{
         "name": "0"
     }],
+    "leads_to_joining_gateway":
+    True,
     "is_start":
     False,
     "is_end":
@@ -125,8 +129,82 @@ EXPECTED_SINGLE_OR_GATEWAY_RESULT = [{
     "predecessors": [{
         "name": "0"
     }],
+    "leads_to_joining_gateway":
+    True,
     "is_start":
     False,
     "is_end":
     False
+}]
+EXPECTED_COMPILED_SINGLE_OR_GATEWAY_RESULT = [{
+    "desc": "Starts with 0",
+    "declare": "Init(0)",
+    "signal": "(^'0')"
+}, {
+    "desc":
+    "0 precedes 1",
+    "declare":
+    "Precedence(0,1)",
+    "signal":
+    "(^ (NOT '0' | ('0' (NOT '0')* '1'))*$)"
+}, {
+    "desc":
+    "0 precedes 2",
+    "declare":
+    "Precedence(0,2)",
+    "signal":
+    "(^ (NOT '0' | ('0' (NOT '0')* '2'))*$)"
+}, {
+    "desc":
+    "0 precedes 3",
+    "declare":
+    "Precedence(0,3)",
+    "signal":
+    "(^ (NOT '0' | ('0' (NOT '0')* '3'))*$)"
+}, {
+    "desc":
+    "1 xor 2",
+    "declare":
+    "Exclusive Choice(2,1)",
+    "signal":
+    "(^(((NOT('1')*) ('2' NOT('1')*)*)|((NOT('2')*)('1' NOT('2')*)*))$)"
+}, {
+    "desc":
+    "1 xor 3",
+    "declare":
+    "Exclusive Choice(3,1)",
+    "signal":
+    "(^(((NOT('1')*) ('3' NOT('1')*)*)|((NOT('3')*)('1' NOT('3')*)*))$)"
+}, {
+    "desc":
+    "2 xor 3",
+    "declare":
+    "Exclusive Choice(3,2)",
+    "signal":
+    "(^(((NOT('2')*) ('3' NOT('2')*)*)|((NOT('3')*)('2' NOT('3')*)*))$)"
+}, {
+    "desc":
+    "1 responds to 4",
+    "declare":
+    "Response(1,4)",
+    "signal":
+    "(^NOT('1')* ('1' ANY*'4')* NOT('1')*$)"
+}, {
+    "desc":
+    "2 responds to 4",
+    "declare":
+    "Response(2,4)",
+    "signal":
+    "(^NOT('2')* ('2' ANY*'4')* NOT('2')*$)"
+}, {
+    "desc":
+    "3 responds to 4",
+    "declare":
+    "Response(3,4)",
+    "signal":
+    "(^NOT('3')* ('3' ANY*'4')* NOT('3')*$)"
+}, {
+    "desc": "Ends with 4",
+    "declare": "End(4)",
+    "signal": "('4'$)"
 }]

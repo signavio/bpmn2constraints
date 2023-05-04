@@ -5,11 +5,11 @@
 # pylint: disable=too-many-branches
 # pylint: disable=duplicate-code
 # pylint: disable=wildcard-import
+# pylint: disable=broad-exception-raised
 
-import sys
 from json import load, JSONDecodeError
+from collections import Counter
 from bpmnsignal.utils.constants import *
-from bpmnsignal.utils.log import log_critical_error, log_error
 
 
 def find_successors(elem,
@@ -24,7 +24,12 @@ def find_successors(elem,
 
     successor = get_next_element(elem, bpmn)
 
-    if is_end_event(successor):
+    if successor is None:
+        successors.append({
+            "type": "End",
+        })
+
+    elif is_end_event(successor):
         successors.append({
             "type": get_end_type(successor),
         })
@@ -51,14 +56,18 @@ def get_next_element(elem, bpmn):
     """
     Gets the next outgoing element from current element.
     """
-    outgoing = get_outgoing(elem)
 
-    for e_id in outgoing:
-        e_id = get_id(e_id)
-        s_elem = get_element_by_id(e_id, bpmn)
+    try:
+        outgoing = get_outgoing(elem)
 
-        if is_allowed_successor(s_elem):
-            return s_elem
+        for e_id in outgoing:
+            e_id = get_id(e_id)
+            s_elem = get_element_by_id(e_id, bpmn)
+
+            if is_allowed_successor(s_elem):
+                return s_elem
+    except TypeError:
+        return elem
 
 
 def get_id(elem):
@@ -72,6 +81,9 @@ def get_id(elem):
         return elem[ELEMENT_ID]
     except KeyError:
         handle_error(f"Invalid JSON format, {ELEMENT_ID} missing. Aborting.")
+
+    except TypeError:
+        return
 
 
 def get_element_by_id(e_id, bpmn):
@@ -131,9 +143,16 @@ def get_successor_activities(elem, bpmn, seen):
     """
     successors = []
     behind_gateway = False
-    if is_gateway_splitting(
-            get_next_element(get_next_element(elem, bpmn), bpmn)):
-        behind_gateway = True
+
+    next_element = get_next_element(elem, bpmn)
+
+    if next_element is None:
+        return []
+
+    if get_next_element(next_element, bpmn) is not None:
+        if is_gateway_splitting(get_next_element(next_element, bpmn)):
+            behind_gateway = True
+
     find_successors(elem, bpmn, successors, seen, elem, behind_gateway)
     return successors
 
@@ -175,6 +194,9 @@ def get_outgoing(elem):
     except KeyError:
         handle_error(f"Invalid JSON format, {OUTGOING} missing. Aborting.")
 
+    except TypeError:
+        return []
+
 
 def get_element_name(elem):
     """
@@ -195,25 +217,31 @@ def get_start_element(bpmn):
     """
     Searches through the BPMN diagram for a start element.
     """
-    try:
-        return next(e for e in get_bpmn_elements(bpmn) if is_start_event(e))
-    except StopIteration:
-        return find_first_element(bpmn)
-
-
-def merge_child_shapes(bpmn):
-    """
-    Merges all elements child shapes together, i.e., flattens the
-    diagram.
-    """
-    merged_list = []
-    merged_list += bpmn["childShapes"]
+    starts = []
     for elem in get_bpmn_elements(bpmn):
-        if get_element_type(elem) in ['Pool', 'Lane']:
-            for inner_element in elem["childShapes"]:
-                merged_list += merge_child_shapes(inner_element)
+        if is_start_event(elem):
+            starts.append(elem)
+    # if len(starts) == 0:
+    #     return find_first_element(bpmn)
+    starts.extend(find_first_element(bpmn))
+    return starts
 
-    return merged_list
+
+def flatten_swimlanes(bpmn):
+    """
+    Flattens swimlanes to one list.
+    """
+    flattened = []
+    for elem in get_bpmn_elements(bpmn):
+        if get_element_type(elem) in ["Pool", "Lane"]:
+            for swim_lane_elem in get_bpmn_elements(elem):
+                if get_element_type(swim_lane_elem) in ["Pool", "Lane"]:
+                    flattened += flatten_swimlanes(swim_lane_elem)
+                else:
+                    flattened.append(swim_lane_elem)
+        else:
+            flattened.append(elem)
+    return flattened
 
 
 def get_gateway_successors(bpmn, elem):
@@ -307,6 +335,9 @@ def parse_branch(elem, seq, seen, bpmn, predecessor):
     """
     Parses an outgoing gateway branch.
     """
+    if elem is None:
+        return []
+
     if is_end_event(elem):
         return []
 
@@ -423,10 +454,15 @@ def add_element(elem, seq, seen, bpmn):
                                       len(successors) > 1)
             })
 
-            has_loop = detect_loop(successor, seq, seen, bpmn, elem)
+            next_element = get_next_element(elem, bpmn)
 
-            if has_loop:
-                seq_elem.update({"is_loop": len(has_loop) > 0})
+            if next_element is not None:
+                gateway = get_next_element(next_element, bpmn)
+                if gateway is not None:
+                    has_loop = detect_loop(gateway, seq, seen, bpmn, elem)
+
+                    if has_loop:
+                        seq_elem.update({"is_loop": len(has_loop) > 0})
 
         seq.append(seq_elem)
 
@@ -435,32 +471,38 @@ def parse_bpmn(elem, seq, seen, bpmn, predecessor):
     """
     Main parsing loop. Parses the diagram until it hits its end event.
     """
-    if is_end_event(elem) or len(get_outgoing(elem)) == 0:
-        # This may potentially lead to unfinished parsing.
-        if get_element_type(elem) in ALLOWED_ACTIVITIES:
+
+    try:
+        if elem is None:
+            return seq
+
+        if count_elements(bpmn) == len(seen):
+            if get_element_type(elem) in ALLOWED_ACTIVITIES:
+                add_element(elem, seq, seen, bpmn)
+
+            return seq
+
+        if is_gateway(elem) and is_gateway_splitting(elem):
+
+            if not is_element_seen(seen, elem):
+                split_paths(elem, seq, seen, bpmn, predecessor)
+                seen.add(get_id(elem))
+
+        elif is_activity(elem):
             add_element(elem, seq, seen, bpmn)
+
+        successor = get_next_element(elem, bpmn)
+        return parse_bpmn(successor, seq, seen, bpmn, predecessor)
+    except RecursionError:
+        # Return the so-far parsed sequence.
         return seq
-
-    if is_gateway(elem) and is_gateway_splitting(elem):
-
-        if not is_element_seen(seen, elem):
-            split_paths(elem, seq, seen, bpmn, predecessor)
-            seen.add(get_id(elem))
-
-    elif is_activity(elem):
-        add_element(elem, seq, seen, bpmn)
-
-    successor = get_next_element(elem, bpmn)
-
-    return parse_bpmn(successor, seq, seen, bpmn, predecessor)
 
 
 def handle_error(msg):
     """
-    Logs an error message and exits with exit code 1.
+    Logs an error message and returns.
     """
-    log_critical_error(msg)
-    sys.exit(1)
+    raise Exception(msg)
 
 
 def load_bpmn(f_path):
@@ -539,35 +581,123 @@ def find_first_element(bpmn):
     """
     all_elem_id = []
 
+    first_elem = []
+
     for elem in get_bpmn_elements(bpmn):
 
-        if get_element_type(elem) in ALLOWED_ACTIVITIES:
+        if get_element_type(elem) in ["Task"]:
             all_elem_id.extend(get_outgoing(elem))
 
     for elem in get_bpmn_elements(bpmn):
 
-        if get_element_type(elem) in ALLOWED_ACTIVITIES:
+        if get_element_type(elem) in ["Task"]:
             if get_id(elem) not in all_elem_id:
-                log_error(
-                    "Diagram missing start event, using first element instead."
-                )
-                return elem
+                first_elem.append(elem)
+
+    return first_elem
 
 
-def extract_parsed_tokens(file_path):
+def flatten_bpmn(bpmn):
+    """Flattens the BPMN child shapes"""
+    flat = flatten_swimlanes(bpmn)
+
+    bpmn["childShapes"].extend(flat)
+
+
+def count_elements(bpmn):
+    """
+    Counts the number of elements that can be added to the set of seen
+    elements.
+    """
+    count = 0
+    for _ in get_bpmn_elements(bpmn):
+        count += 1
+    return count
+
+
+def count_activities(bpmn):
+    """
+    Count purely the number of activities in the diagram.
+    """
+    count = 0
+    for elem in get_bpmn_elements(bpmn):
+        if get_element_type(elem) in ALLOWED_ACTIVITIES:
+            count += 1
+    return count
+
+
+def count_element_types(bpmn):
+    """
+    Count the number of times an each element in diagram
+    occurs.
+    """
+    elem_types = {}
+
+    for elem in get_bpmn_elements(bpmn):
+        elem_type = get_element_type(elem)
+
+        if elem_type in elem_types:
+            elem_types[elem_type] += 1
+        else:
+            elem_types[elem_type] = 1
+
+    return elem_types
+
+
+def count_num_of_pools(bpmn):
+    """
+    Counts the number of times a pool occurs in diagram.
+    """
+    count = 0
+    for elem in get_bpmn_elements(bpmn):
+        if get_element_type(elem) in ["Pool"]:
+            count += 1
+
+    return count
+
+
+def get_unique_element_types(bpmn):
+    """
+    Count the unique element type identifiers in the diagram.
+    """
+    element_types = set()
+
+    for elem in get_bpmn_elements(bpmn):
+        element_types.add(get_element_type(elem))
+
+    return element_types
+
+
+def get_most_common_element(bpmn):
+    """
+    Gets the most common element in a BPMN diagram.
+    """
+    elem_types = []
+    for elem in get_bpmn_elements(bpmn):
+        if get_element_type(elem) in ALLOWED_CONNECTING_OBJECTS:
+            continue
+        elem_types.append(get_element_type(elem))
+
+    count = Counter(elem_types)
+    return count.most_common(1)[0][0]
+
+
+def extract_parsed_tokens(bpmn, is_file):
     """
     Entry point for the diagram parsing.
     """
-    bpmn = load_bpmn(file_path)
-    merged_list = merge_child_shapes(bpmn)
-    bpmn["childShapes"] = merged_list
+    if is_file:
+        bpmn = load_bpmn(bpmn)
+
     start_elem = get_start_element(bpmn)
     seen = set()
 
     if start_elem is None:
         handle_error("No element is assignable as start element.")
 
-    parsed_tokens = parse_bpmn(start_elem, [], seen, bpmn, None)
+    parsed_tokens = []
+    for start in start_elem:
+        parsed_tokens += parse_bpmn(start, [], seen, bpmn, None)
     replay_tokens(parsed_tokens)
     update_tokens(parsed_tokens)
 

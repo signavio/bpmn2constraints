@@ -4,17 +4,19 @@ ALLOWED_GATEWAYS = [
     "Exclusive_Databased_Gateway",
     "ParallelGateway",
     "InclusiveGateway",
-    # 'ComplexGateway',
-    # 'EventbasedGateway',
+    'ComplexGateway',
+    'EventbasedGateway',
 ]
 
 ALLOWED_ACTIVITIES = [
     "Task",
     "Event",
     "CollapsedSubprocess",
+    "BusinessRole",
     "EventSubprocess",
     "CollapsedEventSubprocess",
     "Subprocess",
+    "Process",
     "IntermediateMessageEventCatching",
     "IntermediateTimerEvent",
     "IntermediateEscalationEvent",
@@ -49,6 +51,7 @@ ALLOWED_START_EVENTS = [
 ]
 
 ALLOWED_END_EVENTS = [
+    "End",
     "EndNoneEvent",
     "EndEscalationEvent",
     "EndMessageEvent",
@@ -60,14 +63,14 @@ ALLOWED_END_EVENTS = [
     "EndTerminateEvent",
 ]
 
-ALLOWED_CONNECTING_OBJECTS = ["SequenceFlow"]
+ALLOWED_CONNECTING_OBJECTS = ["SequenceFlow", "MessageFlow"]
 
 GATEWAY_MAPPING = {
     ALLOWED_GATEWAYS[0]: "XOR",
     ALLOWED_GATEWAYS[1]: "AND",
     ALLOWED_GATEWAYS[2]: "OR",
-    # ALLOWED_GATEWAYS[3]: 'COMPLEX',
-    # ALLOWED_GATEWAYS[4]: 'EVENT_BASED'
+    ALLOWED_GATEWAYS[3]: 'COMPLEX',
+    ALLOWED_GATEWAYS[4]: 'EVENT_BASED'
 }
 
 END_EVENT_MAPPING = {

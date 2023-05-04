@@ -10,7 +10,7 @@ from bpmnsignal.compiler.bpmn_element_compiler import compile_parsed_tokens
 def test_parse_linear_sequence():
     """Test for a linear sequence"""
     test_file_path = "examples/linear/linear_sequence.json"
-    output = extract_parsed_tokens(test_file_path)
+    output = extract_parsed_tokens(test_file_path, True)
 
     assert dumps(output,
                  indent=2) == dumps(EXPECTED_PARSED_LINEAR_SEQUENCE_RESULT,
@@ -20,7 +20,7 @@ def test_parse_linear_sequence():
 def test_compile_linear_sequence():
     """Test for a linear sequence"""
     test_file_path = "examples/linear/linear_sequence.json"
-    parsed_tokens = extract_parsed_tokens(test_file_path)
+    parsed_tokens = extract_parsed_tokens(test_file_path, True)
     output = compile_parsed_tokens(parsed_tokens)
 
     assert dumps(output,

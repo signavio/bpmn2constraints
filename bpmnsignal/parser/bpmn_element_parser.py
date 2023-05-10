@@ -604,17 +604,17 @@ def find_first_element(bpmn):
     Finds element that has an ID that no other element has as outgoing ID.
     """
     all_elem_id = []
-
     first_elem = []
 
     for elem in get_bpmn_elements(bpmn):
 
-        if get_element_type(elem) in ["Task"]:
-            all_elem_id.extend(get_outgoing(elem))
+        if get_element_type(elem) in ALLOWED_ACTIVITIES:
+            outgoing = get_outgoing(elem)
+            for out in outgoing:
+                all_elem_id.append(get_id(out))
 
     for elem in get_bpmn_elements(bpmn):
-
-        if get_element_type(elem) in ["Task"]:
+        if get_element_type(elem) in ALLOWED_ACTIVITIES:
             if get_id(elem) not in all_elem_id:
                 first_elem.append(elem)
 

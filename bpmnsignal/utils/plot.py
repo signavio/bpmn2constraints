@@ -38,7 +38,6 @@ def create_scatter_plot_2(data, title):
 
     plt.show()
 
-
 def create_scatter_plot(data, title):
     """
     Creates a scatter plot.

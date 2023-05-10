@@ -17,7 +17,7 @@ def find_successors(elem,
                     successors,
                     seen,
                     predecessor,
-                    behind_gateway=False):
+                    behind_gateway=None):
     """
     Finds the next successor that is an activity from current element.
     """
@@ -42,11 +42,16 @@ def find_successors(elem,
 
         if behind_gateway:
             successors[-1].update({"precedes": get_element_name(predecessor)})
+            successors[-1].update(
+                {"behind_gateway_type": get_gateway_type(behind_gateway)})
+            successors[-1].update({"gateway_id": get_id(behind_gateway)})
 
     elif is_gateway(successor):
+        gateway = successor
         for successor in get_gateway_successors(bpmn, successor):
+
             find_successors(successor, bpmn, successors, seen, predecessor,
-                            behind_gateway)
+                            gateway)
     else:
         find_successors(successor, bpmn, successors, seen, predecessor,
                         behind_gateway)
@@ -150,8 +155,9 @@ def get_successor_activities(elem, bpmn, seen):
         return []
 
     if get_next_element(next_element, bpmn) is not None:
-        if is_gateway_splitting(get_next_element(next_element, bpmn)):
-            behind_gateway = True
+        gateway = get_next_element(next_element, bpmn)
+        if is_gateway_splitting(gateway):
+            behind_gateway = gateway
 
     find_successors(elem, bpmn, successors, seen, elem, behind_gateway)
     return successors
@@ -448,21 +454,39 @@ def add_element(elem, seq, seen, bpmn):
             seq_elem.update({"leads_to_joining_gateway": True})
 
         if seq_elem["leads_to_gateway"]:
-            seq_elem.update({
-                "type_of_gateway":
+
+            seq_elem.update({"type_of_gateway": []})
+            seq_elem["type_of_gateway"].append({
+                "gateway_type":
                 get_next_gateway_type(elem, bpmn,
-                                      len(successors) > 1)
+                                      len(successors) > 1),
+                "gateway_id":
+                get_id(successor)
             })
 
-            next_element = get_next_element(elem, bpmn)
+            gateway = successor
 
-            if next_element is not None:
-                gateway = get_next_element(next_element, bpmn)
-                if gateway is not None:
-                    has_loop = detect_loop(gateway, seq, seen, bpmn, elem)
+            for gateway_successor in get_gateway_successors(bpmn, gateway):
 
-                    if has_loop:
-                        seq_elem.update({"is_loop": len(has_loop) > 0})
+                next_elem = get_next_element(gateway_successor, bpmn)
+
+                if next_elem is not None and is_gateway(
+                        next_elem) and is_gateway_splitting(next_elem):
+                    seq_elem["type_of_gateway"].append({
+                        "gateway_type":
+                        get_gateway_type(next_elem),
+                        "gateway_id":
+                        get_id(next_elem)
+                    })
+
+            # Disable loop finding for more efficiency..
+            # if next_element is not None:
+            #     gateway = get_next_element(next_element, bpmn)
+            #     if gateway is not None:
+            #         has_loop = detect_loop(gateway, seq, seen, bpmn, elem)
+
+            #         if has_loop:
+            #             seq_elem.update({"is_loop": len(has_loop) > 0})
 
         seq.append(seq_elem)
 

@@ -44,21 +44,3 @@ EXPECTED_PARSED_SINGLE_AND_GATEWAY_RESULT = [{
     "is_end":
     True
 }]
-
-EXPECTED_COMPILED_SINGLE_AND_GATEWAY_RESULT = [{
-    "desc": "Starts with activity1",
-    "declare": "Init(activity1)",
-    "signal": "(^'activity1')"
-}, {
-    "desc": "Ends with activity1",
-    "declare": "End(activity1)",
-    "signal": "('activity1'$)"
-}, {
-    "desc": "Starts with activity2",
-    "declare": "Init(activity2)",
-    "signal": "(^'activity2')"
-}, {
-    "desc": "Ends with activity2",
-    "declare": "End(activity2)",
-    "signal": "('activity2'$)"
-}]

@@ -7,6 +7,7 @@ Script for testing parser
 # pylint: disable=too-many-nested-blocks
 # pylint: disable=too-many-locals
 # pylint: disable=import-error
+# pylint: disable=too-many-statements
 import json
 import os
 
@@ -19,12 +20,11 @@ from bpmnsignal.parser.bpmn_element_parser import (
     count_activities,
     count_elements,
     count_element_types,
-    get_unique_element_types,
     get_start_element,
     count_num_of_pools,
 )
 
-from bpmnsignal.utils.plot import create_scatter_plot, create_bar_plot
+from bpmnsignal.utils.plot import create_scatter_plot_2, percentage_bar_plot, plot_model_outcomes
 
 CHUNK_SIZE = 10**8
 
@@ -57,34 +57,29 @@ def print_result(failed_models, successful_models, total_models,
     )
     print(f"No. of % of elements that were parsed: {parsed_elements}")
     print(
-        f"In total, {total_models} were parsed containing {total_elements} elements."
+        f"In total, {total_models} models were parsed containing {total_elements} elements."
     )
 
 
-def is_model_valid(model, filtered_models):
+def is_model_valid(model):
     """
     Checks whether model is valid or not.
     """
     try:
         if model["stencil"]["id"] != "BPMNDiagram":
-            filtered_models["Model is not of BPMN format"] += 1
             return False
 
         if count_elements(model) < 5:
-            filtered_models["Model contains less than five elements"] += 1
             return False
 
         if get_start_element(model) is None:
-            filtered_models["Model has no starting point"] += 1
             return False
 
         if count_num_of_pools(model) > 1:
-            filtered_models["Model has more than two pools"] += 1
             return False
 
         return True
     except KeyError:
-        filtered_models["JSON formatting error"] += 1
         return False
 
 
@@ -133,9 +128,9 @@ def create_scatter_object(model_outcome, element_count, type_count):
     Creates a dictionary item for plotting.
     """
     return {
-        "type": model_outcome,
-        "element_count": element_count,
-        "element_type_count": type_count
+        "outcome": model_outcome,
+        "number of elements": element_count,
+        "number of element types": type_count
     }
 
 
@@ -145,6 +140,19 @@ def create_partial_object(percentage, element_count, type_count):
     """
     return {
         "variable": percentage,
+        "number of elements": element_count,
+        "number of element types": type_count
+    }
+
+
+def create_partial_object_2(total_elements, parsed_elements, element_count,
+                            type_count):
+    """
+    Creates a dictionary item for plotting.
+    """
+    return {
+        "total elements": total_elements,
+        "parsed_elements": parsed_elements,
         "number of elements": element_count,
         "number of element types": type_count
     }
@@ -173,19 +181,21 @@ def run_script(dir_path):
     parsed_elements = 0
     total_elements = 0
 
-    unique_elements = set()
-
-    plot_models = []
-    partial_models = []
-    parsed_models = []
-
-    filtered_models = {
-        "Model is not of BPMN format": 0,
-        "Model contains less than five elements": 0,
-        "Model has no starting point": 0,
-        "Model has more than two pools": 0,
-        "JSON formatting error": 0
+    all_models = []
+    partial_models = {
+        "0-10": 0,
+        "11-20": 0,
+        "21-30": 0,
+        "31-40": 0,
+        "41-50": 0,
+        "51-60": 0,
+        "61-70": 0,
+        "71-80": 0,
+        "81-90": 0,
+        "91-100": 0,
     }
+
+    partial_models_2 = []
 
     for file_name in tqdm(get_files(dir_path), desc="Parsing Progress"):
 
@@ -199,62 +209,63 @@ def run_script(dir_path):
                 for model in models:
 
                     try:
-                        if not is_model_valid(model, filtered_models):
+                        if not is_model_valid(model):
                             continue
 
                         flatten_bpmn(model)
-                        total_models = inc(total_models, 1)
+                        total_models += 1
                         result = extract_parsed_tokens(model, False)
                         count_result = len(result)
                         total_activities = count_activities(model)
 
-                        parsed_elements = inc(parsed_elements, count_result)
-                        total_elements = inc(total_elements, total_activities)
+                        parsed_elements += count_result
+                        total_elements += total_activities
 
                         num_elements = count_elements(model)
                         types = count_element_types(model)
+
                         num_types = len(types)
 
-                        unique_elements = unique_elements.union(
-                            get_unique_element_types(model))
-
-                        obj = create_parsed_object(count_result, num_elements,
-                                                   num_types)
-                        parsed_models.append(obj)
-
                         if count_result != total_activities:
-                            partial_parsed_models = inc(
-                                partial_parsed_models, 1)
+                            partial_parsed_models += 1
 
-                            obj = create_scatter_object(
-                                "partial", num_elements, num_types)
+                            all_models.append(
+                                create_scatter_object("partial", num_elements,
+                                                      num_types))
 
-                            plot_models.append(obj)
+                            percentage_parsed = (count_result /
+                                                 total_activities) * 100
 
-                            percentage = 100 * float(count_result) / float(
-                                total_activities)
-                            obj = create_partial_object(
-                                percentage, num_elements, num_types)
+                            partial_models_2.append(
+                                create_partial_object(percentage_parsed,
+                                                      count_result, num_types))
 
-                            partial_models.append(obj)
+                            keys = partial_models.keys()
+                            for key in keys:
+                                lower, upper = key.split("-")
+                                if percentage_parsed in range(
+                                        int(lower),
+                                        int(upper) + 1):
+                                    partial_models[key] += 1
+                                    break
                             continue
 
-                        successful_models = inc(successful_models, 1)
-                        obj = create_scatter_object("successful", num_elements,
-                                                    num_types)
-
-                        plot_models.append(obj)
+                        successful_models += 1
+                        all_models.append(
+                            create_scatter_object("successful", num_elements,
+                                                  num_types))
 
                     except Exception:
-                        failed_models = inc(failed_models, 1)
+                        failed_models += 1
 
-                        plot_models.append(
+                        all_models.append(
                             create_scatter_object("failed", num_elements,
                                                   num_types))
-        break
-    create_scatter_plot(partial_models)
-    create_scatter_plot(parsed_models)
-    create_bar_plot(filtered_models)
+
+    create_scatter_plot_2(all_models, "All Parsed Models")
+    plot_model_outcomes(all_models)
+    percentage_bar_plot(partial_models)
+    print(json.dumps(partial_models, indent=2))
 
     print_result(failed_models, successful_models, total_models,
                  parsed_elements, total_elements, partial_parsed_models)

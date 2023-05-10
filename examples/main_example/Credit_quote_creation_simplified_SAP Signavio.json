@@ -1,0 +1,2789 @@
+{
+    "resourceId": "canvas",
+    "properties": {
+        "auditing": "",
+        "monitoring": "",
+        "flat": "",
+        "version": "",
+        "author": "",
+        "language": "English",
+        "targetnamespace": "http://www.signavio.com/bpmn20",
+        "expressionlanguage": "http://www.w3.org/1999/XPath",
+        "typelanguage": "http://www.w3.org/2001/XMLSchema",
+        "creationdate": "",
+        "modificationdate": "",
+        "itemdefinitions": "",
+        "signals": "",
+        "exporter": "",
+        "exporterversion": "",
+        "properties": "",
+        "properties2": "",
+        "datainputs": "",
+        "dataoutputs": "",
+        "inputsets": "",
+        "outputsets": "",
+        "datainputset": "",
+        "dataoutputset": "",
+        "isclosed": "",
+        "isexecutable": "",
+        "processid": "",
+        "orientation": "horizontal",
+        "resources": "",
+        "messages": "",
+        "errors": "",
+        "interfaces": "",
+        "namespaces": "",
+        "categories": "",
+        "bpmn2_imports": "",
+        "meta-endtoendscenario": "",
+        "meta-businessunit": "",
+        "meta-lastreviewedon": "",
+        "meta-arissapid": "",
+        "meta-modularprocess": "",
+        "meta-itapplications": [],
+        "palevel": "",
+        "meta-arissaptype": "",
+        "meta-overview": "",
+        "bapol3responsiblenew": "",
+        "meta-processgoal2": "",
+        "meta-scopeitemversion": [],
+        "processowner2": "timotheus.kampik@signavio.com",
+        "meta-processgoal": "",
+        "meta-keyprocessflows": "",
+        "meta-businessbenefits": "",
+        "meta-businessunit2": "",
+        "businessownernew": [],
+        "meta-lastreviewcommentm": "",
+        "meta-modelingstatus": "Draft",
+        "meta-prozessreifegrad": "",
+        "processmanagernew": [],
+        "meta-valuedriver": [],
+        "meta-ml": [],
+        "meta-sfregion": "",
+        "meta-generalprocessnumber": "",
+        "generalprocessstatus": "InProcess",
+        "processstatus": "",
+        "meta-sh": [],
+        "meta-countryregionrelevance": "",
+        "generalprocessoccurrence": "",
+        "meta-processowner": "",
+        "meta-tasktutorials": "",
+        "meta-prozesskategorie": "",
+        "meta-generalrelateddiagrams2": [],
+        "generalactualprocessmaturityleve": "",
+        "prozessreifegrad": "",
+        "meta-setupguide": "",
+        "generalplannedprocessmaturitylev": "",
+        "meta-m1knowledgetransfertext3": "",
+        "prozessverantwortlicher": [],
+        "meta-setupusingcloudintegrationa": "",
+        "meta-m2processperformancecockpi2": "",
+        "market": "",
+        "meta-generalrelateddiagrams": [],
+        "meta-solutionprocessflows": [],
+        "prozessanalystin": [],
+        "meta-testscript2": "",
+        "topgoall3process2014": "",
+        "mitgeltendedokumente": [],
+        "meta-usedin": [],
+        "meta-bestpractices": [],
+        "meta-prozesseinordnung": "",
+        "exchange": "",
+        "topgoalppi2014": "",
+        "meta-standardindividual": "",
+        "generalexternalprocessdocumentat": [],
+        "meta-processslas": "",
+        "processlinks": [],
+        "meta-m3processstandardizationne2": "",
+        "meta-prozesseigner": "",
+        "externaldocuments": "",
+        "m1processonepagerneu": [],
+        "meta-m3onlinerealtimeprocessdat2": "",
+        "meta-m3annualimprovementtargets2": "",
+        "processtype": "None",
+        "meta-m1knowledgetransfertext": "",
+        "meta-mcdprocessslasandkpis": "",
+        "meta-product": "",
+        "prozesskategorie": "",
+        "meta-sapstandardcontent": [],
+        "executable": "",
+        "meta-mcdoperationalprocessid": "",
+        "meta-kunde": [],
+        "meta-mcdprocesschecklist": "",
+        "certificationstandards": "",
+        "meta-m1knowledgetransfertext2": "",
+        "iso9000ff": "",
+        "meta-mcdorganization": "",
+        "legalentity": "",
+        "m2detailedprocessdocumentation": [],
+        "meta-mcdservicearea": "",
+        "meta-teilprozesseigner": "",
+        "meta-bpxtodel": "",
+        "meta-prozessverantwortlicher2": "",
+        "meta-mcdprocessprimaryresponsibl": "",
+        "meta-generalexternalprocessdocum": [],
+        "meta-mcdlinkofpublishedprocess": "",
+        "meta-clouddeliveryprocesscha": "",
+        "m2processvariants": [],
+        "meta-clouddeliveryprocesschanged": "",
+        "meta-generalquarterendclosingqec": "",
+        "meta-deliverymodel": "",
+        "sfopsbu": "",
+        "meta-clouddeliveryprocesschangev": [],
+        "fitfunction": [],
+        "meta-clouddeliveryprocesschanger": [],
+        "prozessstufe": "",
+        "meta-artikelnr": [],
+        "meta-efiideasupport": "",
+        "meta-efihierarchykey": "",
+        "meta-m2processperformancecockpit": "",
+        "meta-efikeywordsandtags": "",
+        "m2processriskquestionaire": [],
+        "meta-businessdeliverables": "",
+        "meta-kpmanager": "",
+        "meta-maturitylevel1": "",
+        "meta-riskcontrol": "",
+        "meta-m2processcontinuitystatus": "",
+        "meta-geltungsbereich": [],
+        "meta-executioncoststotal": "",
+        "meta-maturityassessment": "",
+        "sflevel": "",
+        "meta-maturityassessmentdetailedv": "",
+        "meta-m2detailedprocessdocumentat": [],
+        "meta-accessmaturityassessmenther": "https://workflow.signavio.com/sapprocessmapworkspacesimonblattmann/cases/start/610b89d4017af21cafa24b87",
+        "meta-m2processcontinuityplan": [],
+        "itsystems": [],
+        "sfregion": "",
+        "m3processvisionlongtermneu": "",
+        "prozessscope": "",
+        "sfmodeller": "",
+        "meta-lieferantdesinputs": [],
+        "sfreviewer": "",
+        "meta-m3annualimprovementtargetsn": "",
+        "sfsme": "",
+        "processslas": "",
+        "meta-zertifizierung": [],
+        "meta-clriskid": "N/A",
+        "meta-clcontrolid": "N/A",
+        "normen": [],
+        "clriskid": "",
+        "meta-kundedesoutputs2": [],
+        "meta-m3onlinerealtimeprocessdata": "",
+        "clcontrolid": "",
+        "clqrqid": "",
+        "meta-eingangswege": [],
+        "meta-m3singletaskingnew": "",
+        "meta-clqrqid": "N/A",
+        "meta-m3output": "",
+        "meta-vertraulichkeit": "Nur für den internen Gebrauch",
+        "meta-vertraulichkeit_it_it": "Nur für den internen Gebrauch",
+        "meta-vertraulichkeit_de_de": "Nur für den internen Gebrauch",
+        "meta-vertraulichkeit_fr_fr": "Nur für den internen Gebrauch",
+        "meta-vertraulichkeit_nl_nl": "Nur für den internen Gebrauch",
+        "meta-vertraulichkeit_es_es": "Nur für den internen Gebrauch",
+        "slbespokefla": "",
+        "prozessinput": "",
+        "meta-verb": "",
+        "meta-cycsemanticvalidation": "",
+        "meta-m3continuousimprovementproc": "",
+        "prozessoutput": "",
+        "slbespokeflag": "No",
+        "meta-itsystem": [],
+        "meta-m3processstandardizationnew": "",
+        "objective": "",
+        "pmcontact": "",
+        "prozessrelevantedokumente": [],
+        "anforderungen": [],
+        "meta-legalentity2": "",
+        "ikskontrolle": [],
+        "meta-processparticipant1": "",
+        "meta-processparticipant2": "",
+        "meta-date": "",
+        "meta-vorgangsvorlage": [],
+        "meta-anweisungenimvorgang": "",
+        "prozessanalyst": "",
+        "effectifprozessverantwortlicher": "",
+        "meta-idwpsrelevant": "",
+        "effectifprozessverantwortlicherb": "",
+        "meta-gltigkeitasdauer": "",
+        "meta-flligam": "",
+        "meta-kennzahlen": [],
+        "meta-emailadresse": "@vr-finanzdienstleistung.de",
+        "meta-emailadressefg": "@vr-finanzdienstleistung.de",
+        "meta-emailadresseautor": "@vr-finanzdienstleistung.de",
+        "meta-mynumber": "",
+        "meta-inframework": ""
+    },
+    "stencil": {
+        "id": "BPMNDiagram"
+    },
+    "childShapes": [
+        {
+            "resourceId": "sid-38B9A31A-F0F5-4CC6-9215-BEBE7737BC4A",
+            "properties": {
+                "auditing": "",
+                "monitoring": "",
+                "flat": "",
+                "conditiontype": "None",
+                "conditionexpression": "",
+                "expressionlanguage": "",
+                "evaluatestotype": "",
+                "isimmediate": "",
+                "showdiamondmarker": "",
+                "bordercolor": "#000000",
+                "probability": "",
+                "transportzeiten": ""
+            },
+            "stencil": {
+                "id": "SequenceFlow"
+            },
+            "childShapes": [],
+            "outgoing": [
+                {
+                    "resourceId": "sid-85147FD1-D065-4B20-9AB9-DC7A04D23C48"
+                }
+            ],
+            "bounds": {
+                "lowerRight": {
+                    "x": 254.15625,
+                    "y": 248
+                },
+                "upperLeft": {
+                    "x": 210.609375,
+                    "y": 248
+                }
+            },
+            "dockers": [
+                {
+                    "x": 15,
+                    "y": 15
+                },
+                {
+                    "x": 50,
+                    "y": 40
+                }
+            ],
+            "labels": [
+                {
+                    "styles": {
+                        "size": "18.0"
+                    },
+                    "ref": "text_name"
+                }
+            ],
+            "labelDirtyStates": {},
+            "target": {
+                "resourceId": "sid-85147FD1-D065-4B20-9AB9-DC7A04D23C48"
+            }
+        },
+        {
+            "resourceId": "sid-DE01AA8F-B36A-4796-9597-651C8B46C6F3",
+            "properties": {
+                "auditing": "",
+                "monitoring": "",
+                "flat": "",
+                "conditiontype": "None",
+                "conditionexpression": "",
+                "expressionlanguage": "",
+                "evaluatestotype": "",
+                "isimmediate": "",
+                "showdiamondmarker": "",
+                "bordercolor": "#000000",
+                "probability": "",
+                "transportzeiten": ""
+            },
+            "stencil": {
+                "id": "SequenceFlow"
+            },
+            "childShapes": [],
+            "outgoing": [
+                {
+                    "resourceId": "sid-7792BFD6-00E6-4610-9FB6-BC7DB3A82EB6"
+                }
+            ],
+            "bounds": {
+                "lowerRight": {
+                    "x": 380.1015762054829,
+                    "y": 248.39320196966221
+                },
+                "upperLeft": {
+                    "x": 355.2421737945171,
+                    "y": 248.26304803033779
+                }
+            },
+            "dockers": [
+                {
+                    "x": 50,
+                    "y": 40
+                },
+                {
+                    "x": 20.5,
+                    "y": 20.5
+                }
+            ],
+            "labels": [
+                {
+                    "styles": {
+                        "size": "18.0"
+                    },
+                    "ref": "text_name"
+                }
+            ],
+            "labelDirtyStates": {},
+            "target": {
+                "resourceId": "sid-7792BFD6-00E6-4610-9FB6-BC7DB3A82EB6"
+            }
+        },
+        {
+            "resourceId": "sid-25136035-D01E-4DC5-AAF9-FE3F803B865B",
+            "properties": {
+                "auditing": "",
+                "monitoring": "",
+                "flat": "",
+                "conditiontype": "None",
+                "conditionexpression": "",
+                "expressionlanguage": "",
+                "evaluatestotype": "",
+                "isimmediate": "",
+                "showdiamondmarker": "",
+                "bordercolor": "#000000",
+                "probability": "",
+                "transportzeiten": ""
+            },
+            "stencil": {
+                "id": "SequenceFlow"
+            },
+            "childShapes": [],
+            "outgoing": [
+                {
+                    "resourceId": "sid-26C88D1A-96C0-44BD-9BAF-7D25C707388B"
+                }
+            ],
+            "bounds": {
+                "lowerRight": {
+                    "x": 444.1875,
+                    "y": 248.5
+                },
+                "upperLeft": {
+                    "x": 420.796875,
+                    "y": 248.5
+                }
+            },
+            "dockers": [
+                {
+                    "x": 20.5,
+                    "y": 20.5
+                },
+                {
+                    "x": 20.5,
+                    "y": 20.5
+                }
+            ],
+            "labels": [
+                {
+                    "styles": {
+                        "size": "18.0"
+                    },
+                    "ref": "text_name"
+                }
+            ],
+            "labelDirtyStates": {},
+            "target": {
+                "resourceId": "sid-26C88D1A-96C0-44BD-9BAF-7D25C707388B"
+            }
+        },
+        {
+            "resourceId": "sid-088B345E-B2CA-455B-A649-B3E8A3C9157E",
+            "properties": {
+                "auditing": "",
+                "monitoring": "",
+                "flat": "",
+                "conditiontype": "None",
+                "conditionexpression": "",
+                "expressionlanguage": "",
+                "evaluatestotype": "",
+                "isimmediate": "",
+                "showdiamondmarker": "",
+                "bordercolor": "#000000",
+                "probability": "",
+                "transportzeiten": ""
+            },
+            "stencil": {
+                "id": "SequenceFlow"
+            },
+            "childShapes": [],
+            "outgoing": [
+                {
+                    "resourceId": "sid-56E77E6D-0667-43B3-855B-AEA6BD2AF93E"
+                }
+            ],
+            "bounds": {
+                "lowerRight": {
+                    "x": 464.80078125,
+                    "y": 466
+                },
+                "upperLeft": {
+                    "x": 400.5,
+                    "y": 268.19140625
+                }
+            },
+            "dockers": [
+                {
+                    "x": 20.5,
+                    "y": 20.5
+                },
+                {
+                    "x": 400.5,
+                    "y": 466
+                },
+                {
+                    "x": 50,
+                    "y": 40
+                }
+            ],
+            "labels": [
+                {
+                    "styles": {
+                        "size": "18.0"
+                    },
+                    "ref": "text_name"
+                }
+            ],
+            "labelDirtyStates": {},
+            "target": {
+                "resourceId": "sid-56E77E6D-0667-43B3-855B-AEA6BD2AF93E"
+            }
+        },
+        {
+            "resourceId": "sid-224B5102-FEB8-44B3-9403-387F263E41A5",
+            "properties": {
+                "auditing": "",
+                "monitoring": "",
+                "flat": "",
+                "conditiontype": "None",
+                "conditionexpression": "",
+                "expressionlanguage": "",
+                "evaluatestotype": "",
+                "isimmediate": "",
+                "showdiamondmarker": "",
+                "bordercolor": "#000000",
+                "probability": "",
+                "transportzeiten": ""
+            },
+            "stencil": {
+                "id": "SequenceFlow"
+            },
+            "childShapes": [],
+            "outgoing": [
+                {
+                    "resourceId": "sid-04BFD7FE-CDE7-4BAE-A5A1-088ADA1A7A9E"
+                }
+            ],
+            "bounds": {
+                "lowerRight": {
+                    "x": 708.1328125,
+                    "y": 248
+                },
+                "upperLeft": {
+                    "x": 663.4140625,
+                    "y": 248
+                }
+            },
+            "dockers": [
+                {
+                    "x": 50,
+                    "y": 40
+                },
+                {
+                    "x": 20,
+                    "y": 20
+                }
+            ],
+            "labels": [
+                {
+                    "styles": {
+                        "size": "18.0"
+                    },
+                    "ref": "text_name"
+                }
+            ],
+            "labelDirtyStates": {},
+            "target": {
+                "resourceId": "sid-04BFD7FE-CDE7-4BAE-A5A1-088ADA1A7A9E"
+            }
+        },
+        {
+            "resourceId": "sid-BE5261E4-44C3-4C0E-A6A9-026989C331D1",
+            "properties": {
+                "auditing": "",
+                "monitoring": "",
+                "flat": "",
+                "conditiontype": "None",
+                "conditionexpression": "",
+                "expressionlanguage": "",
+                "evaluatestotype": "",
+                "isimmediate": "",
+                "showdiamondmarker": false,
+                "bordercolor": "#000000",
+                "probability": "",
+                "transportzeiten": ""
+            },
+            "stencil": {
+                "id": "SequenceFlow"
+            },
+            "childShapes": [],
+            "outgoing": [
+                {
+                    "resourceId": "sid-04BFD7FE-CDE7-4BAE-A5A1-088ADA1A7A9E"
+                }
+            ],
+            "bounds": {
+                "lowerRight": {
+                    "x": 728.5,
+                    "y": 362
+                },
+                "upperLeft": {
+                    "x": 663.62890625,
+                    "y": 268.12109375
+                }
+            },
+            "dockers": [
+                {
+                    "x": 50,
+                    "y": 40
+                },
+                {
+                    "x": 728.5,
+                    "y": 362
+                },
+                {
+                    "x": 20.5,
+                    "y": 20.5
+                }
+            ],
+            "labels": [
+                {
+                    "styles": {
+                        "size": "18.0"
+                    },
+                    "ref": "text_name"
+                }
+            ],
+            "labelDirtyStates": {},
+            "target": {
+                "resourceId": "sid-04BFD7FE-CDE7-4BAE-A5A1-088ADA1A7A9E"
+            }
+        },
+        {
+            "resourceId": "sid-CA7B85EC-6945-4F46-B7BB-F8208FD568E0",
+            "properties": {
+                "auditing": "",
+                "monitoring": "",
+                "flat": "",
+                "conditiontype": "None",
+                "conditionexpression": "",
+                "expressionlanguage": "",
+                "evaluatestotype": "",
+                "isimmediate": "",
+                "showdiamondmarker": "",
+                "bordercolor": "#000000",
+                "probability": "",
+                "transportzeiten": ""
+            },
+            "stencil": {
+                "id": "SequenceFlow"
+            },
+            "childShapes": [],
+            "outgoing": [
+                {
+                    "resourceId": "sid-DF31C711-BCD9-4E21-A0F4-07D81A515F31"
+                }
+            ],
+            "bounds": {
+                "lowerRight": {
+                    "x": 940.6484468700075,
+                    "y": 248.4097335362338
+                },
+                "upperLeft": {
+                    "x": 896.6288968799925,
+                    "y": 248.2191727137662
+                }
+            },
+            "dockers": [
+                {
+                    "x": 50,
+                    "y": 40
+                },
+                {
+                    "x": 20.5,
+                    "y": 20.5
+                }
+            ],
+            "labels": [
+                {
+                    "styles": {
+                        "size": "18.0"
+                    },
+                    "ref": "text_name"
+                }
+            ],
+            "labelDirtyStates": {},
+            "target": {
+                "resourceId": "sid-DF31C711-BCD9-4E21-A0F4-07D81A515F31"
+            }
+        },
+        {
+            "resourceId": "sid-77ADCCB1-8CE0-48B2-BA9C-871C9CBB8214",
+            "properties": {
+                "auditing": "",
+                "monitoring": "",
+                "flat": "",
+                "conditiontype": "None",
+                "conditionexpression": "",
+                "expressionlanguage": "",
+                "evaluatestotype": "",
+                "isimmediate": "",
+                "showdiamondmarker": "",
+                "bordercolor": "#000000",
+                "probability": "",
+                "transportzeiten": ""
+            },
+            "stencil": {
+                "id": "SequenceFlow"
+            },
+            "childShapes": [],
+            "outgoing": [
+                {
+                    "resourceId": "sid-EA2F6C72-7BD0-4726-84FD-9045BE44B73C"
+                }
+            ],
+            "bounds": {
+                "lowerRight": {
+                    "x": 1005.5351702470746,
+                    "y": 248.39314656876758
+                },
+                "upperLeft": {
+                    "x": 981.6952985029254,
+                    "y": 248.26700968123242
+                }
+            },
+            "dockers": [
+                {
+                    "x": 20.5,
+                    "y": 20.5
+                },
+                {
+                    "x": 50,
+                    "y": 40
+                }
+            ],
+            "labels": [
+                {
+                    "styles": {
+                        "size": "18.0"
+                    },
+                    "ref": "text_name"
+                }
+            ],
+            "labelDirtyStates": {},
+            "target": {
+                "resourceId": "sid-EA2F6C72-7BD0-4726-84FD-9045BE44B73C"
+            }
+        },
+        {
+            "resourceId": "sid-B7ED9CDB-A923-458F-AA47-A5E7812477BE",
+            "properties": {
+                "auditing": "",
+                "monitoring": "",
+                "flat": "",
+                "conditiontype": "None",
+                "conditionexpression": "",
+                "expressionlanguage": "",
+                "evaluatestotype": "",
+                "isimmediate": "",
+                "showdiamondmarker": "",
+                "bordercolor": "#000000",
+                "probability": "",
+                "transportzeiten": ""
+            },
+            "stencil": {
+                "id": "SequenceFlow"
+            },
+            "childShapes": [],
+            "outgoing": [
+                {
+                    "resourceId": "sid-850D153A-D4C2-4853-B59A-13555E19D1A3"
+                }
+            ],
+            "bounds": {
+                "lowerRight": {
+                    "x": 1129.3984375,
+                    "y": 248
+                },
+                "upperLeft": {
+                    "x": 1106.3671875,
+                    "y": 248
+                }
+            },
+            "dockers": [
+                {
+                    "x": 50,
+                    "y": 40
+                },
+                {
+                    "x": 14,
+                    "y": 14
+                }
+            ],
+            "labels": [
+                {
+                    "styles": {
+                        "size": "18.0"
+                    },
+                    "ref": "text_name"
+                }
+            ],
+            "labelDirtyStates": {},
+            "target": {
+                "resourceId": "sid-850D153A-D4C2-4853-B59A-13555E19D1A3"
+            }
+        },
+        {
+            "resourceId": "sid-DB57838D-7E05-4F45-B36E-765F6F074084",
+            "properties": {
+                "auditing": "",
+                "monitoring": "",
+                "flat": "",
+                "conditiontype": "None",
+                "conditionexpression": "",
+                "expressionlanguage": "",
+                "evaluatestotype": "",
+                "isimmediate": "",
+                "showdiamondmarker": "",
+                "bordercolor": "#000000",
+                "probability": "",
+                "transportzeiten": ""
+            },
+            "stencil": {
+                "id": "SequenceFlow"
+            },
+            "childShapes": [],
+            "outgoing": [
+                {
+                    "resourceId": "sid-DF31C711-BCD9-4E21-A0F4-07D81A515F31"
+                }
+            ],
+            "bounds": {
+                "lowerRight": {
+                    "x": 961.5,
+                    "y": 466
+                },
+                "upperLeft": {
+                    "x": 565.7080078125,
+                    "y": 268.19140625
+                }
+            },
+            "dockers": [
+                {
+                    "x": 50,
+                    "y": 40
+                },
+                {
+                    "x": 961.5,
+                    "y": 466
+                },
+                {
+                    "x": 20.5,
+                    "y": 20.5
+                }
+            ],
+            "labels": [
+                {
+                    "styles": {
+                        "size": "18.0"
+                    },
+                    "ref": "text_name"
+                }
+            ],
+            "labelDirtyStates": {},
+            "target": {
+                "resourceId": "sid-DF31C711-BCD9-4E21-A0F4-07D81A515F31"
+            }
+        },
+        {
+            "resourceId": "sid-FA8EA2F2-B2E7-46FC-9B60-441B02FDF8F8",
+            "properties": {
+                "name": "no",
+                "name_de_de": "nein",
+                "auditing": "",
+                "monitoring": "",
+                "flat": "",
+                "conditiontype": "None",
+                "conditionexpression": "",
+                "expressionlanguage": "",
+                "evaluatestotype": "",
+                "isimmediate": "",
+                "showdiamondmarker": "",
+                "bordercolor": "#000000",
+                "probability": "",
+                "transportzeiten": ""
+            },
+            "stencil": {
+                "id": "SequenceFlow"
+            },
+            "childShapes": [],
+            "outgoing": [
+                {
+                    "resourceId": "sid-86ACDE48-0EBD-40FC-B7D0-C4E9D447E4F8"
+                }
+            ],
+            "bounds": {
+                "lowerRight": {
+                    "x": 562.44921875,
+                    "y": 362
+                },
+                "upperLeft": {
+                    "x": 465.5,
+                    "y": 268.12109375
+                }
+            },
+            "dockers": [
+                {
+                    "x": 20.5,
+                    "y": 20.5
+                },
+                {
+                    "x": 465.5,
+                    "y": 362
+                },
+                {
+                    "x": 50,
+                    "y": 40
+                }
+            ],
+            "labels": [
+                {
+                    "styles": {
+                        "size": "18.0"
+                    },
+                    "ref": "text_name"
+                }
+            ],
+            "labelDirtyStates": {},
+            "target": {
+                "resourceId": "sid-86ACDE48-0EBD-40FC-B7D0-C4E9D447E4F8"
+            }
+        },
+        {
+            "resourceId": "sid-85147FD1-D065-4B20-9AB9-DC7A04D23C48",
+            "properties": {
+                "3": "",
+                "itsysteme": "",
+                "perimetro": "",
+                "glossarlink": "",
+                "adapterconfiguration": "",
+                "testdateianhangantask": "",
+                "tabmodifiche": "",
+                "document3": "",
+                "document": "",
+                "document2": "",
+                "wikiseite": "",
+                "communicationtype": "",
+                "documentout": "",
+                "synchronousexecutionjbpm": "",
+                "testtabelle": "",
+                "testliste": [],
+                "riskstest": "",
+                "singlelinetexttest": "",
+                "adapterclassname": "",
+                "ztoa": "",
+                "obiettivo": "",
+                "scopo": "",
+                "descrizionedelleattivit": "",
+                "externedokumente": "",
+                "potentiale": "",
+                "schwachstellen": "",
+                "iso9000ff": "",
+                "descrizioneattivit": "",
+                "limitazioni": "",
+                "screenshots": "",
+                "multilineattribute": "",
+                "callactivitylink": "",
+                "atoz": "",
+                "risikoausprgung": "",
+                "psiconfiguration": "",
+                "arbeitsmittel": "",
+                "saptalkingnumber": "",
+                "executiontimefreetext": "",
+                "kontrollart": "",
+                "dictionaryactivities": "",
+                "datenbanktabellen": "",
+                "functionalrequirements": "",
+                "saptransaktionsnummer": "",
+                "risikostufe": "",
+                "kontrollmanahmen": "",
+                "allegatoqualit": [],
+                "adaptertype": "",
+                "processid": "",
+                "name": "Review \nrequest",
+                "name_de_de": "Antrag überprüfen",
+                "auditing": "",
+                "monitoring": "",
+                "flat": true,
+                "categories": "",
+                "startquantity": 1,
+                "completionquantity": 1,
+                "isforcompensation": "",
+                "assignments": "",
+                "callacitivity": "",
+                "tasktype": "None",
+                "implementation": "webService",
+                "resources": "",
+                "messageref": "",
+                "operationref": "",
+                "instantiate": false,
+                "script": "",
+                "scriptformat": "",
+                "bgcolor": "#FFFFFF",
+                "looptype": "None",
+                "testbefore": "",
+                "loopcondition": "",
+                "loopmaximum": "",
+                "loopcardinality": "",
+                "loopdatainput": "",
+                "loopdataoutput": "",
+                "inputdataitem": "",
+                "outputdataitem": "",
+                "behavior": "all",
+                "complexbehaviordefinition": "",
+                "completioncondition": "",
+                "onebehavioreventref:": "signal",
+                "nonebehavioreventref": "signal",
+                "properties": "",
+                "properties2": "",
+                "datainputs": "",
+                "dataoutputs": "",
+                "inputsets": "",
+                "outputsets": "",
+                "datainputset": "",
+                "dataoutputset": "",
+                "datainputassociations": "",
+                "dataoutputassociations": "",
+                "operationname": "",
+                "inmessagename": "",
+                "inmsgitemkind": "Information",
+                "inmsgstructure": "",
+                "inmsgimport": "",
+                "inmsgiscollection": "",
+                "outmessagename": "",
+                "outmsgitemkind": "Information",
+                "outmsgstructure": "",
+                "outmsgimport": "",
+                "outmsgiscollection": "",
+                "bordercolor": "#000000",
+                "calledelement": "",
+                "time": "",
+                "costs": "",
+                "costcenter": "",
+                "applyincalc": true,
+                "decision": "",
+                "question": "",
+                "anwers": "",
+                "entry": "",
+                "responsible": [],
+                "doclink": "",
+                "meta-processinsightsmetricsavail": "",
+                "accountable": "",
+                "meta-mtmexperiencejourney": [],
+                "meta-externaldocuments": [],
+                "meta-momentthatmatters2": "",
+                "meta-capability": "",
+                "fhrtdurch": "",
+                "meta-arissapid": "",
+                "meta-externaldocuments2": [],
+                "meta-erteiltfreigabe": "",
+                "meta-arissaptype": "",
+                "meta-consulted": [],
+                "meta-istgesamtverwantwortlich": "",
+                "meta-informed": [],
+                "meta-itsysteme": [],
+                "meta-responsible": [],
+                "meta-dokumentenobjekte": [],
+                "erteiltfreigabe": "",
+                "meta-mcdtaskactivityprerequisite": "",
+                "itsystems": [],
+                "meta-ml": [],
+                "sla": "",
+                "clrqid": "N/A",
+                "meta-screenflow": "",
+                "meta-erteiltfreigabe22": [],
+                "meta-sh": [],
+                "meta-signalmetricsavailabletomea": "",
+                "wirdkonsultiert": [],
+                "clbcpid": "N/A",
+                "meta-ubmclicks": "",
+                "ikskontrolle": [],
+                "meta-processinsightsmetricdetail": [],
+                "meta-risks": "",
+                "meta-solutionprocessflows": [],
+                "meta-bestpracticedocument": [],
+                "wirdinformiert": "",
+                "cliscontrolflag": "",
+                "meta-executioncosts": "",
+                "meta-importance": "",
+                "meta-risikenundkontrollen": "",
+                "meta-itsystem": [],
+                "zahl": "",
+                "externaldocuments2": [],
+                "slbespokeflag": "No",
+                "booleaninfo2": "",
+                "vorlagenliste": [],
+                "risikenundkontrollen": "",
+                "meta-riskandcontrols": "",
+                "prozessrelevantedokumente": [],
+                "meta-risklevel": "None",
+                "meta-automatisiert": "",
+                "iks": "",
+                "ikskontrollen": "",
+                "systemid": "",
+                "innererevision": "",
+                "startid": "",
+                "endanchor": "",
+                "bearbeitungszeiten": "",
+                "informed": [],
+                "isresponsible": "",
+                "liegezeiten": "",
+                "mydateishinfo": "",
+                "meta-clriskid": "N/A",
+                "mydateishinfo2": "",
+                "risks": "",
+                "consulted": [],
+                "urlinfo2": [],
+                "urlinfo1": [],
+                "meta-riskcontrol": "",
+                "mitgeltendedokumente": [],
+                "booleaninfo": "",
+                "processlink": "",
+                "externaldocuments": "",
+                "fhrtzustzlichdurch": "",
+                "additionalresponsible": [],
+                "risk": "",
+                "meta-issues": "",
+                "risksactivity": "",
+                "additionallyresponsible": "",
+                "meta-date": "",
+                "meta-erteiltfreigabe2": [],
+                "istgesamtverantwortlich": [],
+                "meta-accountable": [],
+                "meta-myglossarylink": ""
+            },
+            "stencil": {
+                "id": "Task"
+            },
+            "childShapes": [],
+            "outgoing": [
+                {
+                    "resourceId": "sid-DE01AA8F-B36A-4796-9597-651C8B46C6F3"
+                }
+            ],
+            "bounds": {
+                "lowerRight": {
+                    "x": 355,
+                    "y": 288
+                },
+                "upperLeft": {
+                    "x": 255,
+                    "y": 208
+                }
+            },
+            "dockers": [],
+            "labels": [
+                {
+                    "styles": {
+                        "size": "18.0"
+                    },
+                    "ref": "text_name"
+                }
+            ],
+            "labelDirtyStates": {}
+        },
+        {
+            "resourceId": "sid-7792BFD6-00E6-4610-9FB6-BC7DB3A82EB6",
+            "properties": {
+                "markervisible": "true",
+                "entscheidungstabelle": "",
+                "xortype": "Data",
+                "type": "http://b3mn.org/stencilset/bpmn2.0#Exclusive_Databased_Gateway",
+                "gate_assignments": "",
+                "defaultgate": "",
+                "gate_outgoingsequenceflow": "",
+                "auditing": "",
+                "monitoring": "",
+                "flat": "",
+                "categories": "",
+                "assignments": "",
+                "pool": "",
+                "lanes": "",
+                "gates": "",
+                "gates_outgoingsequenceflow": "",
+                "gates_assignments": "",
+                "bgcolor": "#ffffff",
+                "processid": "",
+                "gatewaytype": "AND",
+                "bordercolor": "#000000",
+                "adapterclassname": "",
+                "adaptertype": "",
+                "psiconfiguration": "",
+                "risk": "",
+                "synchronousexecutionjbpm": ""
+            },
+            "stencil": {
+                "id": "ParallelGateway"
+            },
+            "childShapes": [],
+            "outgoing": [
+                {
+                    "resourceId": "sid-25136035-D01E-4DC5-AAF9-FE3F803B865B"
+                },
+                {
+                    "resourceId": "sid-088B345E-B2CA-455B-A649-B3E8A3C9157E"
+                }
+            ],
+            "bounds": {
+                "lowerRight": {
+                    "x": 420,
+                    "y": 268
+                },
+                "upperLeft": {
+                    "x": 380,
+                    "y": 228
+                }
+            },
+            "dockers": [],
+            "labels": [
+                {
+                    "styles": {
+                        "size": "18.0"
+                    },
+                    "ref": "text_name"
+                }
+            ],
+            "labelDirtyStates": {}
+        },
+        {
+            "resourceId": "sid-26C88D1A-96C0-44BD-9BAF-7D25C707388B",
+            "properties": {
+                "entscheidungstabelle": "",
+                "name": "Standard terms\napplicable?",
+                "name_de_de": "Standard-\nkonditionen \nanwendbar?",
+                "auditing": "",
+                "monitoring": "",
+                "flat": "",
+                "categories": "",
+                "assignments": "",
+                "pool": "",
+                "lanes": "",
+                "gates": "",
+                "gates_outgoingsequenceflow": "",
+                "gates_assignments": "",
+                "bgcolor": "#ffffff",
+                "processid": "",
+                "gatewaytype": "XOR",
+                "xortype": "Data",
+                "markervisible": "true",
+                "defaultgate": "",
+                "gate_outgoingsequenceflow": "",
+                "gate_assignments": "",
+                "bordercolor": "#000000",
+                "adapterclassname": "",
+                "question": "",
+                "adapterconfiguration": "",
+                "adaptertype": "",
+                "psiconfiguration": "",
+                "risks": "{\"totalCount\": 1, \"items\": [{\"numberer\": \"\", \"riskname\": \"Apply standard terms although not appropriate\", \"controls\": {\"items\": [{\"numberer\": \"\", \"name\": \"Consult sales manager\", \"aim\": \"\", \"kind\": \"\", \"documentation\": \"\", \"guarantor\": \"Sales rep\", \"frquency\": \"\", \"status\": \"\"}], \"totalCount\": 1}, \"cause\": \"\", \"consequence\": \"\", \"riskprobability\": \"\", \"extentofdamage\": \"\", \"occurencerisk\": \"\", \"damagerisk\": \"\", \"id\": \"sid-4D965ABF-2DE5-4051-9CAD-46DF86ACE073\"}], \"language\": \"de_de\"}",
+                "risk": "",
+                "synchronousexecutionjbpm": ""
+            },
+            "stencil": {
+                "id": "Exclusive_Databased_Gateway"
+            },
+            "childShapes": [],
+            "outgoing": [
+                {
+                    "resourceId": "sid-FA8EA2F2-B2E7-46FC-9B60-441B02FDF8F8"
+                },
+                {
+                    "resourceId": "sid-2C0CB6FB-7B15-4570-975B-89EBCF4072F4"
+                }
+            ],
+            "bounds": {
+                "lowerRight": {
+                    "x": 485,
+                    "y": 268
+                },
+                "upperLeft": {
+                    "x": 445,
+                    "y": 228
+                }
+            },
+            "dockers": [],
+            "labels": [
+                {
+                    "styles": {
+                        "size": "18.0"
+                    },
+                    "x": 68,
+                    "y": -24,
+                    "valign": "middle",
+                    "align": "center",
+                    "ref": "text_name"
+                }
+            ],
+            "labelDirtyStates": {}
+        },
+        {
+            "resourceId": "sid-F858CA2F-4719-435E-9FF9-8C906CADF2F9",
+            "properties": {
+                "3": "",
+                "itsysteme": "",
+                "perimetro": "",
+                "glossarlink": "",
+                "adapterconfiguration": "",
+                "testdateianhangantask": "",
+                "tabmodifiche": "",
+                "document3": "",
+                "document": "",
+                "document2": "",
+                "wikiseite": "",
+                "communicationtype": "",
+                "documentout": "",
+                "synchronousexecutionjbpm": "",
+                "testtabelle": "",
+                "testliste": [],
+                "riskstest": "",
+                "singlelinetexttest": "",
+                "adapterclassname": "",
+                "ztoa": "",
+                "obiettivo": "",
+                "scopo": "",
+                "descrizionedelleattivit": "",
+                "externedokumente": "",
+                "potentiale": "",
+                "schwachstellen": "",
+                "iso9000ff": "",
+                "descrizioneattivit": "",
+                "limitazioni": "",
+                "screenshots": "",
+                "multilineattribute": "",
+                "callactivitylink": "",
+                "atoz": "",
+                "risikoausprgung": "",
+                "psiconfiguration": "",
+                "arbeitsmittel": "",
+                "saptalkingnumber": "",
+                "executiontimefreetext": "",
+                "kontrollart": "",
+                "dictionaryactivities": "",
+                "datenbanktabellen": "",
+                "functionalrequirements": "",
+                "saptransaktionsnummer": "",
+                "risikostufe": "",
+                "kontrollmanahmen": "",
+                "allegatoqualit": [],
+                "adaptertype": "",
+                "processid": "",
+                "name": "Calculate \nterms",
+                "name_de_de": "Konditionen berechnen",
+                "auditing": "",
+                "monitoring": "",
+                "flat": true,
+                "categories": "",
+                "startquantity": 1,
+                "completionquantity": 1,
+                "isforcompensation": "",
+                "assignments": "",
+                "callacitivity": "",
+                "tasktype": "None",
+                "implementation": "webService",
+                "resources": "",
+                "messageref": "",
+                "operationref": "",
+                "instantiate": false,
+                "script": "",
+                "scriptformat": "",
+                "bgcolor": "#FFFFFF",
+                "looptype": "None",
+                "testbefore": "",
+                "loopcondition": "",
+                "loopmaximum": "",
+                "loopcardinality": "",
+                "loopdatainput": "",
+                "loopdataoutput": "",
+                "inputdataitem": "",
+                "outputdataitem": "",
+                "behavior": "all",
+                "complexbehaviordefinition": "",
+                "completioncondition": "",
+                "onebehavioreventref:": "signal",
+                "nonebehavioreventref": "signal",
+                "properties": "",
+                "properties2": "",
+                "datainputs": "",
+                "dataoutputs": "",
+                "inputsets": "",
+                "outputsets": "",
+                "datainputset": "",
+                "dataoutputset": "",
+                "datainputassociations": "",
+                "dataoutputassociations": "",
+                "operationname": "",
+                "inmessagename": "",
+                "inmsgitemkind": "Information",
+                "inmsgstructure": "",
+                "inmsgimport": "",
+                "inmsgiscollection": "",
+                "outmessagename": "",
+                "outmsgitemkind": "Information",
+                "outmsgstructure": "",
+                "outmsgimport": "",
+                "outmsgiscollection": "",
+                "bordercolor": "#000000",
+                "calledelement": "",
+                "time": "",
+                "costs": "",
+                "costcenter": "",
+                "applyincalc": true,
+                "decision": "",
+                "question": "",
+                "anwers": "",
+                "entry": "",
+                "responsible": [],
+                "doclink": "",
+                "meta-processinsightsmetricsavail": "",
+                "accountable": "",
+                "meta-mtmexperiencejourney": [],
+                "meta-externaldocuments": [],
+                "meta-momentthatmatters2": "",
+                "meta-capability": "",
+                "fhrtdurch": "",
+                "meta-arissapid": "",
+                "meta-externaldocuments2": [],
+                "meta-erteiltfreigabe": "",
+                "meta-arissaptype": "",
+                "meta-consulted": [],
+                "meta-istgesamtverwantwortlich": "",
+                "meta-informed": [],
+                "meta-itsysteme": [],
+                "meta-responsible": [],
+                "meta-dokumentenobjekte": [],
+                "erteiltfreigabe": "",
+                "meta-mcdtaskactivityprerequisite": "",
+                "itsystems": [],
+                "meta-ml": [],
+                "sla": "",
+                "clrqid": "N/A",
+                "meta-screenflow": "",
+                "meta-erteiltfreigabe22": [],
+                "meta-sh": [],
+                "meta-signalmetricsavailabletomea": "",
+                "wirdkonsultiert": [],
+                "clbcpid": "N/A",
+                "meta-ubmclicks": "",
+                "ikskontrolle": [],
+                "meta-processinsightsmetricdetail": [],
+                "meta-risks": "",
+                "meta-solutionprocessflows": [],
+                "meta-bestpracticedocument": [],
+                "wirdinformiert": "",
+                "cliscontrolflag": "",
+                "meta-executioncosts": "",
+                "meta-importance": "",
+                "meta-risikenundkontrollen": "",
+                "meta-itsystem": [],
+                "zahl": "",
+                "externaldocuments2": [],
+                "slbespokeflag": "No",
+                "booleaninfo2": "",
+                "vorlagenliste": [],
+                "risikenundkontrollen": "",
+                "meta-riskandcontrols": "",
+                "prozessrelevantedokumente": [],
+                "meta-risklevel": "None",
+                "meta-automatisiert": "",
+                "iks": "",
+                "ikskontrollen": "",
+                "systemid": "",
+                "innererevision": "",
+                "startid": "",
+                "endanchor": "",
+                "bearbeitungszeiten": "",
+                "informed": [],
+                "isresponsible": "",
+                "liegezeiten": "",
+                "mydateishinfo": "",
+                "meta-clriskid": "N/A",
+                "mydateishinfo2": "",
+                "risks": "",
+                "consulted": [],
+                "urlinfo2": [],
+                "urlinfo1": [],
+                "meta-riskcontrol": "",
+                "mitgeltendedokumente": [],
+                "booleaninfo": "",
+                "processlink": "",
+                "externaldocuments": "",
+                "fhrtzustzlichdurch": "",
+                "additionalresponsible": [],
+                "risk": "",
+                "meta-issues": "",
+                "risksactivity": "",
+                "additionallyresponsible": "",
+                "meta-date": "",
+                "meta-erteiltfreigabe2": [],
+                "istgesamtverantwortlich": [],
+                "meta-accountable": [],
+                "meta-myglossarylink": ""
+            },
+            "stencil": {
+                "id": "Task"
+            },
+            "childShapes": [],
+            "outgoing": [
+                {
+                    "resourceId": "sid-224B5102-FEB8-44B3-9403-387F263E41A5"
+                }
+            ],
+            "bounds": {
+                "lowerRight": {
+                    "x": 663,
+                    "y": 288
+                },
+                "upperLeft": {
+                    "x": 563,
+                    "y": 208
+                }
+            },
+            "dockers": [],
+            "labels": [
+                {
+                    "styles": {
+                        "size": "18.0"
+                    },
+                    "ref": "text_name"
+                }
+            ],
+            "labelDirtyStates": {}
+        },
+        {
+            "resourceId": "sid-49FD1952-AF99-4103-963B-22CB8F6C0BB6",
+            "properties": {
+                "3": "",
+                "itsysteme": "",
+                "perimetro": "",
+                "glossarlink": "",
+                "adapterconfiguration": "",
+                "testdateianhangantask": "",
+                "tabmodifiche": "",
+                "document3": "",
+                "document": "",
+                "document2": "",
+                "wikiseite": "",
+                "communicationtype": "",
+                "documentout": "",
+                "synchronousexecutionjbpm": "",
+                "testtabelle": "",
+                "testliste": [],
+                "riskstest": "",
+                "singlelinetexttest": "",
+                "adapterclassname": "",
+                "ztoa": "",
+                "obiettivo": "",
+                "scopo": "",
+                "descrizionedelleattivit": "",
+                "externedokumente": "",
+                "potentiale": "",
+                "schwachstellen": "",
+                "iso9000ff": "",
+                "descrizioneattivit": "",
+                "limitazioni": "",
+                "screenshots": "",
+                "multilineattribute": "",
+                "callactivitylink": "",
+                "atoz": "",
+                "risikoausprgung": "",
+                "psiconfiguration": "",
+                "arbeitsmittel": "",
+                "saptalkingnumber": "",
+                "executiontimefreetext": "",
+                "kontrollart": "",
+                "dictionaryactivities": "",
+                "datenbanktabellen": "",
+                "functionalrequirements": "",
+                "saptransaktionsnummer": "",
+                "risikostufe": "",
+                "kontrollmanahmen": "",
+                "allegatoqualit": [],
+                "adaptertype": "",
+                "processid": "",
+                "name": "Prepare contract",
+                "name_de_de": "Vertrag vorbereiten",
+                "auditing": "",
+                "monitoring": "",
+                "flat": true,
+                "categories": "",
+                "startquantity": 1,
+                "completionquantity": 1,
+                "isforcompensation": "",
+                "assignments": "",
+                "callacitivity": "",
+                "tasktype": "None",
+                "implementation": "webService",
+                "resources": "",
+                "messageref": "",
+                "operationref": "",
+                "instantiate": false,
+                "script": "",
+                "scriptformat": "",
+                "bgcolor": "#FFFFFF",
+                "looptype": "None",
+                "testbefore": "",
+                "loopcondition": "",
+                "loopmaximum": "",
+                "loopcardinality": "",
+                "loopdatainput": "",
+                "loopdataoutput": "",
+                "inputdataitem": "",
+                "outputdataitem": "",
+                "behavior": "all",
+                "complexbehaviordefinition": "",
+                "completioncondition": "",
+                "onebehavioreventref:": "signal",
+                "nonebehavioreventref": "signal",
+                "properties": "",
+                "properties2": "",
+                "datainputs": "",
+                "dataoutputs": "",
+                "inputsets": "",
+                "outputsets": "",
+                "datainputset": "",
+                "dataoutputset": "",
+                "datainputassociations": "",
+                "dataoutputassociations": "",
+                "operationname": "",
+                "inmessagename": "",
+                "inmsgitemkind": "Information",
+                "inmsgstructure": "",
+                "inmsgimport": "",
+                "inmsgiscollection": "",
+                "outmessagename": "",
+                "outmsgitemkind": "Information",
+                "outmsgstructure": "",
+                "outmsgimport": "",
+                "outmsgiscollection": "",
+                "bordercolor": "#000000",
+                "calledelement": "",
+                "time": "",
+                "costs": "",
+                "costcenter": "",
+                "applyincalc": true,
+                "decision": "",
+                "question": "",
+                "anwers": "",
+                "entry": "",
+                "responsible": [],
+                "doclink": "",
+                "meta-processinsightsmetricsavail": "",
+                "accountable": "",
+                "meta-mtmexperiencejourney": [],
+                "meta-externaldocuments": [],
+                "meta-momentthatmatters2": "",
+                "meta-capability": "",
+                "fhrtdurch": "",
+                "meta-arissapid": "",
+                "meta-externaldocuments2": [],
+                "meta-erteiltfreigabe": "",
+                "meta-arissaptype": "",
+                "meta-consulted": [],
+                "meta-istgesamtverwantwortlich": "",
+                "meta-informed": [],
+                "meta-itsysteme": [],
+                "meta-responsible": [],
+                "meta-dokumentenobjekte": [],
+                "erteiltfreigabe": "",
+                "meta-mcdtaskactivityprerequisite": "",
+                "itsystems": [],
+                "meta-ml": [],
+                "sla": "",
+                "clrqid": "N/A",
+                "meta-screenflow": "",
+                "meta-erteiltfreigabe22": [],
+                "meta-sh": [],
+                "meta-signalmetricsavailabletomea": "",
+                "wirdkonsultiert": [],
+                "clbcpid": "N/A",
+                "meta-ubmclicks": "",
+                "ikskontrolle": [],
+                "meta-processinsightsmetricdetail": [],
+                "meta-risks": "",
+                "meta-solutionprocessflows": [],
+                "meta-bestpracticedocument": [],
+                "wirdinformiert": "",
+                "cliscontrolflag": "",
+                "meta-executioncosts": "",
+                "meta-importance": "",
+                "meta-risikenundkontrollen": "",
+                "meta-itsystem": [],
+                "zahl": "",
+                "externaldocuments2": [],
+                "slbespokeflag": "No",
+                "booleaninfo2": "",
+                "vorlagenliste": [],
+                "risikenundkontrollen": "",
+                "meta-riskandcontrols": "",
+                "prozessrelevantedokumente": [],
+                "meta-risklevel": "None",
+                "meta-automatisiert": "",
+                "iks": "",
+                "ikskontrollen": "",
+                "systemid": "",
+                "innererevision": "",
+                "startid": "",
+                "endanchor": "",
+                "bearbeitungszeiten": "",
+                "informed": [],
+                "isresponsible": "",
+                "liegezeiten": "",
+                "mydateishinfo": "",
+                "meta-clriskid": "N/A",
+                "mydateishinfo2": "",
+                "risks": "{\"totalCount\": 1, \"items\": [{\"numberer\": \"\", \"riskname\": \"The wrong numbers are copied into the contract.\", \"controls\": {\"items\": [{\"numberer\": \"\", \"name\": \"Review contract before sending it out\", \"aim\": \"Prevention of typos\", \"kind\": \"Review\", \"documentation\": \"\", \"guarantor\": \"Sales rep\", \"frquency\": \"100 %\", \"status\": \"\"}], \"totalCount\": 1}, \"cause\": \"Typo\", \"consequence\": \"Contract contains wrong figures\", \"riskprobability\": \"low\", \"extentofdamage\": \"high\", \"occurencerisk\": \"\", \"damagerisk\": \"\", \"id\": \"sid-AB6A956F-A9D9-408E-B66D-E24F27BE906B\"}], \"language\": \"de_de\"}",
+                "consulted": [],
+                "urlinfo2": [],
+                "urlinfo1": [],
+                "meta-riskcontrol": "",
+                "mitgeltendedokumente": [],
+                "booleaninfo": "",
+                "processlink": "",
+                "externaldocuments": "",
+                "fhrtzustzlichdurch": "",
+                "additionalresponsible": [],
+                "risk": "",
+                "meta-issues": "",
+                "risksactivity": "",
+                "additionallyresponsible": "",
+                "meta-date": "",
+                "meta-erteiltfreigabe2": [],
+                "istgesamtverantwortlich": [],
+                "meta-accountable": [],
+                "meta-myglossarylink": ""
+            },
+            "stencil": {
+                "id": "Task"
+            },
+            "childShapes": [],
+            "outgoing": [
+                {
+                    "resourceId": "sid-CA7B85EC-6945-4F46-B7BB-F8208FD568E0"
+                }
+            ],
+            "bounds": {
+                "lowerRight": {
+                    "x": 896,
+                    "y": 288
+                },
+                "upperLeft": {
+                    "x": 796,
+                    "y": 208
+                }
+            },
+            "dockers": [],
+            "labels": [
+                {
+                    "styles": {
+                        "size": "18.0"
+                    },
+                    "ref": "text_name"
+                }
+            ],
+            "labelDirtyStates": {}
+        },
+        {
+            "resourceId": "sid-DF31C711-BCD9-4E21-A0F4-07D81A515F31",
+            "properties": {
+                "markervisible": "true",
+                "entscheidungstabelle": "",
+                "xortype": "Data",
+                "type": "http://b3mn.org/stencilset/bpmn2.0#Exclusive_Databased_Gateway",
+                "gate_assignments": "",
+                "defaultgate": "",
+                "gate_outgoingsequenceflow": "",
+                "auditing": "",
+                "monitoring": "",
+                "flat": "",
+                "categories": "",
+                "assignments": "",
+                "pool": "",
+                "lanes": "",
+                "gates": "",
+                "gates_outgoingsequenceflow": "",
+                "gates_assignments": "",
+                "bgcolor": "#ffffff",
+                "processid": "",
+                "gatewaytype": "AND",
+                "bordercolor": "#000000",
+                "adapterclassname": "",
+                "adaptertype": "",
+                "psiconfiguration": "",
+                "risk": "",
+                "synchronousexecutionjbpm": ""
+            },
+            "stencil": {
+                "id": "ParallelGateway"
+            },
+            "childShapes": [],
+            "outgoing": [
+                {
+                    "resourceId": "sid-77ADCCB1-8CE0-48B2-BA9C-871C9CBB8214"
+                }
+            ],
+            "bounds": {
+                "lowerRight": {
+                    "x": 981,
+                    "y": 268
+                },
+                "upperLeft": {
+                    "x": 941,
+                    "y": 228
+                }
+            },
+            "dockers": [],
+            "labels": [
+                {
+                    "styles": {
+                        "size": "18.0"
+                    },
+                    "ref": "text_name"
+                }
+            ],
+            "labelDirtyStates": {}
+        },
+        {
+            "resourceId": "sid-EA2F6C72-7BD0-4726-84FD-9045BE44B73C",
+            "properties": {
+                "3": "",
+                "itsysteme": "",
+                "perimetro": "",
+                "glossarlink": "",
+                "adapterconfiguration": "",
+                "testdateianhangantask": "",
+                "tabmodifiche": "",
+                "document3": "",
+                "document": "",
+                "document2": "",
+                "wikiseite": "",
+                "communicationtype": "",
+                "documentout": "",
+                "synchronousexecutionjbpm": "",
+                "testtabelle": "",
+                "testliste": [],
+                "riskstest": "",
+                "singlelinetexttest": "",
+                "adapterclassname": "",
+                "ztoa": "",
+                "obiettivo": "",
+                "scopo": "",
+                "descrizionedelleattivit": "",
+                "externedokumente": "",
+                "potentiale": "",
+                "schwachstellen": "",
+                "iso9000ff": "",
+                "descrizioneattivit": "",
+                "limitazioni": "",
+                "screenshots": "",
+                "multilineattribute": "",
+                "callactivitylink": "",
+                "atoz": "",
+                "risikoausprgung": "",
+                "psiconfiguration": "",
+                "arbeitsmittel": "",
+                "saptalkingnumber": "",
+                "executiontimefreetext": "",
+                "kontrollart": "",
+                "dictionaryactivities": "",
+                "datenbanktabellen": "",
+                "functionalrequirements": "",
+                "saptransaktionsnummer": "",
+                "risikostufe": "",
+                "kontrollmanahmen": "",
+                "allegatoqualit": [],
+                "adaptertype": "",
+                "processid": "",
+                "name": "Send quote",
+                "name_de_de": "Angebot \nsenden",
+                "auditing": "",
+                "monitoring": "",
+                "flat": true,
+                "categories": "",
+                "startquantity": 1,
+                "completionquantity": 1,
+                "isforcompensation": "",
+                "assignments": "",
+                "callacitivity": "",
+                "tasktype": "None",
+                "implementation": "webService",
+                "resources": "",
+                "messageref": "",
+                "operationref": "",
+                "instantiate": false,
+                "script": "",
+                "scriptformat": "",
+                "bgcolor": "#FFFFFF",
+                "looptype": "None",
+                "testbefore": "",
+                "loopcondition": "",
+                "loopmaximum": "",
+                "loopcardinality": "",
+                "loopdatainput": "",
+                "loopdataoutput": "",
+                "inputdataitem": "",
+                "outputdataitem": "",
+                "behavior": "all",
+                "complexbehaviordefinition": "",
+                "completioncondition": "",
+                "onebehavioreventref:": "signal",
+                "nonebehavioreventref": "signal",
+                "properties": "",
+                "properties2": "",
+                "datainputs": "",
+                "dataoutputs": "",
+                "inputsets": "",
+                "outputsets": "",
+                "datainputset": "",
+                "dataoutputset": "",
+                "datainputassociations": "",
+                "dataoutputassociations": "",
+                "operationname": "",
+                "inmessagename": "",
+                "inmsgitemkind": "Information",
+                "inmsgstructure": "",
+                "inmsgimport": "",
+                "inmsgiscollection": "",
+                "outmessagename": "",
+                "outmsgitemkind": "Information",
+                "outmsgstructure": "",
+                "outmsgimport": "",
+                "outmsgiscollection": "",
+                "bordercolor": "#000000",
+                "calledelement": "",
+                "time": "",
+                "costs": "",
+                "costcenter": "",
+                "applyincalc": true,
+                "decision": "",
+                "question": "",
+                "anwers": "",
+                "entry": "",
+                "responsible": [],
+                "doclink": "",
+                "meta-processinsightsmetricsavail": "",
+                "accountable": "",
+                "meta-mtmexperiencejourney": [],
+                "meta-externaldocuments": [],
+                "meta-momentthatmatters2": "",
+                "meta-capability": "",
+                "fhrtdurch": "",
+                "meta-arissapid": "",
+                "meta-externaldocuments2": [],
+                "meta-erteiltfreigabe": "",
+                "meta-arissaptype": "",
+                "meta-consulted": [],
+                "meta-istgesamtverwantwortlich": "",
+                "meta-informed": [],
+                "meta-itsysteme": [],
+                "meta-responsible": [],
+                "meta-dokumentenobjekte": [],
+                "erteiltfreigabe": "",
+                "meta-mcdtaskactivityprerequisite": "",
+                "itsystems": [],
+                "meta-ml": [],
+                "sla": "",
+                "clrqid": "N/A",
+                "meta-screenflow": "",
+                "meta-erteiltfreigabe22": [],
+                "meta-sh": [],
+                "meta-signalmetricsavailabletomea": "",
+                "wirdkonsultiert": [],
+                "clbcpid": "N/A",
+                "meta-ubmclicks": "",
+                "ikskontrolle": [],
+                "meta-processinsightsmetricdetail": [],
+                "meta-risks": "",
+                "meta-solutionprocessflows": [],
+                "meta-bestpracticedocument": [],
+                "wirdinformiert": "",
+                "cliscontrolflag": "",
+                "meta-executioncosts": "",
+                "meta-importance": "",
+                "meta-risikenundkontrollen": "",
+                "meta-itsystem": [],
+                "zahl": "",
+                "externaldocuments2": [],
+                "slbespokeflag": "No",
+                "booleaninfo2": "",
+                "vorlagenliste": [],
+                "risikenundkontrollen": "",
+                "meta-riskandcontrols": "",
+                "prozessrelevantedokumente": [],
+                "meta-risklevel": "None",
+                "meta-automatisiert": "",
+                "iks": "",
+                "ikskontrollen": "",
+                "systemid": "",
+                "innererevision": "",
+                "startid": "",
+                "endanchor": "",
+                "bearbeitungszeiten": "",
+                "informed": [],
+                "isresponsible": "",
+                "liegezeiten": "",
+                "mydateishinfo": "",
+                "meta-clriskid": "N/A",
+                "mydateishinfo2": "",
+                "risks": "",
+                "consulted": [],
+                "urlinfo2": [],
+                "urlinfo1": [],
+                "meta-riskcontrol": "",
+                "mitgeltendedokumente": [],
+                "booleaninfo": "",
+                "processlink": "",
+                "externaldocuments": "",
+                "fhrtzustzlichdurch": "",
+                "additionalresponsible": [],
+                "risk": "",
+                "meta-issues": "",
+                "risksactivity": "",
+                "additionallyresponsible": "",
+                "meta-date": "",
+                "meta-erteiltfreigabe2": [],
+                "istgesamtverantwortlich": [],
+                "meta-accountable": [],
+                "meta-myglossarylink": ""
+            },
+            "stencil": {
+                "id": "Task"
+            },
+            "childShapes": [],
+            "outgoing": [
+                {
+                    "resourceId": "sid-B7ED9CDB-A923-458F-AA47-A5E7812477BE"
+                }
+            ],
+            "bounds": {
+                "lowerRight": {
+                    "x": 1106,
+                    "y": 288
+                },
+                "upperLeft": {
+                    "x": 1006,
+                    "y": 208
+                }
+            },
+            "dockers": [],
+            "labels": [
+                {
+                    "styles": {
+                        "size": "18.0"
+                    },
+                    "ref": "text_name"
+                }
+            ],
+            "labelDirtyStates": {}
+        },
+        {
+            "resourceId": "sid-850D153A-D4C2-4853-B59A-13555E19D1A3",
+            "properties": {
+                "name": "Quote\nsent",
+                "name_de_de": "Angebot \ngesendet",
+                "auditing": "",
+                "monitoring": "",
+                "flat": "",
+                "datainputassociations_throwevents": "",
+                "datainputs": "",
+                "inputsets": "",
+                "datainputassociations": "",
+                "datainput": "",
+                "inputset": "",
+                "bgcolor": "#ffffff",
+                "bordercolor": "#000000",
+                "properties": "",
+                "properties2": "",
+                "trigger": "None",
+                "folgeprozess": "",
+                "followingprocesses": [],
+                "meta-succeedingprocesses": [],
+                "nachfolgerprozesse": [],
+                "meta-nachfolgerprozesse": []
+            },
+            "stencil": {
+                "id": "EndNoneEvent"
+            },
+            "childShapes": [],
+            "outgoing": [],
+            "bounds": {
+                "lowerRight": {
+                    "x": 1159,
+                    "y": 262
+                },
+                "upperLeft": {
+                    "x": 1131,
+                    "y": 234
+                }
+            },
+            "dockers": [],
+            "labels": [
+                {
+                    "styles": {
+                        "size": "18.0"
+                    },
+                    "ref": "text_name"
+                }
+            ],
+            "labelDirtyStates": {}
+        },
+        {
+            "resourceId": "sid-1A2C3AFC-4775-461F-9316-ED40DD0B4CA8",
+            "properties": {
+                "type": "http://b3mn.org/stencilset/bpmn2.0#StartMessageEvent",
+                "name": "Credit\nrequested",
+                "name_de_de": "Kredit-Antrag",
+                "auditing": "",
+                "monitoring": "",
+                "flat": "",
+                "dataoutputassociations_catchevents": "",
+                "dataoutputs": "",
+                "outputsets": "",
+                "dataoutputassociations": "",
+                "dataoutput": "",
+                "outputset": "",
+                "bgcolor": "#ffffff",
+                "bordercolor": "#000000",
+                "processid": "",
+                "properties": "",
+                "properties2": "",
+                "trigger": "None",
+                "frequency": "",
+                "applyincalc": true,
+                "meta-preceedingprocesses": [],
+                "preceedingprocesses": [],
+                "meta-vorgngerprozesse": [],
+                "vorgngerprozesse": [],
+                "links": []
+            },
+            "stencil": {
+                "id": "StartNoneEvent"
+            },
+            "childShapes": [],
+            "outgoing": [
+                {
+                    "resourceId": "sid-38B9A31A-F0F5-4CC6-9215-BEBE7737BC4A"
+                }
+            ],
+            "bounds": {
+                "lowerRight": {
+                    "x": 210,
+                    "y": 263
+                },
+                "upperLeft": {
+                    "x": 180,
+                    "y": 233
+                }
+            },
+            "dockers": [],
+            "labels": [
+                {
+                    "styles": {
+                        "size": "18.0"
+                    },
+                    "ref": "text_name"
+                }
+            ],
+            "labelDirtyStates": {}
+        },
+        {
+            "resourceId": "sid-86ACDE48-0EBD-40FC-B7D0-C4E9D447E4F8",
+            "properties": {
+                "3": "",
+                "itsysteme": "",
+                "perimetro": "",
+                "glossarlink": "",
+                "adapterconfiguration": "",
+                "testdateianhangantask": "",
+                "tabmodifiche": "",
+                "document3": "",
+                "document": "",
+                "document2": "",
+                "wikiseite": "",
+                "communicationtype": "",
+                "documentout": "",
+                "synchronousexecutionjbpm": "",
+                "testtabelle": "",
+                "testliste": [],
+                "riskstest": "",
+                "singlelinetexttest": "",
+                "adapterclassname": "",
+                "ztoa": "",
+                "obiettivo": "",
+                "scopo": "",
+                "descrizionedelleattivit": "",
+                "externedokumente": "",
+                "potentiale": "",
+                "schwachstellen": "",
+                "iso9000ff": "",
+                "descrizioneattivit": "",
+                "limitazioni": "",
+                "screenshots": "",
+                "multilineattribute": "",
+                "callactivitylink": "",
+                "atoz": "",
+                "risikoausprgung": "",
+                "psiconfiguration": "",
+                "arbeitsmittel": "",
+                "saptalkingnumber": "",
+                "executiontimefreetext": "",
+                "kontrollart": "",
+                "dictionaryactivities": "",
+                "datenbanktabellen": "",
+                "functionalrequirements": "",
+                "saptransaktionsnummer": "",
+                "risikostufe": "",
+                "kontrollmanahmen": "",
+                "allegatoqualit": [],
+                "adaptertype": "",
+                "processid": "",
+                "name": "Prepare special terms",
+                "name_de_de": "Sonder-konditionen vorbereiten",
+                "auditing": "",
+                "monitoring": "",
+                "flat": true,
+                "categories": "",
+                "startquantity": 1,
+                "completionquantity": 1,
+                "isforcompensation": "",
+                "assignments": "",
+                "callacitivity": "",
+                "tasktype": "None",
+                "implementation": "webService",
+                "resources": "",
+                "messageref": "",
+                "operationref": "",
+                "instantiate": false,
+                "script": "",
+                "scriptformat": "",
+                "bgcolor": "#FFFFFF",
+                "looptype": "None",
+                "testbefore": "",
+                "loopcondition": "",
+                "loopmaximum": "",
+                "loopcardinality": "",
+                "loopdatainput": "",
+                "loopdataoutput": "",
+                "inputdataitem": "",
+                "outputdataitem": "",
+                "behavior": "all",
+                "complexbehaviordefinition": "",
+                "completioncondition": "",
+                "onebehavioreventref:": "signal",
+                "nonebehavioreventref": "signal",
+                "properties": "",
+                "properties2": "",
+                "datainputs": "",
+                "dataoutputs": "",
+                "inputsets": "",
+                "outputsets": "",
+                "datainputset": "",
+                "dataoutputset": "",
+                "datainputassociations": "",
+                "dataoutputassociations": "",
+                "operationname": "",
+                "inmessagename": "",
+                "inmsgitemkind": "Information",
+                "inmsgstructure": "",
+                "inmsgimport": "",
+                "inmsgiscollection": "",
+                "outmessagename": "",
+                "outmsgitemkind": "Information",
+                "outmsgstructure": "",
+                "outmsgimport": "",
+                "outmsgiscollection": "",
+                "bordercolor": "#000000",
+                "calledelement": "",
+                "time": "",
+                "costs": "",
+                "costcenter": "",
+                "applyincalc": true,
+                "decision": "",
+                "question": "",
+                "anwers": "",
+                "entry": "",
+                "responsible": [],
+                "doclink": "",
+                "meta-processinsightsmetricsavail": "",
+                "accountable": "",
+                "meta-mtmexperiencejourney": [],
+                "meta-externaldocuments": [],
+                "meta-momentthatmatters2": "",
+                "meta-capability": "",
+                "fhrtdurch": "",
+                "meta-arissapid": "",
+                "meta-externaldocuments2": [],
+                "meta-erteiltfreigabe": "",
+                "meta-arissaptype": "",
+                "meta-consulted": [],
+                "meta-istgesamtverwantwortlich": "",
+                "meta-informed": [],
+                "meta-itsysteme": [],
+                "meta-responsible": [],
+                "meta-dokumentenobjekte": [],
+                "erteiltfreigabe": "",
+                "meta-mcdtaskactivityprerequisite": "",
+                "itsystems": [],
+                "meta-ml": [],
+                "sla": "",
+                "clrqid": "N/A",
+                "meta-screenflow": "",
+                "meta-erteiltfreigabe22": [],
+                "meta-sh": [],
+                "meta-signalmetricsavailabletomea": "",
+                "wirdkonsultiert": [],
+                "clbcpid": "N/A",
+                "meta-ubmclicks": "",
+                "ikskontrolle": [],
+                "meta-processinsightsmetricdetail": [],
+                "meta-risks": "",
+                "meta-solutionprocessflows": [],
+                "meta-bestpracticedocument": [],
+                "wirdinformiert": "",
+                "cliscontrolflag": "",
+                "meta-executioncosts": "",
+                "meta-importance": "",
+                "meta-risikenundkontrollen": "",
+                "meta-itsystem": [],
+                "zahl": "",
+                "externaldocuments2": [],
+                "slbespokeflag": "No",
+                "booleaninfo2": "",
+                "vorlagenliste": [],
+                "risikenundkontrollen": "",
+                "meta-riskandcontrols": "",
+                "prozessrelevantedokumente": [],
+                "meta-risklevel": "None",
+                "meta-automatisiert": "",
+                "iks": "",
+                "ikskontrollen": "",
+                "systemid": "",
+                "innererevision": "",
+                "startid": "",
+                "endanchor": "",
+                "bearbeitungszeiten": "",
+                "informed": [],
+                "isresponsible": "",
+                "liegezeiten": "",
+                "mydateishinfo": "",
+                "meta-clriskid": "N/A",
+                "mydateishinfo2": "",
+                "risks": "",
+                "consulted": [],
+                "urlinfo2": [],
+                "urlinfo1": [],
+                "meta-riskcontrol": "",
+                "mitgeltendedokumente": [],
+                "booleaninfo": "",
+                "processlink": "",
+                "externaldocuments": "",
+                "fhrtzustzlichdurch": "",
+                "additionalresponsible": [],
+                "risk": "",
+                "meta-issues": "",
+                "risksactivity": "",
+                "additionallyresponsible": "",
+                "meta-date": "",
+                "meta-erteiltfreigabe2": [],
+                "istgesamtverantwortlich": [],
+                "meta-accountable": [],
+                "meta-myglossarylink": ""
+            },
+            "stencil": {
+                "id": "Task"
+            },
+            "childShapes": [],
+            "outgoing": [
+                {
+                    "resourceId": "sid-BE5261E4-44C3-4C0E-A6A9-026989C331D1"
+                }
+            ],
+            "bounds": {
+                "lowerRight": {
+                    "x": 663,
+                    "y": 402
+                },
+                "upperLeft": {
+                    "x": 563,
+                    "y": 322
+                }
+            },
+            "dockers": [],
+            "labels": [
+                {
+                    "styles": {
+                        "size": "18.0"
+                    },
+                    "ref": "text_name"
+                }
+            ],
+            "labelDirtyStates": {}
+        },
+        {
+            "resourceId": "sid-56E77E6D-0667-43B3-855B-AEA6BD2AF93E",
+            "properties": {
+                "3": "",
+                "itsysteme": "",
+                "perimetro": "",
+                "glossarlink": "",
+                "adapterconfiguration": "",
+                "testdateianhangantask": "",
+                "tabmodifiche": "",
+                "document3": "",
+                "document": "",
+                "document2": "",
+                "wikiseite": "",
+                "communicationtype": "",
+                "documentout": "",
+                "synchronousexecutionjbpm": "",
+                "testtabelle": "",
+                "testliste": [],
+                "riskstest": "",
+                "singlelinetexttest": "",
+                "adapterclassname": "",
+                "ztoa": "",
+                "obiettivo": "",
+                "scopo": "",
+                "descrizionedelleattivit": "",
+                "externedokumente": "",
+                "potentiale": "",
+                "schwachstellen": "",
+                "iso9000ff": "",
+                "descrizioneattivit": "",
+                "limitazioni": "",
+                "screenshots": "",
+                "multilineattribute": "",
+                "callactivitylink": "",
+                "atoz": "",
+                "risikoausprgung": "",
+                "psiconfiguration": "",
+                "arbeitsmittel": "",
+                "saptalkingnumber": "",
+                "executiontimefreetext": "",
+                "kontrollart": "",
+                "dictionaryactivities": "",
+                "datenbanktabellen": "",
+                "functionalrequirements": "",
+                "saptransaktionsnummer": "",
+                "risikostufe": "",
+                "kontrollmanahmen": "",
+                "allegatoqualit": [],
+                "adaptertype": "",
+                "processid": "",
+                "name": "Assess risks",
+                "name_de_de": "Risiken bewerten",
+                "auditing": "",
+                "monitoring": "",
+                "flat": true,
+                "categories": "",
+                "startquantity": 1,
+                "completionquantity": 1,
+                "isforcompensation": "",
+                "assignments": "",
+                "callacitivity": "",
+                "tasktype": "None",
+                "implementation": "webService",
+                "resources": "",
+                "messageref": "",
+                "operationref": "",
+                "instantiate": false,
+                "script": "",
+                "scriptformat": "",
+                "bgcolor": "#FFFFFF",
+                "looptype": "None",
+                "testbefore": "",
+                "loopcondition": "",
+                "loopmaximum": "",
+                "loopcardinality": "",
+                "loopdatainput": "",
+                "loopdataoutput": "",
+                "inputdataitem": "",
+                "outputdataitem": "",
+                "behavior": "all",
+                "complexbehaviordefinition": "",
+                "completioncondition": "",
+                "onebehavioreventref:": "signal",
+                "nonebehavioreventref": "signal",
+                "properties": "",
+                "properties2": "",
+                "datainputs": "",
+                "dataoutputs": "",
+                "inputsets": "",
+                "outputsets": "",
+                "datainputset": "",
+                "dataoutputset": "",
+                "datainputassociations": "",
+                "dataoutputassociations": "",
+                "operationname": "",
+                "inmessagename": "",
+                "inmsgitemkind": "Information",
+                "inmsgstructure": "",
+                "inmsgimport": "",
+                "inmsgiscollection": "",
+                "outmessagename": "",
+                "outmsgitemkind": "Information",
+                "outmsgstructure": "",
+                "outmsgimport": "",
+                "outmsgiscollection": "",
+                "bordercolor": "#000000",
+                "calledelement": "",
+                "time": "",
+                "costs": "",
+                "costcenter": "",
+                "applyincalc": true,
+                "decision": "",
+                "question": "",
+                "anwers": "",
+                "entry": "",
+                "responsible": [],
+                "doclink": "",
+                "meta-processinsightsmetricsavail": "",
+                "accountable": "",
+                "meta-mtmexperiencejourney": [],
+                "meta-externaldocuments": [],
+                "meta-momentthatmatters2": "",
+                "meta-capability": "",
+                "fhrtdurch": "",
+                "meta-arissapid": "",
+                "meta-externaldocuments2": [],
+                "meta-erteiltfreigabe": "",
+                "meta-arissaptype": "",
+                "meta-consulted": [],
+                "meta-istgesamtverwantwortlich": "",
+                "meta-informed": [],
+                "meta-itsysteme": [],
+                "meta-responsible": [],
+                "meta-dokumentenobjekte": [],
+                "erteiltfreigabe": "",
+                "meta-mcdtaskactivityprerequisite": "",
+                "itsystems": [],
+                "meta-ml": [],
+                "sla": "",
+                "clrqid": "N/A",
+                "meta-screenflow": "",
+                "meta-erteiltfreigabe22": [],
+                "meta-sh": [],
+                "meta-signalmetricsavailabletomea": "",
+                "wirdkonsultiert": [],
+                "clbcpid": "N/A",
+                "meta-ubmclicks": "",
+                "ikskontrolle": [],
+                "meta-processinsightsmetricdetail": [],
+                "meta-risks": "",
+                "meta-solutionprocessflows": [],
+                "meta-bestpracticedocument": [],
+                "wirdinformiert": "",
+                "cliscontrolflag": "",
+                "meta-executioncosts": "",
+                "meta-importance": "",
+                "meta-risikenundkontrollen": "",
+                "meta-itsystem": [],
+                "zahl": "",
+                "externaldocuments2": [],
+                "slbespokeflag": "No",
+                "booleaninfo2": "",
+                "vorlagenliste": [],
+                "risikenundkontrollen": "",
+                "meta-riskandcontrols": "",
+                "prozessrelevantedokumente": [],
+                "meta-risklevel": "None",
+                "meta-automatisiert": "",
+                "iks": "",
+                "ikskontrollen": "",
+                "systemid": "",
+                "innererevision": "",
+                "startid": "",
+                "endanchor": "",
+                "bearbeitungszeiten": "",
+                "informed": [],
+                "isresponsible": "",
+                "liegezeiten": "",
+                "mydateishinfo": "",
+                "meta-clriskid": "N/A",
+                "mydateishinfo2": "",
+                "risks": "{\"totalCount\": 1, \"items\": [{\"numberer\": \"\", \"riskname\": \"Documents are fraudulent\", \"controls\": {\"items\": [], \"totalCount\": 0}, \"cause\": \"Customer tries to get credit while knowing he is not credit-worthy to a sufficient extend\", \"consequence\": \"Risk is miscalculated\", \"riskprobability\": \"normal\", \"extentofdamage\": \"high\", \"occurencerisk\": \"\", \"damagerisk\": \"\", \"id\": \"sid-C3986BD6-B681-466D-B6D8-EA1C62AB4BD9\"}], \"language\": \"de_de\"}",
+                "consulted": [],
+                "urlinfo2": [],
+                "urlinfo1": [],
+                "meta-riskcontrol": "",
+                "mitgeltendedokumente": [],
+                "booleaninfo": "",
+                "processlink": "",
+                "externaldocuments": "",
+                "fhrtzustzlichdurch": "",
+                "additionalresponsible": [],
+                "risk": "",
+                "meta-issues": "",
+                "risksactivity": "",
+                "additionallyresponsible": "",
+                "meta-date": "",
+                "meta-erteiltfreigabe2": [],
+                "istgesamtverantwortlich": [],
+                "meta-accountable": [],
+                "meta-myglossarylink": ""
+            },
+            "stencil": {
+                "id": "Task"
+            },
+            "childShapes": [],
+            "outgoing": [
+                {
+                    "resourceId": "sid-DB57838D-7E05-4F45-B36E-765F6F074084"
+                }
+            ],
+            "bounds": {
+                "lowerRight": {
+                    "x": 565,
+                    "y": 506
+                },
+                "upperLeft": {
+                    "x": 465,
+                    "y": 426
+                }
+            },
+            "dockers": [],
+            "labels": [
+                {
+                    "styles": {
+                        "size": "18.0"
+                    },
+                    "ref": "text_name"
+                }
+            ],
+            "labelDirtyStates": {}
+        },
+        {
+            "resourceId": "sid-2C0CB6FB-7B15-4570-975B-89EBCF4072F4",
+            "properties": {
+                "name": "yes",
+                "name_de_de": "ja",
+                "auditing": "",
+                "monitoring": "",
+                "flat": "",
+                "conditiontype": "None",
+                "conditionexpression": "",
+                "expressionlanguage": "",
+                "evaluatestotype": "",
+                "isimmediate": "",
+                "showdiamondmarker": "",
+                "bordercolor": "#000000",
+                "probability": "",
+                "transportzeiten": ""
+            },
+            "stencil": {
+                "id": "SequenceFlow"
+            },
+            "childShapes": [],
+            "outgoing": [
+                {
+                    "resourceId": "sid-F858CA2F-4719-435E-9FF9-8C906CADF2F9"
+                }
+            ],
+            "bounds": {
+                "lowerRight": {
+                    "x": 562.4492244954259,
+                    "y": 248.43411018896754
+                },
+                "upperLeft": {
+                    "x": 484.93749425457406,
+                    "y": 248.17135856103246
+                }
+            },
+            "dockers": [
+                {
+                    "x": 20.5,
+                    "y": 20.5
+                },
+                {
+                    "x": 50,
+                    "y": 40
+                }
+            ],
+            "labels": [
+                {
+                    "styles": {
+                        "size": "18.0"
+                    },
+                    "distance": 6.316500663757324,
+                    "x": 523.6798001733436,
+                    "y": 248.30278033839545,
+                    "from": 0,
+                    "to": 1,
+                    "orientation": "lr",
+                    "valign": "bottom",
+                    "align": "right",
+                    "ref": "text_name"
+                }
+            ],
+            "labelDirtyStates": {},
+            "target": {
+                "resourceId": "sid-F858CA2F-4719-435E-9FF9-8C906CADF2F9"
+            }
+        },
+        {
+            "resourceId": "sid-04BFD7FE-CDE7-4BAE-A5A1-088ADA1A7A9E",
+            "properties": {
+                "entscheidungstabelle": "",
+                "auditing": "",
+                "monitoring": "",
+                "flat": "",
+                "categories": "",
+                "assignments": "",
+                "pool": "",
+                "lanes": "",
+                "gates": "",
+                "gates_outgoingsequenceflow": "",
+                "gates_assignments": "",
+                "bgcolor": "#ffffff",
+                "processid": "",
+                "gatewaytype": "XOR",
+                "xortype": "Data",
+                "markervisible": "true",
+                "defaultgate": "",
+                "gate_outgoingsequenceflow": "",
+                "gate_assignments": "",
+                "bordercolor": "#000000",
+                "adapterclassname": "",
+                "question": "",
+                "adapterconfiguration": "",
+                "adaptertype": "",
+                "psiconfiguration": "",
+                "risks": "{\"totalCount\": 1, \"items\": [{\"numberer\": \"\", \"riskname\": \"Apply standard terms although not appropriate\", \"controls\": {\"items\": [{\"numberer\": \"\", \"name\": \"Consult sales manager\", \"aim\": \"\", \"kind\": \"\", \"documentation\": \"\", \"guarantor\": \"Sales rep\", \"frquency\": \"\", \"status\": \"\"}], \"totalCount\": 1}, \"cause\": \"\", \"consequence\": \"\", \"riskprobability\": \"\", \"extentofdamage\": \"\", \"occurencerisk\": \"\", \"damagerisk\": \"\", \"id\": \"sid-4D965ABF-2DE5-4051-9CAD-46DF86ACE073\"}], \"language\": \"de_de\"}",
+                "risk": "",
+                "synchronousexecutionjbpm": ""
+            },
+            "stencil": {
+                "id": "Exclusive_Databased_Gateway"
+            },
+            "childShapes": [],
+            "outgoing": [
+                {
+                    "resourceId": "sid-04C1509D-573F-4F83-898D-FAD6E7B606DA"
+                }
+            ],
+            "bounds": {
+                "lowerRight": {
+                    "x": 748,
+                    "y": 268
+                },
+                "upperLeft": {
+                    "x": 708,
+                    "y": 228
+                }
+            },
+            "dockers": [],
+            "labels": [
+                {
+                    "styles": {
+                        "size": "18.0"
+                    },
+                    "x": 68,
+                    "y": -25,
+                    "valign": "middle",
+                    "align": "center",
+                    "ref": "text_name"
+                }
+            ],
+            "labelDirtyStates": {}
+        },
+        {
+            "resourceId": "sid-04C1509D-573F-4F83-898D-FAD6E7B606DA",
+            "properties": {
+                "auditing": "",
+                "monitoring": "",
+                "flat": "",
+                "conditiontype": "None",
+                "conditionexpression": "",
+                "expressionlanguage": "",
+                "evaluatestotype": "",
+                "isimmediate": "",
+                "showdiamondmarker": false,
+                "bordercolor": "#000000",
+                "probability": "",
+                "transportzeiten": ""
+            },
+            "stencil": {
+                "id": "SequenceFlow"
+            },
+            "childShapes": [],
+            "outgoing": [
+                {
+                    "resourceId": "sid-49FD1952-AF99-4103-963B-22CB8F6C0BB6"
+                }
+            ],
+            "bounds": {
+                "lowerRight": {
+                    "x": 795.21875,
+                    "y": 248
+                },
+                "upperLeft": {
+                    "x": 748.359375,
+                    "y": 248
+                }
+            },
+            "dockers": [
+                {
+                    "x": 20,
+                    "y": 20
+                },
+                {
+                    "x": 50,
+                    "y": 40
+                }
+            ],
+            "target": {
+                "resourceId": "sid-49FD1952-AF99-4103-963B-22CB8F6C0BB6"
+            }
+        }
+    ],
+    "bounds": {
+        "lowerRight": {
+            "x": 1485,
+            "y": 1050
+        },
+        "upperLeft": {
+            "x": 0,
+            "y": 0
+        }
+    },
+    "language": "en_us",
+    "defaultFormats": [
+        {
+            "backgroundColor": "#FFFFFF",
+            "flat": true,
+            "roles": [
+                "Task"
+            ]
+        }
+    ],
+    "stencilset": {
+        "url": "/stencilsets/bpmn2.0/bpmn2.0.json?version=16.16.0",
+        "namespace": "http://b3mn.org/stencilset/bpmn2.0#"
+    },
+    "ssextensions": [],
+    "glossaryLinkRevisions": {}
+}

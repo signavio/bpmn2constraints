@@ -16,21 +16,31 @@ EXPECTED_PARSED_SINGLE_OR_GATEWAY_RESULT = [{
         "type": "Task",
         "name": "1",
         "id": "sid-AD61A674-0B58-41F2-B14D-53A0F6A0ED9A",
-        "precedes": "0"
+        "precedes": "0",
+        "behind_gateway_type": "OR",
+        "gateway_id": "sid-71173100-A04C-4DD0-AA9E-768DF423C145"
     }, {
         "type": "Task",
         "name": "2",
         "id": "sid-D76A99F6-2768-4ED0-841C-171162FB9077",
-        "precedes": "0"
+        "precedes": "0",
+        "behind_gateway_type": "OR",
+        "gateway_id": "sid-71173100-A04C-4DD0-AA9E-768DF423C145"
     }, {
         "type": "Task",
         "name": "3",
         "id": "sid-29940651-400D-43AD-BA8D-7EC276331D33",
-        "precedes": "0"
+        "precedes": "0",
+        "behind_gateway_type": "OR",
+        "gateway_id": "sid-71173100-A04C-4DD0-AA9E-768DF423C145"
     }],
     "predecessors": [],
-    "type_of_gateway":
-    "OR",
+    "type_of_gateway": [{
+        "gateway_type":
+        "OR",
+        "gateway_id":
+        "sid-71173100-A04C-4DD0-AA9E-768DF423C145"
+    }],
     "is_start":
     True,
     "is_end":
@@ -49,7 +59,10 @@ EXPECTED_PARSED_SINGLE_OR_GATEWAY_RESULT = [{
     "successors": [{
         "type": "Task",
         "name": "4",
-        "id": "sid-8E60DB04-AFC4-4DF3-A18B-D81050A3A43E"
+        "id": "sid-8E60DB04-AFC4-4DF3-A18B-D81050A3A43E",
+        "precedes": "1",
+        "behind_gateway_type": "OR",
+        "gateway_id": "sid-6687DB4D-A36A-4BD0-8C24-D34F4DE05727"
     }],
     "predecessors": [{
         "name": "0"
@@ -99,7 +112,10 @@ EXPECTED_PARSED_SINGLE_OR_GATEWAY_RESULT = [{
     "successors": [{
         "type": "Task",
         "name": "4",
-        "id": "sid-8E60DB04-AFC4-4DF3-A18B-D81050A3A43E"
+        "id": "sid-8E60DB04-AFC4-4DF3-A18B-D81050A3A43E",
+        "precedes": "2",
+        "behind_gateway_type": "OR",
+        "gateway_id": "sid-6687DB4D-A36A-4BD0-8C24-D34F4DE05727"
     }],
     "predecessors": [{
         "name": "0"
@@ -124,7 +140,10 @@ EXPECTED_PARSED_SINGLE_OR_GATEWAY_RESULT = [{
     "successors": [{
         "type": "Task",
         "name": "4",
-        "id": "sid-8E60DB04-AFC4-4DF3-A18B-D81050A3A43E"
+        "id": "sid-8E60DB04-AFC4-4DF3-A18B-D81050A3A43E",
+        "precedes": "3",
+        "behind_gateway_type": "OR",
+        "gateway_id": "sid-6687DB4D-A36A-4BD0-8C24-D34F4DE05727"
     }],
     "predecessors": [{
         "name": "0"
@@ -135,76 +154,4 @@ EXPECTED_PARSED_SINGLE_OR_GATEWAY_RESULT = [{
     False,
     "is_end":
     False
-}]
-EXPECTED_COMPILED_SINGLE_OR_GATEWAY_RESULT = [{
-    "desc": "Starts with 0",
-    "declare": "Init(0)",
-    "signal": "(^'0')"
-}, {
-    "desc":
-    "0 precedes 1",
-    "declare":
-    "Precedence(0,1)",
-    "signal":
-    "(^ (NOT '0' | ('0' (NOT '0')* '1'))*$)"
-}, {
-    "desc":
-    "0 precedes 2",
-    "declare":
-    "Precedence(0,2)",
-    "signal":
-    "(^ (NOT '0' | ('0' (NOT '0')* '2'))*$)"
-}, {
-    "desc":
-    "0 precedes 3",
-    "declare":
-    "Precedence(0,3)",
-    "signal":
-    "(^ (NOT '0' | ('0' (NOT '0')* '3'))*$)"
-}, {
-    "desc":
-    "1 xor 2",
-    "declare":
-    "Exclusive Choice(2,1)",
-    "signal":
-    "(^(((NOT('1')*) ('2' NOT('1')*)*)|((NOT('2')*)('1' NOT('2')*)*))$)"
-}, {
-    "desc":
-    "1 xor 3",
-    "declare":
-    "Exclusive Choice(3,1)",
-    "signal":
-    "(^(((NOT('1')*) ('3' NOT('1')*)*)|((NOT('3')*)('1' NOT('3')*)*))$)"
-}, {
-    "desc":
-    "2 xor 3",
-    "declare":
-    "Exclusive Choice(3,2)",
-    "signal":
-    "(^(((NOT('2')*) ('3' NOT('2')*)*)|((NOT('3')*)('2' NOT('3')*)*))$)"
-}, {
-    "desc":
-    "1 responds to 4",
-    "declare":
-    "Response(1,4)",
-    "signal":
-    "(^NOT('1')* ('1' ANY*'4')* NOT('1')*$)"
-}, {
-    "desc":
-    "2 responds to 4",
-    "declare":
-    "Response(2,4)",
-    "signal":
-    "(^NOT('2')* ('2' ANY*'4')* NOT('2')*$)"
-}, {
-    "desc":
-    "3 responds to 4",
-    "declare":
-    "Response(3,4)",
-    "signal":
-    "(^NOT('3')* ('3' ANY*'4')* NOT('3')*$)"
-}, {
-    "desc": "Ends with 4",
-    "declare": "End(4)",
-    "signal": "('4'$)"
 }]

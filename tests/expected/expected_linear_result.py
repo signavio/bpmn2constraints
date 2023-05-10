@@ -68,27 +68,3 @@ EXPECTED_PARSED_LINEAR_SEQUENCE_RESULT = [{
     "is_end":
     True
 }]
-
-EXPECTED_COMPILED_LINEAR_SEQUENCE_RESULT = [{
-    "desc": "Starts with register invoice",
-    "declare": "Init(register invoice)",
-    "signal": "(^'register invoice')"
-}, {
-    "desc":
-    "register invoice leads to check invoice",
-    "declare":
-    "Succession(register invoice,check invoice)",
-    "signal":
-    "(^NOT('register invoice'|'check invoice')*('register invoice'~>'check invoice')*NOT('register invoice'|'check invoice')*$)"
-}, {
-    "desc":
-    "check invoice leads to accept invoice",
-    "declare":
-    "Succession(check invoice,accept invoice)",
-    "signal":
-    "(^NOT('check invoice'|'accept invoice')*('check invoice'~>'accept invoice')*NOT('check invoice'|'accept invoice')*$)"
-}, {
-    "desc": "Ends with accept invoice",
-    "declare": "End(accept invoice)",
-    "signal": "('accept invoice'$)"
-}]

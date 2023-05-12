@@ -5,10 +5,18 @@ Module for compiling BPMN diagrams to atomic constraints.
 # pylint: disable=wildcard-import
 # pylint: disable=too-many-branches
 
-# from json import dumps
-# from itertools import combinations
+import sys
+from itertools import combinations
 from bpmnsignal.templates.declare_templates import *
 from bpmnsignal.templates.matching_templates import *
+
+
+def abort(msg):
+    """
+    Aborts the program.
+    """
+    print(f"Aborted: {msg}.")
+    sys.exit(1)
 
 
 def get_name(token):
@@ -180,6 +188,79 @@ def create_response(token, concurrent):
     return compiled_tokens
 
 
+def get_all_successor_names(token):
+    """
+    Gets the name of all successors to token.
+    """
+    successor_names = []
+    successors = get_successors(token)
+
+    for successor in successors:
+        successor_names.append(get_name(successor))
+    return successor_names
+
+
+def create_exclusive_gateway(token):
+    """
+    Generate all possible combinations of exclusive (XOR) gateways.
+    """
+    compiled_tokens = []
+
+    successors = get_all_successor_names(token)
+    for gateway in combinations(successors, 2):
+
+        compiled_tokens.append({
+            "description":
+            f"{gateway[0]} XOR {gateway[1]}",
+            "SIGNAL":
+            s_exclusive_choice(gateway[0], gateway[1]),
+            "DECLARE":
+            d_exclusive_choice(gateway[0], gateway[1]),
+        })
+
+    return compiled_tokens
+
+
+def create_parallel_gateway(token):
+    """
+    Generate all possible combinations of parallel (AND) gateways.
+    """
+    compiled_tokens = []
+
+    successors = get_all_successor_names(token)
+    for gateway in combinations(successors, 2):
+
+        compiled_tokens.append({
+            "description":
+            f"{gateway[0]} AND {gateway[1]}",
+            "SIGNAL":
+            s_co_existence(gateway[0], gateway[1]),
+            "DECLARE":
+            d_co_existence(gateway[0], gateway[1]),
+        })
+
+    return compiled_tokens
+
+
+def create_inclusive_gateway(token):
+    """
+    Generate all possible combinations of inclusive (OR) gateways.
+    """
+
+    compiled_tokens = []
+
+    successors = get_all_successor_names(token)
+    for gateway in combinations(successors, 2):
+
+        compiled_tokens.append({
+            "description": f"{gateway[0]} OR {gateway[1]}",
+            "SIGNAL": s_choice(gateway[0], gateway[1]),
+            "DECLARE": d_choice(gateway[0], gateway[1]),
+        })
+
+    return compiled_tokens
+
+
 def is_start(token):
     """
     Checks if object is start.
@@ -213,6 +294,13 @@ def get_succeeding_gateway(token):
     Gets the succeeding gateway(s).
     """
     return token.get("type_of_gateway")
+
+
+def token_leads_to_joining_gateway(token):
+    """
+    Checks if token leads to a joining gateway.
+    """
+    return token.get("leads_to_joining_gateway")
 
 
 def put_ending_tokens_in_end(parsed_tokens):
@@ -258,4 +346,52 @@ def compile_parsed_tokens(parsed_tokens):
     tokens = put_starting_tokens_in_front(tokens)
 
     seq = []
+
+    concurrent = False
+    for token in parsed_tokens:
+        if is_start(token):
+            compiled_token = create_starts_with_constraint(token)
+            seq.append(compiled_token)
+
+        if is_end(token):
+            compiled_token = create_ends_with_constraint(token)
+
+            if token_succeeds_gateway(token):
+                compiled_tokens = create_response(token, concurrent)
+                seq.extend(compiled_tokens)
+            seq.append(compiled_token)
+            continue
+
+        if token_leads_to_gateway(token):
+
+            gateways = get_succeeding_gateway(token)
+
+            if len(gateways) > 1:
+                abort("Support for nested gateways is not yet implemented")
+
+            gateway = gateways[0]
+            gateway_type = get_gateway_type(gateway)
+            if gateway_type == "XOR":
+                compiled_tokens = create_exclusive_gateway(token)
+            elif gateway_type == "AND":
+                concurrent = True
+                compiled_tokens = create_parallel_gateway(token)
+            elif gateway_type == "OR":
+                compiled_tokens = create_inclusive_gateway(token)
+
+            seq.extend(compiled_tokens)
+            compiled_tokens = create_precedence(token, concurrent)
+            seq.extend(compiled_tokens)
+            continue
+
+        if token_succeeds_gateway(token):
+            concurrent = False
+            compiled_tokens = create_response(token, concurrent)
+            seq.extend(compiled_tokens)
+
+        else:
+            if not token_leads_to_joining_gateway(token):
+                compiled_token = create_succession(token, concurrent)
+                seq.extend(compiled_token)
+
     return seq

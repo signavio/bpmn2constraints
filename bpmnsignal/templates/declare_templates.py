@@ -4,23 +4,23 @@
 
 def d_init(element):
     """{element} is the first to occur"""
-    return f"Init({element})"
+    return f"Init[{element}]"
 
 
 def d_end(element):
     """{element} is the last to occur"""
-    return f"End({element})"
+    return f"End[{element}]"
 
 
 def d_precedence(predecessor, successor):
     """{successor} occurs only if it is preceded by {predecessor}. Activated by {successor}"""
-    return f"Precedence({predecessor},{successor})"
+    return f"Precedence[{predecessor},{successor}]"
 
 
 def d_alternate_precedence(predecessor, successor):
     """each time {successor} occurs, it is preceded by {predecessor} and no other {successor}
     can recur in between. Activated by {successor}"""
-    return f"Alternate Precedence({predecessor},{successor})"
+    return f"Alternate Precedence[{predecessor},{successor}]"
 
 
 def d_chain_precedence(predecessor, successor):
@@ -28,7 +28,7 @@ def d_chain_precedence(predecessor, successor):
     each time {successor} occurs, then {predecessor} occurs immediately beforehand.
     Activated by {successor}
     """
-    return f"Chain Precedence({predecessor},{successor})"
+    return f"Chain Precedence[{predecessor},{successor}]"
 
 
 def d_response(predecessor, successor):
@@ -36,7 +36,7 @@ def d_response(predecessor, successor):
     if {predecessor} occurs, then {successor} occurs at some point after {predecessor}.
     Activated by {predecessor}
     """
-    return f"Response({predecessor},{successor})"
+    return f"Response[{predecessor},{successor}]"
 
 
 def d_alternate_response(predecessor, successor):
@@ -44,7 +44,7 @@ def d_alternate_response(predecessor, successor):
     if {predecessor} occurs, then {successor} occurs at some point after {predecessor}
     and no other {predecessor} can recur in between. Activated by {predecessor}
     """
-    return f"Alternate Response({predecessor},{successor})"
+    return f"Alternate Response[{predecessor},{successor}]"
 
 
 def d_chain_response(predecessor, successor):
@@ -52,7 +52,7 @@ def d_chain_response(predecessor, successor):
     if {predecessor} occurs, then {successor} occurs immediately after {predecessor}
     and no other {predecessor} can recur in between. Activated by {predecessor}
     """
-    return f"Chain Response({predecessor},{successor})"
+    return f"Chain Response[{predecessor},{successor}]"
 
 
 def d_succession(predecessor, successor):
@@ -60,19 +60,19 @@ def d_succession(predecessor, successor):
     {predecessor} occurs if and only if it is followed by {successor}.
     Activated by {predecessor} and {successor}
     """
-    return f"Succession({predecessor},{successor})"
+    return f"Succession[{predecessor}, {successor}]"
 
 
 def d_alternate_succession(predecessor, successor):
     """{predecessor} occurs if and only if it is followed by {successor} and no other {predecessor}
     can recur in between. Activated by {predecessor} and {successor}"""
-    return f"Alternate Succession({predecessor},{successor})"
+    return f"Alternate Succession[{predecessor}, {successor}]"
 
 
 def d_chain_succession(predecessor, successor):
     """{predecessor} occurs if and only if {successor} occurs immediately after {predecessor}.
     Activated by {predecessor} and {successor}"""
-    return f"Chain Succession({predecessor},{successor})"
+    return f"Chain Succession[{predecessor},{successor}]"
 
 
 def d_choice(element_right, element_left):
@@ -81,7 +81,7 @@ def d_choice(element_right, element_left):
     in the same process instance (OR gateway).
     Activated by {element_right} and {element_left}
     """
-    return f"Choice({element_left},{element_right})"
+    return f"Choice[{element_left},{element_right}]"
 
 
 def d_exclusive_choice(element_right, element_left):
@@ -90,10 +90,10 @@ def d_exclusive_choice(element_right, element_left):
     instance (XOR gateway). Also called 'not co-existence'.
     Activated by {element_right} and {element_left}
     """
-    return f"Exclusive Choice({element_left},{element_right})"
+    return f"Exclusive Choice[{element_left},{element_right}]"
 
 
 def d_co_existence(element_right, element_left):
     """{element_right} and {element_left} occur in the same process instance (AND gateway).
     Activated by {element_right} and {element_left}"""
-    return f"Co-Existence({element_left},{element_right})"
+    return f"Co-Existence[{element_left},{element_right}]"

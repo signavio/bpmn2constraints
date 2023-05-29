@@ -227,8 +227,6 @@ def get_start_element(bpmn):
     for elem in get_bpmn_elements(bpmn):
         if is_start_event(elem):
             starts.append(elem)
-    # if len(starts) == 0:
-    #     return find_first_element(bpmn)
     starts.extend(find_first_element(bpmn))
     return starts
 
@@ -706,13 +704,49 @@ def get_most_common_element(bpmn):
     return count.most_common(1)[0][0]
 
 
-def extract_parsed_tokens(bpmn, is_file):
+def get_token_by_id(token_id, parsed_tokens):
+    """
+    Gets an parsed token by ID.
+    """
+    for token in parsed_tokens:
+        if token_id == token.get('id'):
+            return token
+
+
+def find_transitivity(token, parsed_tokens, transitivity):
+    """
+    Finds transitive closure.
+    """
+    if token is not None:
+        successors = token.get('successors')
+        for successor in successors:
+            successor_name = successor.get('name')
+            if successor_name is not None:
+                transitivity.append(successor_name)
+
+            successor_token = get_token_by_id(successor.get('id'),
+                                              parsed_tokens)
+            find_transitivity(successor_token, parsed_tokens, transitivity)
+
+
+def add_transitivity(parsed_tokens):
+    """
+    Adds transitive closure between one token and forward tokens.
+    """
+    for token in parsed_tokens:
+        transitivity = []
+        find_transitivity(token, parsed_tokens, transitivity)
+        if transitivity:
+            token.update({"transitivity": list(set(transitivity))})
+
+
+def extract_parsed_tokens(bpmn, is_file, transitivity):
     """
     Entry point for the diagram parsing.
     """
     if is_file:
         bpmn = load_bpmn(bpmn)
-
+    flatten_bpmn(bpmn)
     start_elem = get_start_element(bpmn)
     seen = set()
 
@@ -724,5 +758,7 @@ def extract_parsed_tokens(bpmn, is_file):
         parsed_tokens += parse_bpmn(start, [], seen, bpmn, None)
     replay_tokens(parsed_tokens)
     update_tokens(parsed_tokens)
+    if transitivity:
+        add_transitivity(parsed_tokens)
 
     return parsed_tokens

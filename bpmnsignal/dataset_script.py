@@ -16,15 +16,13 @@ from pandas import read_csv
 
 from bpmnsignal.parser.bpmn_element_parser import (
     extract_parsed_tokens,
-    flatten_bpmn,
     count_activities,
     count_elements,
     count_element_types,
-    get_start_element,
-    count_num_of_pools,
 )
 
 from bpmnsignal.utils.plot import create_scatter_plot_2, percentage_bar_plot, plot_model_outcomes
+from bpmnsignal.utils.verification import is_model_valid
 
 CHUNK_SIZE = 10**8
 
@@ -59,28 +57,6 @@ def print_result(failed_models, successful_models, total_models,
     print(
         f"In total, {total_models} models were parsed containing {total_elements} elements."
     )
-
-
-def is_model_valid(model):
-    """
-    Checks whether model is valid or not.
-    """
-    try:
-        if model["stencil"]["id"] != "BPMNDiagram":
-            return False
-
-        if count_elements(model) < 5:
-            return False
-
-        if get_start_element(model) is None:
-            return False
-
-        if count_num_of_pools(model) > 1:
-            return False
-
-        return True
-    except KeyError:
-        return False
 
 
 def inc(target, increment):
@@ -212,9 +188,8 @@ def run_script(dir_path):
                         if not is_model_valid(model):
                             continue
 
-                        flatten_bpmn(model)
                         total_models += 1
-                        result = extract_parsed_tokens(model, False)
+                        result = extract_parsed_tokens(model, False, False)
                         count_result = len(result)
                         total_activities = count_activities(model)
 

@@ -4,19 +4,65 @@ Module for compiling BPMN diagrams to atomic constraints.
 # pylint: disable=unused-wildcard-import
 # pylint: disable=wildcard-import
 # pylint: disable=too-many-branches
+# pylint: disable=use-maxsplit-arg
+# pylint: disable=anomalous-backslash-in-string
 
-import sys
+import re
 from itertools import combinations
 from bpmnsignal.templates.declare_templates import *
 from bpmnsignal.templates.matching_templates import *
+
+SANITIZE = True
+NON_ALPHANUM = re.compile('[^a-zA-Z]')
+CAMEL_PATTERN_1 = re.compile('(.)([A-Z][a-z]+)')
+CAMEL_PATTERN_2 = re.compile('([a-z0-9])([A-Z])')
+
+
+def sanitize_label(label):
+    """
+    Sanitize element labels.
+
+    Credit: Adrian Rebmann.
+    """
+    # handle some special cases
+    label = str(label)
+    if " - " in label:
+        label = label.split(" - ")[-1]
+    if "&" in label:
+        label = label.replace("&", "and")
+    label = label.replace('\n', ' ').replace('\r', '')
+    label = label.replace('(s)', 's')
+    label = label.replace("'", "")
+    label = re.sub(' +', ' ', label)
+    # turn any non-alphanumeric characters into whitespace
+    # label = re.sub("[^A-Za-z]"," ",label)
+    # turn any non-alphanumeric characters into whitespace
+    label = NON_ALPHANUM.sub(' ', label)
+    label = label.strip()
+    # remove single character parts
+    label = " ".join([part for part in label.split() if len(part) > 1])
+    # handle camel case
+    label = camel_to_white(label)
+    # make all lower case
+    label = label.lower()
+    # delete unnecessary whitespaces
+    label = re.sub("\s{1,}", " ", label)
+    return label
+
+
+def camel_to_white(label):
+    """
+    Credit: Adrian Rebmann.
+    """
+    label = CAMEL_PATTERN_1.sub(r'\1 \2', label)
+    return CAMEL_PATTERN_2.sub(r'\1 \2', label)
 
 
 def abort(msg):
     """
     Aborts the program.
     """
-    print(f"Aborted: {msg}.")
-    sys.exit(1)
+    print(f"Warning: {msg}.")
 
 
 def get_name(token):
@@ -26,6 +72,8 @@ def get_name(token):
     name = token.get("name")
     if not name or name == " ":
         name = token.get("type")
+    if SANITIZE:
+        return sanitize_label(name)
     return name
 
 
@@ -116,6 +164,28 @@ def create_succession(token, concurrent):
                 "DECLARE":
                 d_succession(token_name, successor_name),
             })
+
+    if 'transitivity' in token:
+        for transitivity in token['transitivity']:
+            successor_name = sanitize_label(transitivity)
+            if concurrent:
+                compiled_tokens.append({
+                    "description":
+                    f"{token_name} leads to {successor_name}",
+                    "SIGNAL":
+                    s_alternate_succession(token_name, successor_name),
+                    "DECLARE":
+                    d_alternate_succession(token_name, successor_name),
+                })
+            else:
+                compiled_tokens.append({
+                    "description":
+                    f"{token_name} leads to {successor_name}",
+                    "SIGNAL":
+                    s_succession(token_name, successor_name),
+                    "DECLARE":
+                    d_succession(token_name, successor_name),
+                })
 
     return compiled_tokens
 
@@ -366,18 +436,15 @@ def compile_parsed_tokens(parsed_tokens):
 
             gateways = get_succeeding_gateway(token)
 
-            if len(gateways) > 1:
-                abort("Support for nested gateways is not yet implemented")
-
-            gateway = gateways[0]
-            gateway_type = get_gateway_type(gateway)
-            if gateway_type == "XOR":
-                compiled_tokens = create_exclusive_gateway(token)
-            elif gateway_type == "AND":
-                concurrent = True
-                compiled_tokens = create_parallel_gateway(token)
-            elif gateway_type == "OR":
-                compiled_tokens = create_inclusive_gateway(token)
+            for gateway in gateways:
+                gateway_type = get_gateway_type(gateway)
+                if gateway_type == "XOR":
+                    compiled_tokens = create_exclusive_gateway(token)
+                elif gateway_type == "AND":
+                    concurrent = True
+                    compiled_tokens = create_parallel_gateway(token)
+                elif gateway_type == "OR":
+                    compiled_tokens = create_inclusive_gateway(token)
 
             seq.extend(compiled_tokens)
             compiled_tokens = create_precedence(token, concurrent)

@@ -38,6 +38,7 @@ def create_scatter_plot_2(data, title):
 
     plt.show()
 
+
 def create_scatter_plot(data, title):
     """
     Creates a scatter plot.
@@ -167,4 +168,93 @@ def plot_model_outcomes(data):
     plt.xticks([r + bar_width for r in range(len(unique_counts))],
                unique_counts)
     plt.legend()
+    plt.show()
+
+
+def combined_scatter_plot(combined):
+    """
+    Creates a scatterplot of combined models.
+    """
+    precision_list = []
+    recall_list = []
+
+    for model in combined:
+        precision_list.append(model['precision'])
+        recall_list.append(model['recall'])
+
+    mean_precision = sum(precision_list) / len(precision_list)
+    mean_recall = sum(recall_list) / len(recall_list)
+
+    print(f'Mean-Precision: {mean_precision}')
+    print(f'Mean-Recall: {mean_recall}')
+
+    plt.scatter(recall_list, precision_list)
+    plt.xlabel('Recall')
+    plt.ylabel('Precision')
+    plt.title('Precision-Recall Curve')
+    plt.show()
+
+
+def plot_precision_num_elements(combined):
+    """
+    Plots the precision in comparison to number of element types.
+    """
+    precision_list = []
+    element_num = []
+
+    for model in combined:
+        precision_list.append(model['precision'])
+        element_num.append(len(model['num_elem_types']))
+
+    plt.scatter(element_num, precision_list)
+    plt.ylabel('Precision')
+    plt.xlabel('Number of Element Types')
+    plt.title('Precision relative to Number of Element Types')
+    plt.show()
+
+
+def plot_recall_num_elements(combined):
+    """
+    Plots the recall in comparison to number of element types.
+    """
+    recall_list = []
+    element_num = []
+
+    for model in combined:
+        recall_list.append(model['recall'])
+        element_num.append(len(model['num_elem_types']))
+
+    plt.scatter(element_num, recall_list)
+    plt.ylabel('Recall')
+    plt.xlabel('Number of Element Types')
+    plt.title('Recall relative to Number of Element Types')
+    plt.show()
+
+
+def plot_total_constraints(combined):
+    """
+    Plots the total generated constraints from the petri net approach as well
+    as the compiler.
+    """
+    compiler = []
+    petri_net = []
+
+    for model in combined:
+        compiler_constraints = model['compiler_constraints']
+        petri_net_constraints = model['petri_net_constraints']
+
+        if compiler_constraints and petri_net_constraints:
+            compiler.extend(list(set(compiler_constraints)))
+            petri_net.extend(list(set(petri_net_constraints)))
+
+    print(f"petri net constraints : {len(petri_net)}")
+    print(f"compiler constraints : {len(compiler)}")
+
+    x_axis = ['Petri Net Constraints', 'Compiler Constraints']
+    y_axis = [len(petri_net), len(compiler)]
+
+    plt.bar(x_axis, y_axis)
+    plt.title('Unique Constraints Generated per Tool')
+    plt.xlabel('Tool Type')
+    plt.ylabel('Number of Unique Constraints')
     plt.show()

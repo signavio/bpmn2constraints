@@ -9,7 +9,7 @@ from bpmnsignal.parser.bpmn_element_parser import extract_parsed_tokens
 def test_parse_single_and_gateway():
     """A test for a single AND gateway"""
     test_file_path = "examples/and_gates/single_and.json"
-    output = extract_parsed_tokens(test_file_path, True)
+    output = extract_parsed_tokens(test_file_path, True, False)
 
     assert dumps(output,
                  indent=2) == dumps(EXPECTED_PARSED_SINGLE_AND_GATEWAY_RESULT,

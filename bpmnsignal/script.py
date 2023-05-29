@@ -7,6 +7,7 @@ from json import dumps
 import pytest
 from bpmnsignal.parser.bpmn_element_parser import extract_parsed_tokens
 from bpmnsignal.compiler.bpmn_element_compiler import compile_parsed_tokens
+from bpmnsignal.compiler_comparison_script import run_comparison_script
 from bpmnsignal.dataset_script import run_script
 
 
@@ -40,10 +41,15 @@ def run():
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--parse', type=str, help='Runs the parser')
-    parser.add_argument('--script', type=str, help='path to directory')
+    parser.add_argument('--parse_dataset', type=str, help='path to directory')
+    parser.add_argument('--cc_df', type=str, help='path to dataframe')
+    parser.add_argument('--cc_ds', type=str, help='path to dataset to compile')
     parser.add_argument('--test', action='store_true', help='run test')
     parser.add_argument('--path', action='store_true', help='run test')
     parser.add_argument('--compile', type=str, help='Runs the compiler')
+    parser.add_argument('--transitivity',
+                        type=bool,
+                        help='Adds transitive constraints to compiler')
 
     args = parser.parse_args()
     if args.test:
@@ -52,24 +58,27 @@ def run():
     elif args.compile:
         path = Path(args.compile)
         if is_file(path):
-            parsed_tokens = extract_parsed_tokens(path, True)
+            parsed_tokens = extract_parsed_tokens(path, True,
+                                                  args.transitivity)
             compiled_tokens = compile_parsed_tokens(parsed_tokens)
             print(dumps(compiled_tokens, indent=2))
 
     elif args.parse:
         path = Path(args.parse)
         if is_file(path):
-            parsed_tokens = extract_parsed_tokens(path, True)
+            parsed_tokens = extract_parsed_tokens(path, True, False)
             print(dumps(parsed_tokens, indent=2))
-        else:
-            print(f"{path} is not a file.")
 
-    elif args.script:
-        path = Path(args.script)
+    elif args.parse_dataset:
+        path = Path(args.parse_dataset)
         if is_dir(path):
             run_script(path)
-        else:
-            print(f"{path} is not a directory.")
+    elif args.cc_df and args.cc_ds:
+        dataset_path = Path(args.cc_ds)
+        dataframe_path = Path(args.cc_df)
 
+        if is_file(dataset_path) and is_file(dataframe_path):
+            run_comparison_script(dataframe_path, dataset_path,
+                                  args.transitivity)
     else:
         parser.print_help()

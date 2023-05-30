@@ -1,6 +1,8 @@
 """
 Script for testing parser
 """
+# pylint: skip-file
+
 # pylint: disable=broad-exception-caught
 # pylint: disable=line-too-long
 # pylint: disable=too-many-arguments
@@ -57,11 +59,6 @@ def print_result(failed_models, successful_models, total_models,
     print(
         f"In total, {total_models} models were parsed containing {total_elements} elements."
     )
-
-
-def inc(target, increment):
-    """Increments the number of models that have failed"""
-    return target + increment
 
 
 def get_files(dir_path):
@@ -240,7 +237,6 @@ def run_script(dir_path):
     create_scatter_plot_2(all_models, "All Parsed Models")
     plot_model_outcomes(all_models)
     percentage_bar_plot(partial_models)
-    print(json.dumps(partial_models, indent=2))
 
     print_result(failed_models, successful_models, total_models,
                  parsed_elements, total_elements, partial_parsed_models)

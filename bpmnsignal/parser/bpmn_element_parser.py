@@ -1,4 +1,5 @@
 """Module for extracting element tokens from a BPMN diagram."""
+# pylint: skip-file
 
 # pylint: disable=inconsistent-return-statements
 # pylint: disable=too-many-arguments
@@ -33,6 +34,7 @@ def find_successors(elem,
         successors.append({
             "type": get_end_type(successor),
         })
+
     elif is_activity(successor):
         successors.append({
             "type": get_activity_type(successor),
@@ -78,7 +80,7 @@ def get_next_element(elem, bpmn):
 def get_id(elem):
     """
     Gets the resourceId of an element.
-    
+
     Raises:
         KeyError: If resourceID is missing.
     """
@@ -149,18 +151,44 @@ def get_successor_activities(elem, bpmn, seen):
     successors = []
     behind_gateway = False
 
-    next_element = get_next_element(elem, bpmn)
+    next_elem = get_next_element(elem, bpmn)
 
-    if next_element is None:
+    if next_elem is None:
         return []
 
-    if get_next_element(next_element, bpmn) is not None:
-        gateway = get_next_element(next_element, bpmn)
+    if get_next_element(next_elem, bpmn) is not None:
+        gateway = get_next_element(next_elem, bpmn)
         if is_gateway_splitting(gateway):
             behind_gateway = gateway
 
     find_successors(elem, bpmn, successors, seen, elem, behind_gateway)
     return successors
+
+
+def get_gateway_successor_activities(gateway, bpmn):
+    successors = []
+
+    next_elems = []
+    for successor in get_gateway_successors(bpmn, gateway):
+        next_elems.append(successor)
+    if next_elems is None:
+        return []
+
+    for successor in next_elems:
+        if is_activity(successor):
+            successors.append({
+                "type": get_activity_type(successor),
+                "name": get_element_name(successor),
+                "id": get_id(successor)
+            })
+
+        elif is_gateway(successor):
+            pass
+    return successors
+
+
+def get_gateway_predecessor_activities(gateway, seq):
+    pass
 
 
 def get_predecessors_activities(elem, seq):
@@ -177,6 +205,8 @@ def get_predecessors_activities(elem, seq):
             if successor.get("id") == id_to_match:
                 predecessors.append({
                     "name": predecessor.get("name"),
+                    "id": predecessor.get("id"),
+                    "type": predecessor.get("type")
                 })
     return predecessors
 
@@ -207,7 +237,7 @@ def get_outgoing(elem):
 def get_element_name(elem):
     """
     Gets the name of a element.
-    
+
     Raises:
         KeyError: If name is not found, use elements activity type instead.
     """
@@ -216,7 +246,7 @@ def get_element_name(elem):
             return elem[PROPERTIES][NAME]
         return get_activity_type(elem)
     except KeyError:
-        return get_activity_type(elem)
+        return get_element_type(elem)
 
 
 def get_start_element(bpmn):
@@ -350,6 +380,7 @@ def parse_branch(elem, seq, seen, bpmn, predecessor):
 
     if is_gateway(elem):
 
+        add_gateway(elem, seq, seen, bpmn)
         if is_gateway_splitting(elem):
 
             if not is_element_seen(seen, elem):
@@ -451,42 +482,42 @@ def add_element(elem, seq, seen, bpmn):
         if is_gateway(successor) and is_gateway_joining(successor):
             seq_elem.update({"leads_to_joining_gateway": True})
 
-        if seq_elem["leads_to_gateway"]:
+        # Disable loop finding for more efficiency..
+        # if next_element is not None:
+        #     gateway = get_next_element(next_element, bpmn)
+        #     if gateway is not None:
+        #         has_loop = detect_loop(gateway, seq, seen, bpmn, elem)
 
-            seq_elem.update({"type_of_gateway": []})
-            seq_elem["type_of_gateway"].append({
-                "gateway_type":
-                get_next_gateway_type(elem, bpmn,
-                                      len(successors) > 1),
-                "gateway_id":
-                get_id(successor)
-            })
-
-            gateway = successor
-
-            for gateway_successor in get_gateway_successors(bpmn, gateway):
-
-                next_elem = get_next_element(gateway_successor, bpmn)
-
-                if next_elem is not None and is_gateway(
-                        next_elem) and is_gateway_splitting(next_elem):
-                    seq_elem["type_of_gateway"].append({
-                        "gateway_type":
-                        get_gateway_type(next_elem),
-                        "gateway_id":
-                        get_id(next_elem)
-                    })
-
-            # Disable loop finding for more efficiency..
-            # if next_element is not None:
-            #     gateway = get_next_element(next_element, bpmn)
-            #     if gateway is not None:
-            #         has_loop = detect_loop(gateway, seq, seen, bpmn, elem)
-
-            #         if has_loop:
-            #             seq_elem.update({"is_loop": len(has_loop) > 0})
+        #         if has_loop:
+        #             seq_elem.update({"is_loop": len(has_loop) > 0})
 
         seq.append(seq_elem)
+
+
+def add_gateway(elem, seq, seen, bpmn):
+
+    g_id = get_id(elem)
+
+    if g_id not in seen:
+        successors = []
+        if len(get_outgoing(elem)) > 0:
+            successors = get_gateway_successor_activities(elem, bpmn)
+        predecessors = get_predecessors_activities(elem, seq)
+
+        seq_gate = {
+            "name": get_gateway_type(elem),
+            "type": get_element_type(elem),
+            "id": g_id,
+            "successors": successors,
+            "predecessors": predecessors,
+        }
+
+        if is_gateway_splitting(elem):
+            seq_gate.update({"splitting": True})
+        if is_gateway_joining(elem):
+            seq_gate.update({"joining": True})
+
+        seq.append(seq_gate)
 
 
 def parse_bpmn(elem, seq, seen, bpmn, predecessor):
@@ -504,9 +535,10 @@ def parse_bpmn(elem, seq, seen, bpmn, predecessor):
 
             return seq
 
-        if is_gateway(elem) and is_gateway_splitting(elem):
+        if is_gateway(elem):
 
-            if not is_element_seen(seen, elem):
+            add_gateway(elem, seq, seen, bpmn)
+            if is_gateway_splitting(elem) and not is_element_seen(seen, elem):
                 split_paths(elem, seq, seen, bpmn, predecessor)
                 seen.add(get_id(elem))
 

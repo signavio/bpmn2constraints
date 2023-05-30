@@ -1,68 +1,20 @@
 """
 Module for compiling BPMN diagrams to atomic constraints.
 """
+# pylint: skip-file
+
 # pylint: disable=unused-wildcard-import
 # pylint: disable=wildcard-import
 # pylint: disable=too-many-branches
 # pylint: disable=use-maxsplit-arg
 # pylint: disable=anomalous-backslash-in-string
 
-import re
 from itertools import combinations
 from bpmnsignal.templates.declare_templates import *
 from bpmnsignal.templates.matching_templates import *
+from bpmnsignal.utils.sanitizer import Sanitizer
 
 SANITIZE = True
-NON_ALPHANUM = re.compile('[^a-zA-Z]')
-CAMEL_PATTERN_1 = re.compile('(.)([A-Z][a-z]+)')
-CAMEL_PATTERN_2 = re.compile('([a-z0-9])([A-Z])')
-
-
-def sanitize_label(label):
-    """
-    Sanitize element labels.
-
-    Credit: Adrian Rebmann.
-    """
-    # handle some special cases
-    label = str(label)
-    if " - " in label:
-        label = label.split(" - ")[-1]
-    if "&" in label:
-        label = label.replace("&", "and")
-    label = label.replace('\n', ' ').replace('\r', '')
-    label = label.replace('(s)', 's')
-    label = label.replace("'", "")
-    label = re.sub(' +', ' ', label)
-    # turn any non-alphanumeric characters into whitespace
-    # label = re.sub("[^A-Za-z]"," ",label)
-    # turn any non-alphanumeric characters into whitespace
-    label = NON_ALPHANUM.sub(' ', label)
-    label = label.strip()
-    # remove single character parts
-    label = " ".join([part for part in label.split() if len(part) > 1])
-    # handle camel case
-    label = camel_to_white(label)
-    # make all lower case
-    label = label.lower()
-    # delete unnecessary whitespaces
-    label = re.sub("\s{1,}", " ", label)
-    return label
-
-
-def camel_to_white(label):
-    """
-    Credit: Adrian Rebmann.
-    """
-    label = CAMEL_PATTERN_1.sub(r'\1 \2', label)
-    return CAMEL_PATTERN_2.sub(r'\1 \2', label)
-
-
-def abort(msg):
-    """
-    Aborts the program.
-    """
-    print(f"Warning: {msg}.")
 
 
 def get_name(token):
@@ -73,7 +25,7 @@ def get_name(token):
     if not name or name == " ":
         name = token.get("type")
     if SANITIZE:
-        return sanitize_label(name)
+        return Sanitizer().sanitize_label(name)
     return name
 
 
@@ -167,7 +119,7 @@ def create_succession(token, concurrent):
 
     if 'transitivity' in token:
         for transitivity in token['transitivity']:
-            successor_name = sanitize_label(transitivity)
+            successor_name = Sanitizer().sanitize_label(transitivity)
             if concurrent:
                 compiled_tokens.append({
                     "description":

@@ -63,7 +63,12 @@ ALLOWED_END_EVENTS = [
     "EndTerminateEvent",
 ]
 
-ALLOWED_CONNECTING_OBJECTS = ["SequenceFlow", "MessageFlow"]
+ALLOWED_SWIMLANES = [
+    "Pool",
+    "Lane",
+]
+
+ALLOWED_CONNECTING_OBJECTS = ["SequenceFlow"]
 
 GATEWAY_MAPPING = {
     ALLOWED_GATEWAYS[0]: "XOR",

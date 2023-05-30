@@ -1,6 +1,8 @@
 """
 A script for comparing precision and recall of the BPMN compiler vs. a Petri net replay-based tool.
 """
+# pylint: skip-file
+
 # pylint: disable=broad-exception-caught
 # pylint: disable=import-error
 

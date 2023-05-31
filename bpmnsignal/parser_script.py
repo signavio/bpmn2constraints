@@ -20,7 +20,7 @@ class ParserScript():
         self.total_parsed_elements = 0
         self.parsed_models = []
 
-    def create_scatter_object(self, model_outcome, element_count, type_count):
+    def _create_scatter_object(self, model_outcome, element_count, type_count):
         return {
             "outcome": model_outcome,
             "number of elements": element_count,
@@ -28,7 +28,7 @@ class ParserScript():
         }
 
 
-    def create_partial_object(self, percentage, element_count, type_count):
+    def _create_partial_object(self, percentage, element_count, type_count):
         return {
             "variable": percentage,
             "number of elements": element_count,
@@ -71,7 +71,7 @@ class ParserScript():
                             if parsed == parsable:
                                 # Success
                                 self.successful_models += 1
-                                self.parsed_models.append(self.create_scatter_object(
+                                self.parsed_models.append(self._create_scatter_object(
                                     SUCCESS, model_elements, model_element_types))
 
                         except Exception:
@@ -79,7 +79,7 @@ class ParserScript():
                             self.failed_models += 1
                             # For some reason, I have to subtract here..
                             self.successful_models -= 1
-                            self.parsed_models.append(self.create_scatter_object(
+                            self.parsed_models.append(self._create_scatter_object(
                                 FAIL, model_elements, model_element_types))
 
         self.plot.scatter_plot_model_outcomes(self.parsed_models, "All Parsed Models")

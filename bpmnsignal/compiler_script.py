@@ -15,14 +15,14 @@ class CompilerScript():
         self.plot = Plot()
         self.transitivity = True
     
-    def print_model(self, model):
+    def _print_model(self, model):
         print(json.dumps(model, indent=2))
 
     def run(self):
-        petri_net_models = self.parse_dataframe()
-        compiler_models = self.parse_dataset()
+        petri_net_models = self._parse_dataframe()
+        compiler_models = self._parse_dataset()
 
-        models = self.combine_models(petri_net_models, compiler_models)
+        models = self._combine_models(petri_net_models, compiler_models)
 
         recall = []
         precision = []
@@ -40,7 +40,7 @@ class CompilerScript():
         print(mean_precision)
         print(mean_recall)
 
-    def parse_dataframe(self):
+    def _parse_dataframe(self):
         df = self.setup.load_dataframe(self.dataframe_path)
         models = []
 
@@ -62,7 +62,7 @@ class CompilerScript():
             models.append(model)
         return models
 
-    def parse_dataset(self):
+    def _parse_dataset(self):
         compiled_models = []
 
         for chunk in tqdm(self.setup.read_csv_chunk(self.dataset_path), desc="Parsing dataset"):
@@ -110,7 +110,7 @@ class CompilerScript():
                     continue
         return compiled_models
 
-    def combine_models(self, petri_net_models, compiler_models):
+    def _combine_models(self, petri_net_models, compiler_models):
         combined_models = []
         
         for petri_net_model in tqdm(petri_net_models, desc="Combining models"):
@@ -137,16 +137,16 @@ class CompilerScript():
                     "number of elements" : number_of_elements,
                     "number of element types" : number_of_element_types,
                     "element types" : element_types,
-                    "precision" : self.calculate_precision(petri_net_constraints, compiler_constraints),
-                    "recall" : self.calculate_recall(petri_net_constraints, compiler_constraints)
+                    "precision" : self._calculate_precision(petri_net_constraints, compiler_constraints),
+                    "recall" : self._calculate_recall(petri_net_constraints, compiler_constraints)
                 })
 
         return combined_models
 
-    def calculate_precision(self, petri_net_constraints, compiler_constraints):
+    def _calculate_precision(self, petri_net_constraints, compiler_constraints):
         return len(set(petri_net_constraints).intersection(set(compiler_constraints))) / len(set(compiler_constraints))
 
-    def calculate_recall(self, petri_net_constraints, compiler_constraints):
+    def _calculate_recall(self, petri_net_constraints, compiler_constraints):
         return len(set(compiler_constraints).intersection(set(petri_net_constraints))) / len(set(petri_net_constraints))
 
         # path_to_dataframe = "../../Downloads/dataframes/opalmodel_id_to_constraints.pkl"

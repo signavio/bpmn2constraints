@@ -43,7 +43,7 @@ class Declare2ltl():
 
     def to_ltl_str(self, constraint_str):
         try:
-            formula = self.to_ltl(constraint_str)
+            formula = self._to_ltl(constraint_str)
             if formula is None:
                 return "Not translatable"
             return to_string(formula)
@@ -52,7 +52,7 @@ class Declare2ltl():
             return "Not translatable"
 
 
-    def to_ltl(self, constraint_str):
+    def _to_ltl(self, constraint_str):
         n = 0
         templ_str = constraint_str.split("[")[0]
         if templ_str[-1].isdigit():
@@ -90,14 +90,14 @@ class Declare2ltl():
 
         elif templ_str == EXACTLY:
             if n == 1:
-                return And(self.to_ltl(constraint_str.replace(EXACTLY, EXISTENCE)),
-                        self.to_ltl(constraint_str.replace(EXACTLY + "1", ABSENCE + "2")))
+                return And(self._to_ltl(constraint_str.replace(EXACTLY, EXISTENCE)),
+                        self._to_ltl(constraint_str.replace(EXACTLY + "1", ABSENCE + "2")))
             elif n == 2:
-                return And(self.to_ltl(constraint_str.replace(EXACTLY, EXISTENCE)),
-                        self.to_ltl(constraint_str.replace(EXACTLY + "2", ABSENCE + "3")))
+                return And(self._to_ltl(constraint_str.replace(EXACTLY, EXISTENCE)),
+                        self._to_ltl(constraint_str.replace(EXACTLY + "2", ABSENCE + "3")))
             elif n == 3:
-                return And(self.to_ltl(constraint_str.replace(EXACTLY, EXISTENCE)),
-                        self.to_ltl(constraint_str.replace(EXACTLY + "3", ABSENCE + "4")))
+                return And(self._to_ltl(constraint_str.replace(EXACTLY, EXISTENCE)),
+                        self._to_ltl(constraint_str.replace(EXACTLY + "3", ABSENCE + "4")))
             else:
                 raise ValueError("Unsupported n: " + str(n))
 
@@ -142,19 +142,19 @@ class Declare2ltl():
             return Always(Implies(Next(activity_right), activity_left))
 
         elif templ_str == SUCCESSION:
-            return And(self.to_ltl(constraint_str.replace(SUCCESSION, RESPONSE)),
-                    self.to_ltl(constraint_str.replace(SUCCESSION, PRECEDENCE)))
+            return And(self._to_ltl(constraint_str.replace(SUCCESSION, RESPONSE)),
+                    self._to_ltl(constraint_str.replace(SUCCESSION, PRECEDENCE)))
 
         elif templ_str == ALTERNATE_SUCCESSION:
-            return And(self.to_ltl(
+            return And(self._to_ltl(
                 constraint_str.replace(ALTERNATE_SUCCESSION, ALTERNATE_RESPONSE)),
-                self.to_ltl(constraint_str.replace(ALTERNATE_SUCCESSION,
+                self._to_ltl(constraint_str.replace(ALTERNATE_SUCCESSION,
                                             ALTERNATE_PRECEDENCE)))
 
         elif templ_str == CHAIN_SUCCESSION:
             return And(
-                self.to_ltl(constraint_str.replace(CHAIN_SUCCESSION, CHAIN_RESPONSE)),
-                self.to_ltl(constraint_str.replace(CHAIN_SUCCESSION, CHAIN_PRECEDENCE)))
+                self._to_ltl(constraint_str.replace(CHAIN_SUCCESSION, CHAIN_RESPONSE)),
+                self._to_ltl(constraint_str.replace(CHAIN_SUCCESSION, CHAIN_PRECEDENCE)))
 
         elif templ_str == CO_EXISTENCE:
             return And(Implies(Eventually(activity_left), Eventually(activity_right)),
@@ -171,7 +171,7 @@ class Declare2ltl():
         elif templ_str == NOT_CHAIN_RESPONSE:
             return Always(Implies(Next(activity_left), Not(activity_right)))
         elif templ_str == NOT_SUCCESSION:
-            return And(self.to_ltl(constraint_str.replace(NOT_SUCCESSION, NOT_RESPONSE)),
-                    self.to_ltl(constraint_str.replace(NOT_SUCCESSION, NOT_PRECEDENCE)))
+            return And(self._to_ltl(constraint_str.replace(NOT_SUCCESSION, NOT_RESPONSE)),
+                    self._to_ltl(constraint_str.replace(NOT_SUCCESSION, NOT_PRECEDENCE)))
         else:
             raise ValueError("Unknown template: " + constraint_str)

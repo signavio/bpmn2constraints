@@ -40,6 +40,11 @@ class CompilerScript():
         print(mean_precision)
         print(mean_recall)
 
+        self.plot.scatter_plot_recall_precision_combined(models)
+        self.plot.scatter_plot_precision_element_types(models)
+        self.plot.scatter_plot_recall_element_types(models)
+        self.plot.bar_plot_total_generated_constraints(models)
+
     def _parse_dataframe(self):
         df = self.setup.load_dataframe(self.dataframe_path)
         models = []

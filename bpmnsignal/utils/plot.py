@@ -111,7 +111,7 @@ class Plot():
         plt.legend()
         plt.show()
 
-    def scatter_plot_recall_precision_combined_approaches(self, data):
+    def scatter_plot_recall_precision_combined(self, data):
         precision_list = []
         recall_list = []
 
@@ -137,7 +137,7 @@ class Plot():
 
         for model in data:
             precision_list.append(model['precision'])
-            element_num.append(len(model['num_elem_types']))
+            element_num.append(model['number of element types'])
 
         plt.scatter(element_num, precision_list)
         plt.ylabel('Precision')
@@ -151,7 +151,7 @@ class Plot():
 
         for model in data:
             recall_list.append(model['recall'])
-            element_num.append(len(model['num_elem_types']))
+            element_num.append(model['number of element types'])
 
         plt.scatter(element_num, recall_list)
         plt.ylabel('Recall')
@@ -164,8 +164,8 @@ class Plot():
         petri_net = []
 
         for model in data:
-            compiler_constraints = model['compiler_constraints']
-            petri_net_constraints = model['petri_net_constraints']
+            compiler_constraints = model['compiler constraints']
+            petri_net_constraints = model['petri net constraints']
 
             if compiler_constraints and petri_net_constraints:
                 compiler.extend(list(set(compiler_constraints)))

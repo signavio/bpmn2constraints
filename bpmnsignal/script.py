@@ -31,14 +31,20 @@ def run():
             res = Parser(path, True, args.transitivity).run()
             print(dumps(res, indent=2))
 
+    if args.parse:
+        path = Path(args.parse)
+        setup = Setup(None)
+        if setup.is_file(path):
+            res = Parser(path, True, args.transitivity).run()
+            print(dumps(res, indent=2))
+
     elif args.compile:
         path = Path(args.compile)
         setup = Setup(None)
         if setup.is_file(path):
             res = Parser(path, True, args.transitivity).run()
-            print("Compiler not yet implemented.")
-            # res = Compiler(res, args.transitivity)
-            # print(dumps(res, indent=2))
+            res = Compiler(res, args.transitivity).run()
+            print(dumps(res, indent=2))
 
     else:
         parser.print_help()

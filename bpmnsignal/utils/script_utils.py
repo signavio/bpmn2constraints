@@ -30,3 +30,7 @@ class Setup():
 
     def load_models(self, chunk):
         return chunk["Model JSON"].apply(json.loads)
+    
+    def load_dataframe(self, file):
+        return pd.read_pickle(file)
+

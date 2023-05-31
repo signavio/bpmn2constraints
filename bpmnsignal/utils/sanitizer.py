@@ -32,8 +32,8 @@ class Sanitizer():
 
         label = NON_ALPHANUM.sub(' ', label)
         label = label.strip()
-
-        label = " ".join([part for part in label.split() if len(part) > 0])
+        # Adrian has the len(part) > 0 part of this code as > 1, changed it to 0 for testing purposes.
+        label = " ".join([part for part in label.split() if len(part) > 1])
 
         label = self.camel_to_white(label)
 

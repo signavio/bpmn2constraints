@@ -61,10 +61,9 @@ class Parser():
 
     def _find_transitive_closure(self, cfo, transitivity):
         if cfo:
-            for successor in cfo.get("successors"):
-                successor_name = successor.get("name")
-                if successor_name:
-                    transitivity.append(successor_name)
+            for successor in cfo.get("successor"):
+                if successor and successor.get("name") not in EXCLUDED_TRANSITIVE_NAMES:
+                    transitivity.append(successor)
                 successor_cfo = self._get_cfo_by_id(successor.get("id"))
                 self._find_transitive_closure(successor_cfo, transitivity)
 
@@ -75,7 +74,7 @@ class Parser():
             if transitivity:
                 cfo.update(
                     {
-                        "transitivity": list(set(transitivity))
+                        "transitivity": transitivity
                     }
                 )
 
@@ -87,7 +86,7 @@ class Parser():
 
     def _create_cfo(self, elem):
 
-        if self._is_element_activity(elem) or self._is_element_gateway(elem):
+        if self._valid_cfo_element(elem):
             successor = self._get_successors(elem)
             predecessor = self._get_predecessors(elem)
 
@@ -120,6 +119,31 @@ class Parser():
                         })
 
             return cfo
+
+    def _valid_cfo_element(self, elem):
+        if elem is None:
+            return False
+        if self._is_element_activity(elem):
+            return True
+        if self._is_element_gateway(elem):
+            return True
+        if self._is_element_start_event(elem) and self._valid_start_name(elem):
+            return True
+        
+        return False
+        
+    
+    def _valid_start_name(self, elem):
+        if PROPERTIES in elem and NAME in PROPERTIES:
+            start_name = self._get_name(elem)
+            if start_name in DISCARDED_START_EVENT_NAMES:
+                return False
+            if len(start_name.strip()) == 0:
+                return False
+            if len(start_name) < VALID_START_NAME_LENGTH:
+                return False
+            if start_name.isspace():
+                return False
 
     def _get_successors(self, elem):
         try:
@@ -251,17 +275,7 @@ class Parser():
         return len(self.model[CHILD_SHAPES])
 
     def count_model_element_types(self):
-        elem_types = {}
-
-        for elem in self._get_diagram_elements():
-            elem_type = self._get_element_type(elem)
-
-            if elem_type in elem_types:
-                elem_types[elem_type] += 1
-            else:
-                elem_types[elem_type] = 1
-
-        return len(elem_types)
+        return len(self.get_element_types())
     
     def count_pools(self):
         count = 0
@@ -275,3 +289,16 @@ class Parser():
             if elem.get("is start"):
                 return True
         return False
+    
+    def get_element_types(self):
+        elem_types = {}
+
+        for elem in self._get_diagram_elements():
+            elem_type = self._get_element_type(elem)
+
+            if elem_type in elem_types:
+                elem_types[elem_type] += 1
+            else:
+                elem_types[elem_type] = 1
+
+        return elem_types

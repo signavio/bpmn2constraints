@@ -117,6 +117,28 @@ ACTIVITY_MAPPING = {
     "IntermediateMultipleEventThrowing": 'ThrowActivity',
 }
 
+EXCLUDED_TRANSITIVE_NAMES = [
+    "AND",
+    "XOR",
+    "OR",
+    "COMPLEX",
+    "EVENT_BASED",
+]
+
+DISCARDED_CONSTRAINTS = [
+    "Exactly1",
+    "Responded Existence",
+    "Absence2"
+]
+
+DISCARDED_START_EVENT_NAMES = [
+    "start",
+    "Start",
+    "START",
+]
+
+VALID_START_NAME_LENGTH = 5
+
 CHILD_SHAPES = "childShapes"
 OUTGOING = "outgoing"
 ELEMENT_ID = "resourceId"

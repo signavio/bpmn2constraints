@@ -79,7 +79,6 @@ def run_script(dir_path):
 
                     except Exception:
                         # Failed
-                        # traceback.print_exc()
                         failed_models += 1
                         # For some reason, I have to subtract here..
                         successful_models -= 1

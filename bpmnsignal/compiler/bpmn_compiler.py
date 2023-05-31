@@ -78,6 +78,15 @@ class Compiler():
                 )
             )
 
+            self.compiled_sequence.append(
+                self.create_constraint_object(
+                    description= f"{name} and {successor_name}",
+                    signal= self.signal.co_existence(name, successor_name),
+                    declare= self.declare.co_existence(name, successor_name),
+                    ltlf= self.ltlf.to_ltl_str(self.declare.co_existence(name, successor_name)),
+                )
+            )
+
             if self.concurrent:
                 self.compiled_sequence.append(
                     self.create_constraint_object(

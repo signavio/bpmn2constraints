@@ -252,7 +252,8 @@ class Parser():
     def _is_predecessor_start_event(self, predecessors):
         for predecessor in predecessors:
             if predecessor:
-                if self._get_element_type(predecessor) in ALLOWED_START_EVENTS:
+                predecessor_type = self._get_element_type(predecessor)
+                if predecessor_type in ALLOWED_START_EVENTS and predecessor_type not in DISCARDED_START_EVENT_NAMES:
                     return True
         return False
 

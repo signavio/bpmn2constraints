@@ -135,6 +135,9 @@ DISCARDED_START_EVENT_NAMES = [
     "start",
     "Start",
     "START",
+    "AND",
+    "XOR",
+    "OR"
 ]
 
 VALID_START_NAME_LENGTH = 5

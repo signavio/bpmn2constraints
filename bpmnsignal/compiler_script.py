@@ -118,10 +118,10 @@ def calculate_recall(petri_net_constraints, compiler_constraints):
 
 def run_script():
     plot = Plot()
-    # path_to_dataframe = "../../Downloads/dataframes/opalmodel_id_to_constraints.pkl"
-    # path_to_dataset = "../../Downloads/opal/OPALdataset.csv"
-    path_to_dataset = "../../Downloads/update_sapsam/sap_sam_filtered.csv"
-    path_to_dataframe = "../../Downloads/dataframes/sap_sam_filteredmodel_id_to_constraints.pkl"
+    path_to_dataframe = "../../Downloads/dataframes/opalmodel_id_to_constraints.pkl"
+    path_to_dataset = "../../Downloads/opal/OPALdataset.csv"
+    # path_to_dataset = "../../Downloads/update_sapsam/sap_sam_filtered.csv"
+    # path_to_dataframe = "../../Downloads/dataframes/sap_sam_filteredmodel_id_to_constraints.pkl"
     
     petri_net_models = parse_dataframe(path_to_dataframe)
     compiler_models = parse_dataset(path_to_dataset, True)
@@ -132,7 +132,8 @@ def run_script():
     precision = []
 
     for model in models:
-        print(json.dumps(model, indent=2))
+        if model.get("recall") < 0.2 or model.get("precision") < 0.2:
+            print(json.dumps(model, indent=2))
         recall.append(model.get("recall"))
         precision.append(model.get("precision"))
     

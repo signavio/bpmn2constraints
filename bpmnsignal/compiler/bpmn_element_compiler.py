@@ -12,6 +12,7 @@ Module for compiling BPMN diagrams to atomic constraints.
 from itertools import combinations
 from bpmnsignal.templates.declare_templates import *
 from bpmnsignal.templates.matching_templates import *
+from bpmnsignal.compiler.ltl.declare2ltl import *
 from bpmnsignal.utils.sanitizer import Sanitizer
 
 SANITIZE = True
@@ -68,6 +69,7 @@ def create_starts_with_constraint(token):
         "description": f"Starts with {token_name}",
         "SIGNAL": s_init(token_name),
         "DECLARE": d_init(token_name),
+        "LTLf": to_ltl_str(d_init(token_name)),
     }
 
 
@@ -82,6 +84,7 @@ def create_ends_with_constraint(token):
         "description": f"Ends with {token_name}",
         "SIGNAL": s_end(token_name),
         "DECLARE": d_end(token_name),
+        "LTLf": to_ltl_str(d_end(token_name)),
     }
 
 
@@ -106,6 +109,9 @@ def create_succession(token, concurrent):
                 s_alternate_succession(token_name, successor_name),
                 "DECLARE":
                 d_alternate_succession(token_name, successor_name),
+                "LTLf":
+                to_ltl_str(d_alternate_succession(token_name,
+                                                    successor_name)),
             })
         else:
             compiled_tokens.append({
@@ -115,6 +121,8 @@ def create_succession(token, concurrent):
                 s_succession(token_name, successor_name),
                 "DECLARE":
                 d_succession(token_name, successor_name),
+                "LTLf":
+                to_ltl_str(d_succession(token_name, successor_name)),
             })
 
     if 'transitivity' in token:
@@ -128,6 +136,9 @@ def create_succession(token, concurrent):
                     s_alternate_succession(token_name, successor_name),
                     "DECLARE":
                     d_alternate_succession(token_name, successor_name),
+                    "LTLf":
+                    to_ltl_str(d_alternate_succession(token_name,
+                                                        successor_name)),
                 })
             else:
                 compiled_tokens.append({
@@ -137,6 +148,8 @@ def create_succession(token, concurrent):
                     s_succession(token_name, successor_name),
                     "DECLARE":
                     d_succession(token_name, successor_name),
+                    "LTLf":
+                    to_ltl_str(d_succession(token_name, successor_name)),
                 })
 
     return compiled_tokens
@@ -162,6 +175,9 @@ def create_precedence(token, concurrent):
                 s_alternate_precedence(token_name, successor_name),
                 "DECLARE":
                 d_alternate_precedence(token_name, successor_name),
+                "LTLf":
+                to_ltl_str(d_alternate_precedence(token_name,
+                                                    successor_name)),
             })
         else:
             compiled_tokens.append({
@@ -171,6 +187,8 @@ def create_precedence(token, concurrent):
                 s_precedence(token_name, successor_name),
                 "DECLARE":
                 d_precedence(token_name, successor_name),
+                "LTLf":
+                to_ltl_str(d_precedence(token_name, successor_name)),
             })
 
     return compiled_tokens
@@ -196,6 +214,10 @@ def create_response(token, concurrent):
                 s_alternate_response(predecessor_name, token_name),
                 "DECLARE":
                 d_alternate_response(predecessor_name, token_name),
+                "LTLf":
+                to_ltl_str(d_alternate_response(predecessor_name,
+                                                    token_name)),
+
             })
         else:
             compiled_tokens.append({
@@ -205,6 +227,8 @@ def create_response(token, concurrent):
                 s_response(predecessor_name, token_name),
                 "DECLARE":
                 d_response(predecessor_name, token_name),
+                "LTLf":
+                to_ltl_str(d_response(predecessor_name, token_name)),
             })
 
     return compiled_tokens
@@ -238,6 +262,8 @@ def create_exclusive_gateway(token):
             s_exclusive_choice(gateway[0], gateway[1]),
             "DECLARE":
             d_exclusive_choice(gateway[0], gateway[1]),
+            "LTLf":
+            to_ltl_str(d_exclusive_choice(gateway[0], gateway[1])),
         })
 
     return compiled_tokens
@@ -259,6 +285,8 @@ def create_parallel_gateway(token):
             s_co_existence(gateway[0], gateway[1]),
             "DECLARE":
             d_co_existence(gateway[0], gateway[1]),
+            "LTLf":
+            to_ltl_str(d_co_existence(gateway[0], gateway[1])),
         })
 
     return compiled_tokens
@@ -278,6 +306,7 @@ def create_inclusive_gateway(token):
             "description": f"{gateway[0]} OR {gateway[1]}",
             "SIGNAL": s_choice(gateway[0], gateway[1]),
             "DECLARE": d_choice(gateway[0], gateway[1]),
+            "LTLf": to_ltl_str(d_choice(gateway[0], gateway[1])),
         })
 
     return compiled_tokens

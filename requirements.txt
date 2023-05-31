@@ -1,0 +1,5 @@
+pylogics
+pandas
+matplotlib
+pytest
+tqdm

@@ -1,9 +1,10 @@
+import json
+from tqdm import tqdm
 from bpmnsignal.utils.script_utils import Setup
 from bpmnsignal.parser.bpmn_parser import Parser
 from bpmnsignal.compiler.bpmn_compiler import Compiler
 from bpmnsignal.utils.plot import Plot
 from bpmnsignal.utils.constants import DISCARDED_CONSTRAINTS
-import json
 
 class CompilerScript():
     
@@ -14,6 +15,9 @@ class CompilerScript():
         self.plot = Plot()
         self.transitivity = True
     
+    def print_model(self, model):
+        print(json.dumps(model, indent=2))
+
     def run(self):
         petri_net_models = self.parse_dataframe()
         compiler_models = self.parse_dataset()
@@ -25,7 +29,8 @@ class CompilerScript():
 
         for model in models:
             if model.get("recall") < 0.2 or model.get("precision") < 0.2:
-                print(json.dumps(model, indent=2))
+                # self.print_model(model)
+                pass
             recall.append(model.get("recall"))
             precision.append(model.get("precision"))
         
@@ -39,7 +44,7 @@ class CompilerScript():
         df = self.setup.load_dataframe(self.dataframe_path)
         models = []
 
-        for _, row in df.iterrows():
+        for _, row in tqdm(df.iterrows(), "Parsing dataframe"):
             model = {
                 "model id" : row["model_id"],
                 "constraints" : [],
@@ -60,7 +65,7 @@ class CompilerScript():
     def parse_dataset(self):
         compiled_models = []
 
-        for chunk in self.setup.read_csv_chunk(self.dataset_path):
+        for chunk in tqdm(self.setup.read_csv_chunk(self.dataset_path), desc="Parsing dataset"):
             models = self.setup.load_models(chunk)
             model_id = chunk["Model ID"]
 
@@ -108,7 +113,8 @@ class CompilerScript():
     def combine_models(self, petri_net_models, compiler_models):
         combined_models = []
         
-        for petri_net_model in petri_net_models:
+        for petri_net_model in tqdm(petri_net_models, desc="Combining models"):
+
             model_id = petri_net_model.get("model id")
             petri_net_constraints = petri_net_model.get("constraints")
             found_matching_model = False

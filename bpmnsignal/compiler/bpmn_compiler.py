@@ -5,6 +5,8 @@ from bpmnsignal.templates.matching_templates import Signal
 from bpmnsignal.compiler.ltl.declare2ltl import Declare2ltl
 from bpmnsignal.utils.constants import *
 
+# TODO: Check the order of constraints..
+
 class Compiler():
 
     def __init__(self, sequence, transitivity) -> None:
@@ -31,7 +33,7 @@ class Compiler():
         if self._is_activity(cfo):
             self._create_succession_constraint(cfo)
 
-        if self._is_gateway(cfo):
+        elif self._is_gateway(cfo):
             if cfo.get("splitting"):
                 self._create_gateway_constraints(cfo)
                 self._create_precedence_constraint(cfo)
@@ -41,15 +43,15 @@ class Compiler():
                 self._create_response_constraint(cfo)
         
     def _create_gateway_constraints(self, cfo):
-
-        if cfo.get("name") == "XOR":
+        gateway_type = cfo.get("type")
+        if gateway_type == "Exclusive_Databased_Gateway":
             self._create_exclusive_choice_constraint(cfo)
 
-        if cfo.get("name") == "AND":
+        if gateway_type == "ParallelGateway":
             self._create_parallel_gateway_constraint(cfo)
             self.concurrent = True
 
-        if cfo.get("name") == "OR":
+        if gateway_type == "InclusiveGateway":
             self._create_inclusive_choice_constraint(cfo)
 
     def _create_succession_constraint(self, cfo):
@@ -60,40 +62,65 @@ class Compiler():
                 if successor.get("gateway successors"):
                     successors.extend(successor.get("gateway successors"))
         if self.transitivity:
-            successors.extend(cfo.get("transitivity"))
+            try:
+                transitivity = cfo.get("transitivity")
+                transitivity = [x for x in transitivity if not self._is_gateway(x)]
+                successors.extend(transitivity)
+            except Exception:
+                pass
 
         for successor in successors:
-            if successor.get("type") in ALLOWED_GATEWAYS:
-                continue
             if successor.get("type") in ALLOWED_END_EVENTS:
                 continue
             successor_name = self._get_cfo_name(successor)
 
-            self.compiled_sequence.append(
-                self._create_constraint_object(
-                    description = f"{name} leads to {successor_name}",
-                    signal = self.signal.succession(name, successor_name),
-                    declare = self.declare.succession(name, successor_name),
-                    ltlf = self.ltlf.to_ltl_str(self.declare.succession(name, successor_name)),
-                )
-            )
+            if successor_name in ALLOWED_GATEWAYS:
+                continue
 
-            self.compiled_sequence.append(
-                self._create_constraint_object(
-                    description= f"{name} and {successor_name}",
-                    signal= self.signal.co_existence(name, successor_name),
-                    declare= self.declare.co_existence(name, successor_name),
-                    ltlf= self.ltlf.to_ltl_str(self.declare.co_existence(name, successor_name)),
-                )
-            )
-
-            if self.concurrent:
+            if not successor.get("gateway successor"):
                 self.compiled_sequence.append(
                     self._create_constraint_object(
-                        description= f"{name} leads to {successor_name}",
-                        signal = self.signal.alternate_succession(name, successor_name),
-                        declare = self.declare.alternate_succession(name, successor_name),
-                        ltlf = self.ltlf.to_ltl_str(self.declare.alternate_succession(name, successor_name)),
+                        description = f"{name} leads to {successor_name}",
+                        signal = self.signal.succession(name, successor_name),
+                        declare = self.declare.succession(name, successor_name),
+                        ltlf = self.ltlf.to_ltl_str(self.declare.succession(name, successor_name)),
+                    )
+                )
+
+                self.compiled_sequence.append(
+                    self._create_constraint_object(
+                        description= f"{name} and {successor_name}",
+                        signal= self.signal.co_existence(name, successor_name),
+                        declare= self.declare.co_existence(name, successor_name),
+                        ltlf= self.ltlf.to_ltl_str(self.declare.co_existence(name, successor_name)),
+                    )
+                )
+
+                if self.concurrent:
+                    self.compiled_sequence.append(
+                        self._create_constraint_object(
+                            description = f"{name} leads to {successor_name}",
+                            signal = self.signal.alternate_succession(name, successor_name),
+                            declare = self.declare.alternate_succession(name, successor_name),
+                            ltlf = self.ltlf.to_ltl_str(self.declare.alternate_succession(name, successor_name)),
+                        )
+                    )
+            else:
+                self.compiled_sequence.append(
+                    self._create_constraint_object(
+                        description = f"{name} responds to {successor_name}",
+                        signal = self.signal.alternate_response(name, successor_name),
+                        declare = self.declare.alternate_response(name, successor_name),
+                        ltlf= self.ltlf.to_ltl_str(self.declare.alternate_response(name, successor_name))
+                    )
+                )
+
+                self.compiled_sequence.append(
+                    self._create_constraint_object(
+                        description = f"{successor_name} precedes {name}",
+                        signal = self.signal.alternate_precedence(successor_name, name),
+                        declare = self.declare.alternate_precedence(successor_name, name),
+                        ltlf= self.ltlf.to_ltl_str(self.declare.alternate_response(successor_name, name))
                     )
                 )
             
@@ -105,17 +132,25 @@ class Compiler():
             if successor.get("type") in ALLOWED_GATEWAYS:
                 successors.extend(successor.get("gateway successors"))
 
-        if self.transitivity:
-            successors.extend(cfo.get("transitivity"))
+        # if self.transitivity:
+        #     successors.extend(cfo.get("transitivity"))
 
         for successor in successors:
             successor_name = self._get_cfo_name(successor)
             if successor.get("type") in ALLOWED_GATEWAYS:
                 continue
+
+            if not self._is_valid_name(successor_name):
+                continue
+
             for predecessor in predecessors:
                 predecessor_name = self._get_cfo_name(predecessor)
                 if predecessor.get("type") in ALLOWED_GATEWAYS:
                     continue
+
+                if not self._is_valid_name(predecessor_name):
+                    continue
+
                 self.compiled_sequence.append(
                     self._create_constraint_object(
                         description = f"{predecessor_name} precedes {successor_name}",
@@ -135,6 +170,15 @@ class Compiler():
                         )
                     )
 
+    def _is_valid_name(self, name):
+        if name in ALLOWED_START_EVENTS:
+            return False
+        if name in ALLOWED_END_EVENTS:
+            return False
+        if name in ALLOWED_GATEWAYS:
+            return False
+        return True
+
     def _create_response_constraint(self, cfo):
         successors = cfo.get("successor")
         predecessors = cfo.get("predecessor")
@@ -143,13 +187,25 @@ class Compiler():
             if successor.get("type") in ALLOWED_GATEWAYS:
                 successors.extend(successor.get("gateway successors"))
 
-        if self.transitivity:
-            successors.extend(cfo.get("transitivity"))
+        # if self.transitivity:
+        #     successors.extend(cfo.get("transitivity"))
 
         for predecessor in predecessors:
             predecessor_name = self._get_cfo_name(predecessor)
+            if not self._is_valid_name(predecessor_name):
+                continue
+
+            if predecessor.get("type") in ALLOWED_GATEWAYS:
+                    continue
+
             for successor in successors:
                 successor_name = self._get_cfo_name(successor)
+                if not self._is_valid_name(successor_name):
+                    continue
+
+                if successor.get("type") in ALLOWED_GATEWAYS:
+                    continue
+
                 self._create_constraint_object(
                     description = f"{predecessor_name} responds to {successor_name}",
                     signal = self.signal.response(predecessor_name, successor_name),
@@ -167,6 +223,7 @@ class Compiler():
 
     def _create_init_constraint(self, cfo):
         name = self._get_cfo_name(cfo)
+
         self.compiled_sequence.append(
             self._create_constraint_object(
                 description = f"starts with {name}",
@@ -178,6 +235,10 @@ class Compiler():
 
     def _create_end_constraint(self, cfo):
         name = self._get_cfo_name(cfo)
+
+        if not self._is_valid_name(name):
+            return
+        
         self.compiled_sequence.append(
             self._create_constraint_object(
                 description = f"ends with {name}",
@@ -186,7 +247,7 @@ class Compiler():
                 ltlf = self.ltlf.to_ltl_str(self.declare.end(name)),
             )
         )
-        
+
     def _create_exclusive_choice_constraint(self, cfo):
         successors = cfo.get("successor")
         for successor in successors:
@@ -194,8 +255,10 @@ class Compiler():
                 successors.extend(successor.get("gateway successors"))
 
         if successors:
-            successors = [self._get_cfo_name(successor) for successor in successors if successor.get("type") not in ALLOWED_GATEWAYS]
+            successors = [self._get_cfo_name(successor) for successor in successors]
             for split in combinations(successors, 2):
+                if not self._is_valid_name(split[0]) and not self._is_valid_name(split[1]):
+                    continue
                 self.compiled_sequence.append(
                     self._create_constraint_object(
                         description = f"{split[0]} xor {split[1]}",
@@ -211,8 +274,10 @@ class Compiler():
             if successor.get("type") in ALLOWED_GATEWAYS:
                 successors.extend(successor.get("gateway successors"))
         if successors:
-            successors = [self._get_cfo_name(successor) for successor in successors if successor.get("type") not in ALLOWED_GATEWAYS]
+            successors = [self._get_cfo_name(successor) for successor in successors]
             for split in combinations(successors, 2):
+                if not self._is_valid_name(split[0]) and not self._is_valid_name(split[1]):
+                    continue
                 self.compiled_sequence.append(
                     self._create_constraint_object(
                         description = f"{split[0]} and {split[1]}",
@@ -228,8 +293,10 @@ class Compiler():
             if successor.get("type") in ALLOWED_GATEWAYS:
                 successors.extend(successor.get("gateway successors"))
         if successors:
-            successors = [self._get_cfo_name(successor) for successor in successors if successor.get("type") not in ALLOWED_GATEWAYS]
+            successors = [self._get_cfo_name(successor) for successor in successors]
             for split in combinations(successors, 2):
+                if not self._is_valid_name(split[0]) and not self._is_valid_name(split[1]):
+                    continue
                 self.compiled_sequence.append(
                     self._create_constraint_object(
                         description = f"{split[0]} or {split[1]}",

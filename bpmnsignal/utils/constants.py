@@ -140,7 +140,16 @@ DISCARDED_START_EVENT_NAMES = [
     "OR"
 ]
 
-VALID_START_NAME_LENGTH = 5
+DISCARDED_END_EVENT_NAMES = [
+    "end",
+    "End",
+    "END",
+    "AND",
+    "XOR",
+    "OR",
+]
+
+VALID_NAME_LENGTH = 5
 
 CHILD_SHAPES = "childShapes"
 OUTGOING = "outgoing"

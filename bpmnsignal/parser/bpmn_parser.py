@@ -2,12 +2,8 @@
 Parser.
 I'll document it.. Later..
 """
-# pylint: disable=missing-class-docstring
-# pylint: disable=missing-function-docstring
-# pylint: disable=wildcard-import
-# pylint: disable=inconsistent-return-statements
 
-from json import load, JSONDecodeError
+from json import load, JSONDecodeError, dumps
 from bpmnsignal.utils.constants import *
 from bpmnsignal.utils.sanitizer import Sanitizer
 
@@ -62,6 +58,11 @@ class Parser():
     def _find_transitive_closure(self, cfo, transitivity):
         if cfo:
             for successor in cfo.get("successor"):
+                try:
+                    if successor.get("type") in ALLOWED_GATEWAYS:
+                        continue
+                except Exception:
+                    pass
                 if successor and successor.get("name") not in EXCLUDED_TRANSITIVE_NAMES:
                     transitivity.append(successor)
                 successor_cfo = self._get_cfo_by_id(successor.get("id"))
@@ -115,7 +116,7 @@ class Parser():
                         elem = self._get_element_by_id(elem_id)
                         gateway_successors = self._get_successors(elem)
                         successor.update({
-                            "gateway successors": self._format_list(gateway_successors)
+                            "gateway successors": self._format_list(gateway_successors, True)
                         })
 
             return cfo
@@ -129,21 +130,39 @@ class Parser():
             return True
         if self._is_element_start_event(elem) and self._valid_start_name(elem):
             return True
+        if self._is_element_end_event(elem) and self._valid_end_name(elem):
+            return True
         
         return False
         
     
     def _valid_start_name(self, elem):
-        if PROPERTIES in elem and NAME in PROPERTIES:
+        try:
             start_name = self._get_name(elem)
             if start_name in DISCARDED_START_EVENT_NAMES:
                 return False
             if len(start_name.strip()) == 0:
                 return False
-            if len(start_name) < VALID_START_NAME_LENGTH:
+            if len(start_name) < VALID_NAME_LENGTH:
                 return False
             if start_name.isspace():
                 return False
+        except KeyError:
+            return False
+            
+    def _valid_end_name(self, elem):
+        try:
+            end_name = self._get_name(elem)
+            if end_name in DISCARDED_END_EVENT_NAMES:
+                return False
+            if len(end_name.strip()) == 0:
+                return False
+            if len(end_name) < VALID_NAME_LENGTH:
+                return False
+            if end_name.isspace():
+                return False
+        except KeyError:
+            return False
 
     def _get_successors(self, elem):
         try:
@@ -180,7 +199,7 @@ class Parser():
 
         return predecessors
 
-    def _format_list(self, elems):
+    def _format_list(self, elems, gateway=False):
         formatted = []
         for elem in elems:
             if elem:
@@ -188,6 +207,7 @@ class Parser():
                     "name": self._get_label(elem),
                     "type": self._get_element_type(elem),
                     "id": self._get_id(elem),
+                    "gateway successor" : gateway
                 }
 
                 formatted.append(elem)
@@ -231,10 +251,19 @@ class Parser():
         try:
             if self._is_element_activity(elem):
                 return self.sanitizer.sanitize_label(self._get_name(elem))
+            
             if self._is_element_gateway(elem):
-                return self._get_gateway_type(elem)
+                try:
+                    return self.sanitizer.sanitize_label(self._get_name(elem))
+                except KeyError:
+                    return self._get_gateway_type(elem)
+
+            if self._is_element_start_event(elem) or self._is_element_end_event(elem):
+                try:
+                    return self.sanitizer.sanitize_label(self._get_name(elem))
+                except KeyError:
+                    return self._get_gateway_type(elem)
         except KeyError:
-            # If not label or gateway type can be used, use type as label.
             return self._get_element_type(elem)
 
     def _is_element_start_event(self, elem):
@@ -254,6 +283,8 @@ class Parser():
             if predecessor:
                 predecessor_type = self._get_element_type(predecessor)
                 if predecessor_type in ALLOWED_START_EVENTS and predecessor_type not in DISCARDED_START_EVENT_NAMES:
+                    if self._valid_start_name(predecessor):
+                        return False
                     return True
         return False
 
@@ -261,6 +292,8 @@ class Parser():
         for successor in successors:
             if successor:
                 if self._get_element_type(successor) in ALLOWED_END_EVENTS:
+                    if self._valid_end_name(successor):
+                        return False
                     return True
         return False
 

@@ -14,6 +14,7 @@ class CompilerScript():
         self.setup = Setup(None)
         self.plot = Plot()
         self.transitivity = True
+        # ffbf5ab11273422a92bd09b6b6dd6e2d
     
     def _print_model(self, model):
         print(json.dumps(model, indent=2))
@@ -28,9 +29,8 @@ class CompilerScript():
         precision = []
 
         for model in models:
-            if model.get("recall") < 0.2 or model.get("precision") < 0.2:
-                # self.print_model(model)
-                pass
+            if model.get("model id") == "1bd1ef6b99d6492c9d533f9120462f18":
+                self._print_model(model)
             recall.append(model.get("recall"))
             precision.append(model.get("precision"))
         
@@ -39,11 +39,12 @@ class CompilerScript():
 
         print(mean_precision)
         print(mean_recall)
+        print(len(models))
 
-        self.plot.scatter_plot_recall_precision_combined(models)
-        self.plot.scatter_plot_precision_element_types(models)
-        self.plot.scatter_plot_recall_element_types(models)
-        self.plot.bar_plot_total_generated_constraints(models)
+        # self.plot.scatter_plot_recall_precision_combined(models)
+        # self.plot.scatter_plot_precision_element_types(models)
+        # self.plot.scatter_plot_recall_element_types(models)
+        # self.plot.bar_plot_total_generated_constraints(models)
 
     def _parse_dataframe(self):
         df = self.setup.load_dataframe(self.dataframe_path)
@@ -114,6 +115,26 @@ class CompilerScript():
                 except Exception:
                     continue
         return compiled_models
+    
+    def _remove_init_constraints(self, model):
+        petri_net_constraints = model.get("petri net constraints")
+        compiler_constraints = model.get("compiler constraints")
+
+        petri_net_constraints = [x for x in petri_net_constraints if not x.startswith('Init')]
+        compiler_constraints = [x for x in compiler_constraints if not x.startswith('Init')]
+
+        model["petri net constraints"] = petri_net_constraints
+        model["compiler constraints"] = compiler_constraints
+
+    def _remove_end_constraints(self, model):
+        petri_net_constraints = model.get("petri net constraints")
+        compiler_constraints = model.get("compiler constraints")
+
+        petri_net_constraints = [x for x in petri_net_constraints if not x.startswith('End')]
+        compiler_constraints = [x for x in compiler_constraints if not x.startswith('End')]
+
+        model["petri net constraints"] = petri_net_constraints
+        model["compiler constraints"] = compiler_constraints
 
     def _combine_models(self, petri_net_models, compiler_models):
         combined_models = []
@@ -145,6 +166,8 @@ class CompilerScript():
                     "precision" : self._calculate_precision(petri_net_constraints, compiler_constraints),
                     "recall" : self._calculate_recall(petri_net_constraints, compiler_constraints)
                 })
+                # self._remove_end_constraints(combined_models[-1])
+                # self._remove_init_constraints(combined_models[-1])
 
         return combined_models
 

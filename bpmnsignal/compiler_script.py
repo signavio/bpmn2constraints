@@ -16,21 +16,21 @@ class CompilerScript():
         self.transitivity = True
         # ffbf5ab11273422a92bd09b6b6dd6e2d
     
-    def _print_model(self, model):
+    def __print_model(self, model):
         print(json.dumps(model, indent=2))
 
     def run(self):
-        petri_net_models = self._parse_dataframe()
-        compiler_models = self._parse_dataset()
+        petri_net_models = self.__parse_dataframe()
+        compiler_models = self.__parse_dataset()
 
-        models = self._combine_models(petri_net_models, compiler_models)
+        models = self.__combine_models(petri_net_models, compiler_models)
 
         recall = []
         precision = []
 
         for model in models:
             if model.get("model id") == "1bd1ef6b99d6492c9d533f9120462f18":
-                self._print_model(model)
+                self.__print_model(model)
             recall.append(model.get("recall"))
             precision.append(model.get("precision"))
         
@@ -46,7 +46,7 @@ class CompilerScript():
         # self.plot.scatter_plot_recall_element_types(models)
         # self.plot.bar_plot_total_generated_constraints(models)
 
-    def _parse_dataframe(self):
+    def __parse_dataframe(self):
         df = self.setup.load_dataframe(self.dataframe_path)
         models = []
 
@@ -68,7 +68,7 @@ class CompilerScript():
             models.append(model)
         return models
 
-    def _parse_dataset(self):
+    def __parse_dataset(self):
         compiled_models = []
 
         for chunk in tqdm(self.setup.read_csv_chunk(self.dataset_path), desc="Parsing dataset"):
@@ -116,7 +116,7 @@ class CompilerScript():
                     continue
         return compiled_models
     
-    def _remove_init_constraints(self, model):
+    def __remove_init_constraints(self, model):
         petri_net_constraints = model.get("petri net constraints")
         compiler_constraints = model.get("compiler constraints")
 
@@ -126,7 +126,7 @@ class CompilerScript():
         model["petri net constraints"] = petri_net_constraints
         model["compiler constraints"] = compiler_constraints
 
-    def _remove_end_constraints(self, model):
+    def __remove_end_constraints(self, model):
         petri_net_constraints = model.get("petri net constraints")
         compiler_constraints = model.get("compiler constraints")
 
@@ -136,7 +136,7 @@ class CompilerScript():
         model["petri net constraints"] = petri_net_constraints
         model["compiler constraints"] = compiler_constraints
 
-    def _combine_models(self, petri_net_models, compiler_models):
+    def __combine_models(self, petri_net_models, compiler_models):
         combined_models = []
         
         for petri_net_model in tqdm(petri_net_models, desc="Combining models"):
@@ -163,18 +163,18 @@ class CompilerScript():
                     "number of elements" : number_of_elements,
                     "number of element types" : number_of_element_types,
                     "element types" : element_types,
-                    "precision" : self._calculate_precision(petri_net_constraints, compiler_constraints),
-                    "recall" : self._calculate_recall(petri_net_constraints, compiler_constraints)
+                    "precision" : self.__calculate_precision(petri_net_constraints, compiler_constraints),
+                    "recall" : self.__calculate_recall(petri_net_constraints, compiler_constraints)
                 })
                 # self._remove_end_constraints(combined_models[-1])
                 # self._remove_init_constraints(combined_models[-1])
 
         return combined_models
 
-    def _calculate_precision(self, petri_net_constraints, compiler_constraints):
+    def __calculate_precision(self, petri_net_constraints, compiler_constraints):
         return len(set(petri_net_constraints).intersection(set(compiler_constraints))) / len(set(compiler_constraints))
 
-    def _calculate_recall(self, petri_net_constraints, compiler_constraints):
+    def __calculate_recall(self, petri_net_constraints, compiler_constraints):
         return len(set(compiler_constraints).intersection(set(petri_net_constraints))) / len(set(petri_net_constraints))
 
         # path_to_dataframe = "../../Downloads/dataframes/opalmodel_id_to_constraints.pkl"

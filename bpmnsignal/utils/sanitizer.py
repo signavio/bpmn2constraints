@@ -35,13 +35,13 @@ class Sanitizer():
         # Adrian has the len(part) > 0 part of this code as > 1, changed it to 0 for testing purposes.
         label = " ".join([part for part in label.split() if len(part) > 1])
 
-        label = self.camel_to_white(label)
+        label = self.__camel_to_white(label)
 
         label = label.lower()
 
         label = re.sub("\s{1,}", " ", label)
         return label
 
-    def camel_to_white(self, label):
+    def __camel_to_white(self, label):
         label = CAMEL_PATTERN_1.sub(r'\1 \2', label)
         return CAMEL_PATTERN_2.sub(r'\1 \2', label)

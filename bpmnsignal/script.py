@@ -24,6 +24,8 @@ def run():
     parser.add_argument("--dataset", type=str, help="Path to dataset to compile")
     parser.add_argument("--dataframe", type=str, help="Path to dataframe of compiled constraints")
     parser.add_argument("--parse_dataset", type=str, help="Path to dataset folder")
+    parser.add_argument("--plot", type=bool, help="True if you want plots")
+
 
     args = parser.parse_args()
 
@@ -46,6 +48,7 @@ def run():
         dataframe_path = None
         dataset_path = None
         setup = Setup(None)
+        plot = args.plot
 
         if args.dataframe:
             dataframe_path = Path(args.dataframe)
@@ -56,18 +59,19 @@ def run():
             return
 
         if setup.is_file(dataframe_path) and setup.is_file(dataset_path):
-            script = CompilerScript(dataset_path, dataframe_path)
+            script = CompilerScript(dataset_path, dataframe_path, plot)
             script.run()
     
     elif args.parse_dataset:
         dataset_path = Path(args.parse_dataset)
         setup = Setup(None)
+        plot = args.plot
 
         if dataset_path is None:
             return
         
         if setup.is_directory(dataset_path):
-            script = ParserScript(dataset_path)
+            script = ParserScript(dataset_path, plot)
             script.run()
     else:
         parser.print_help()

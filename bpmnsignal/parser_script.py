@@ -9,7 +9,7 @@ FAIL = "failed"
 SUCCESS = "successful"
 
 class ParserScript():
-    def __init__(self, path) -> None:
+    def __init__(self, path, create_plot) -> None:
         self.path = path
         self.setup = Setup(path)
         self.plot = Plot()
@@ -19,6 +19,7 @@ class ParserScript():
         self.total_elements = 0
         self.total_parsed_elements = 0
         self.parsed_models = []
+        self.create_plot = create_plot
 
     def __create_scatter_object(self, model_outcome, element_count, type_count):
         return {
@@ -74,8 +75,9 @@ class ParserScript():
                             self.parsed_models.append(self.__create_scatter_object(
                                 FAIL, model_elements, model_element_types))
 
-        self.plot.scatter_plot_model_outcomes(self.parsed_models, "All Parsed Models")
-        self.plot.bar_plot_model_outcomes(self.parsed_models)
+        if self.create_plot:
+            self.plot.scatter_plot_model_outcomes(self.parsed_models, "All Parsed Models")
+            self.plot.bar_plot_model_outcomes(self.parsed_models)
 
         print(f"Successful: {self.successful_models} out of {self.total_models}")
         print(f"Failed: {self.failed_models} out of {self.total_models}")

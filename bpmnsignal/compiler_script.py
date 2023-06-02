@@ -8,13 +8,13 @@ from bpmnsignal.utils.constants import DISCARDED_CONSTRAINTS
 
 class CompilerScript():
     
-    def __init__(self, dataset_path, dataframe_path) -> None:
+    def __init__(self, dataset_path, dataframe_path, create_plots) -> None:
         self.dataset_path = dataset_path
         self.dataframe_path = dataframe_path
         self.setup = Setup(None)
         self.plot = Plot()
         self.transitivity = True
-        # ffbf5ab11273422a92bd09b6b6dd6e2d
+        self.create_plot = create_plots
     
     def __print_model(self, model):
         print(json.dumps(model, indent=2))
@@ -37,14 +37,17 @@ class CompilerScript():
         mean_recall = sum(recall) / len(recall)
         mean_precision = sum(precision) / len(precision)
 
-        print(mean_precision)
-        print(mean_recall)
-        print(len(models))
+        f1_score = 2 * ((mean_precision * mean_recall) / (mean_recall + mean_precision))
 
-        # self.plot.scatter_plot_recall_precision_combined(models)
-        # self.plot.scatter_plot_precision_element_types(models)
-        # self.plot.scatter_plot_recall_element_types(models)
-        # self.plot.bar_plot_total_generated_constraints(models)
+        print(f"Mean Precision: {mean_precision}")
+        print(f"Mean Recall: {mean_recall}")
+        print(f"F1 Score: {f1_score}")
+
+        if self.create_plot:
+            self.plot.scatter_plot_recall_precision_combined(models)
+            self.plot.scatter_plot_precision_element_types(models)
+            self.plot.scatter_plot_recall_element_types(models)
+            self.plot.bar_plot_total_generated_constraints(models)
 
     def __parse_dataframe(self):
         df = self.setup.load_dataframe(self.dataframe_path)
@@ -176,9 +179,3 @@ class CompilerScript():
 
     def __calculate_recall(self, petri_net_constraints, compiler_constraints):
         return len(set(compiler_constraints).intersection(set(petri_net_constraints))) / len(set(petri_net_constraints))
-
-        # path_to_dataframe = "../../Downloads/dataframes/opalmodel_id_to_constraints.pkl"
-        # path_to_dataset = "../../Downloads/opal/OPALdataset.csv"
-        # # path_to_dataset = "../../Downloads/update_sapsam/sap_sam_filtered.csv"
-        # # path_to_dataframe = "../../Downloads/dataframes/sap_sam_filteredmodel_id_to_constraints.pkl"
-        

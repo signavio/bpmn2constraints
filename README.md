@@ -3,18 +3,43 @@
 ![CI status](https://github.com/signavio/bpmn-to-signal/actions/workflows/pylint.yml/badge.svg)
 ![CI status](https://github.com/signavio/bpmn-to-signal/actions/workflows/main.yml/badge.svg)
 
+A work-in-progress prototype tool for compiling BPMN diagrams directly to declarative constraints.
+Currently, the tool only works with SAP Signavio files of BPMN process diagrams.
 
-Work-in-progress prototype for compiling BPMN control flow to SIGNAL constraints.
-Works with SAP Signavio JSON files of BPMN process diagrams.
+Install with:
+```terminal
+pip install .
+```
+ or:
+ ```terminal
+pip install -e .
+```
+When developing.
 
-Install with `pip install .` or `pip install -e .` when developing.
+## Using the tool.
+The CLI tool offers several options. Here is some of the options available.
 
-Run as command line tool: `bpmnsignal <path_to_file>`, e.g.
-`bpmnsignal ./examples/Invoice_processing_SAP_Signavio.json`
-for the example provided.
+1. Parsing a BPMN process diagram.
+```terminal
+bpmnsignal --parse path/to/process/diagram
+```
+2. Compiling a BPMN process diagram.
+```terminal
+bpmnsignal --compile path/to/process/diagram
+```
+3. Parsing a dataset.
+```terminal
+bpmnsignal --parse_dataset path/to/folder/which/contains/dataset
+```
+> Note: The script requires the path to be towards the folder in which the CSV files are stored, not to a CSV file directly.
+4. Comparing constraints.
+The tool can be used to compare it's generated constraints through the metrics of precision and recall.
+```terminal
+bpmnsignal --compare_constraints True --dataframe path/to/dataframe --dataset path/to/dataset
+```
+> Note: The dataframe must be a pickled dataframe, containing a "model_id" column aswell as a "constraints" column. The dataset should be a CSV file.
 
-Run tests with `pytest`.
-
-## Linting and Formatting
-
-This project uses PyLint for linting, and PEP 8 guidelines ([Read here](https://peps.python.org/pep-0008/)) for formatting.
+Optional flags:
+1.  `--transitivity` (set to True) for generating constraints with transitive closure.
+2. `--plot` (set to True) for generating plots.
+> Note: The `--plot` flag will only generate plots for ``--parse_dataset`` and `--compare_constraints`

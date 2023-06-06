@@ -1,10 +1,11 @@
 import json
+import re
 from tqdm import tqdm
 from bpmnsignal.utils.script_utils import Setup
 from bpmnsignal.parser.bpmn_parser import Parser
 from bpmnsignal.compiler.bpmn_compiler import Compiler
 from bpmnsignal.utils.plot import Plot
-from bpmnsignal.utils.constants import DISCARDED_CONSTRAINTS
+from bpmnsignal.utils.constants import DISCARDED_CONSTRAINTS, ALLOWED_GATEWAYS, DECLARE_CONSTRAINT_REGEX_PATTERN
 
 class CompilerScript():
     
@@ -139,6 +140,23 @@ class CompilerScript():
         model["petri net constraints"] = petri_net_constraints
         model["compiler constraints"] = compiler_constraints
 
+    def __rearrange_gateway_order(self, petri_net_constraints, compiler_constraints):
+        for compiler_constraint in compiler_constraints:
+            if compiler_constraint.startswith(tuple(ALLOWED_GATEWAYS)):
+                match = re.match(DECLARE_CONSTRAINT_REGEX_PATTERN, compiler_constraint)
+                if match:
+                    compiler_constraint_set = set([match.group(1), match.group(2), match.group(3)])
+                    for petri_net_constraint in petri_net_constraints:
+                        if petri_net_constraint.startswith(tuple(ALLOWED_GATEWAYS)):
+                            match = re.match(DECLARE_CONSTRAINT_REGEX_PATTERN, compiler_constraint)
+                            if match:
+                                petri_net_constraint_set = set([match.group(1), match.group(2), match.group(3)])
+                                if compiler_constraint_set == petri_net_constraint_set:
+                                    compiler_constraint = petri_net_constraint
+
+    def __gateway_constraints_exists(self, compiler_constraints):
+        return any(constraint.startswith(tuple(ALLOWED_GATEWAYS)) for constraint in compiler_constraints)
+
     def __combine_models(self, petri_net_models, compiler_models):
         combined_models = []
         
@@ -159,6 +177,10 @@ class CompilerScript():
                     break
             
             if found_matching_model and len(compiler_constraints) > 0 and len(petri_net_constraints) > 0:
+                
+                if self.__gateway_constraints_exists(compiler_constraints):
+                    self.__rearrange_gateway_order(petri_net_constraints, compiler_constraints)
+
                 combined_models.append({
                     "model id" : model_id,
                     "petri net constraints" : list(set(petri_net_constraints)),

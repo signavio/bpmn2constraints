@@ -158,3 +158,5 @@ STENCIL = "stencil"
 ID = "id"
 PROPERTIES = "properties"
 NAME = "name"
+
+DECLARE_CONSTRAINT_REGEX_PATTERN = r'(\w+)\[(\w+), (\w+)\]'

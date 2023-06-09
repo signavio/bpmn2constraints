@@ -45,28 +45,65 @@ class Parser():
     def run(self):
         self.__flatten_model()
         self.__parse()
+        self.__mark_gateway_elements()
         if self.transitivity:
             self.__add_transitivity()
 
         return self.sequence
+    
+    def __mark_gateway_elements(self):
+        for cfo in self.sequence:
+            predecessors = cfo.get("predecessor")
+            for predecessor in predecessors:
+                predecessor_id = predecessor.get("id")
+                predecessor_cfo = self.__get_cfo_by_id(predecessor_id)
+                if predecessor_cfo:
+                    if predecessor_cfo.get("type") in ALLOWED_GATEWAYS and predecessor_cfo.get("splitting"):
+                        cfo.update({"is in gateway" : True})
+
+                    if predecessor_cfo.get("type") in ALLOWED_GATEWAYS and predecessor_cfo.get("joining"):
+                        continue
+
+                    if cfo.get("type") in ALLOWED_GATEWAYS and cfo.get("joining"):
+                        continue
+
+                    if "is in gateway" in predecessor_cfo:
+                        cfo.update({"is in gateway" : True})
+            
 
     def __get_cfo_by_id(self, successor_id):
         for cfo in self.sequence:
             if successor_id == cfo.get("id"):
                 return cfo
+            
+    def __get_parsed_cfo_by_bpmn_element(self, elem):
+        elem_id = self.__get_id(elem)
+        for parsed_cfo in self.sequence:
+            if parsed_cfo.get("id") == elem_id:
+                return parsed_cfo
 
     def __find_transitive_closure(self, cfo, transitivity):
         if cfo:
             for successor in cfo.get("successor"):
-                try:
-                    if successor.get("type") in ALLOWED_GATEWAYS:
-                        continue
-                except Exception:
-                    pass
-                if successor and successor.get("name") not in EXCLUDED_TRANSITIVE_NAMES:
-                    transitivity.append(successor)
-                successor_cfo = self.__get_cfo_by_id(successor.get("id"))
-                self.__find_transitive_closure(successor_cfo, transitivity)
+                successor_id = successor.get("id")
+                successor = self.__get_cfo_by_id(successor_id)
+                if successor:
+                    if "is in gateway" not in successor:
+                        transitivity.append(successor)
+
+                    for successor in cfo.get("successor"):
+                        successor_cfo = self.__get_cfo_by_id(successor.get("id"))
+                        self.__find_transitive_closure(successor_cfo, transitivity)
+
+                # try:
+                #     if successor.get("type") in ALLOWED_GATEWAYS:
+                #         continue
+                # except Exception:
+                #     pass
+                # if successor and successor.get("type") not in ALLOWED_GATEWAYS:
+                #     transitivity.append(successor)
+                # successor_cfo = self.__get_cfo_by_id(successor.get("id"))
+                # self.__find_transitive_closure(successor_cfo, transitivity)
 
     def __add_transitivity(self):
         for cfo in self.sequence:
@@ -108,6 +145,12 @@ class Parser():
                     "splitting":
                     len(self.__get_outgoing_connection(elem)) >= 2,
                 })
+            
+            # DO THIS AFTER PARSING! 
+            # if cfo["predecessor"]:
+            #     for predecessor in cfo["predecessor"]:
+            #         if predecessor.get("type") in ALLOWED_GATEWAYS and predecessor["splitting"]:
+            #             cfo.update({"in gateway construct" : True})
 
             if cfo["successor"]:
                 for successor in cfo["successor"]:
@@ -203,14 +246,30 @@ class Parser():
         formatted = []
         for elem in elems:
             if elem:
-                elem = {
+                cfo = {
                     "name": self.__get_label(elem),
                     "type": self.__get_element_type(elem),
                     "id": self.__get_id(elem),
-                    "gateway successor" : gateway
+                    "gateway successor" : gateway,
+                    "splitting" : len(self.__get_successors(elem)) >= 2,
+
                 }
 
-                formatted.append(elem)
+                try:
+                    cfo.update({"splitting" : len(self.__get_successors(elem)) >= 2})
+                except Exception:
+                    pass
+
+                # DO THIS __AFTER__ PARSING!
+                # predecessor = self.__get_parsed_cfo_by_bpmn_element(elem)
+                # if predecessor:
+                #     try:
+                #         cfo.update({"in gateway construct" : predecessor["in gateway construct"]})
+                #     except Exception:
+                #         pass
+                
+
+                formatted.append(cfo)
         return formatted
 
     def __get_id(self, elem):
@@ -322,10 +381,7 @@ class Parser():
         return count
     
     def has_start(self):
-        for elem in self.sequence:
-            if elem.get("is start"):
-                return True
-        return False
+        return any(elem.get("is start") for elem in self.sequence)
     
     def get_element_types(self):
         elem_types = {}
@@ -339,3 +395,16 @@ class Parser():
                 elem_types[elem_type] = 1
 
         return elem_types
+    
+    def contains_multiple_starts(self):
+        count = 0
+        for elem in self.__get_diagram_elements():
+            if self.__is_element_start_event(elem):
+                count += 1
+        return count > 1
+    
+    def or_multiple_paths(self):
+        for elem in self.__get_diagram_elements():
+            if self.__get_element_type(elem) == "InclusiveGateway" and len(self.__get_outgoing_connection(elem)) >= 3:
+                return True
+        return False

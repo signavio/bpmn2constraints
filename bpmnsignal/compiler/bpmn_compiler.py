@@ -1,5 +1,7 @@
 
 from itertools import combinations
+from json import dumps
+import traceback
 from bpmnsignal.templates.declare_templates import Declare
 from bpmnsignal.templates.matching_templates import Signal
 from bpmnsignal.compiler.ltl.declare2ltl import Declare2ltl
@@ -23,6 +25,7 @@ class Compiler():
         for cfo in self.sequence:
             self.cfo = cfo
             self.__compile()
+            
         return self.compiled_sequence
 
     def __compile(self):
@@ -41,7 +44,8 @@ class Compiler():
 
 
             if self.__cfo_is_joining():
-                self.__create_response_constraint()
+                if not self.__cfo_is_end():
+                    self.__create_response_constraint()
         
     def _create_gateway_constraints(self):
         if self.__get_cfo_type() == "Exclusive_Databased_Gateway":
@@ -96,6 +100,19 @@ class Compiler():
                     )
                 )
 
+                try:
+                    if "is in gateway" not in self.cfo:
+                        self.compiled_sequence.append(
+                            self.__create_constraint_object(
+                                description= f"{name} or {successor_name}",
+                                signal = self.signal.choice(name, successor_name),
+                                declare = self.declare.choice(name, successor_name),
+                                ltlf = self.ltlf.to_ltl_str(self.declare.choice(name, successor_name))
+                            )
+                        )
+                except Exception:
+                    print("AJAJAJAJ") 
+
                 if self.concurrent:
                     self.compiled_sequence.append(
                         self.__create_constraint_object(
@@ -105,24 +122,6 @@ class Compiler():
                             ltlf = self.ltlf.to_ltl_str(self.declare.alternate_succession(name, successor_name)),
                         )
                     )
-            else:
-                self.compiled_sequence.append(
-                    self.__create_constraint_object(
-                        description = f"{name} responds to {successor_name}",
-                        signal = self.signal.alternate_response(name, successor_name),
-                        declare = self.declare.alternate_response(name, successor_name),
-                        ltlf= self.ltlf.to_ltl_str(self.declare.alternate_response(name, successor_name))
-                    )
-                )
-
-                self.compiled_sequence.append(
-                    self.__create_constraint_object(
-                        description = f"{successor_name} precedes {name}",
-                        signal = self.signal.alternate_precedence(successor_name, name),
-                        declare = self.declare.alternate_precedence(successor_name, name),
-                        ltlf= self.ltlf.to_ltl_str(self.declare.alternate_response(successor_name, name))
-                    )
-                )
             
     def __create_precedence_constraint(self):
         successors = self.__get_cfo_successors()
@@ -263,8 +262,12 @@ class Compiler():
                     )
 
     def __create_init_constraint(self):
-        name = self.__get_cfo_name()
 
+        if self.__is_gateway():
+            self.cfo.update({"discard" : True})
+
+    
+        name = self.__get_cfo_name()
         self.compiled_sequence.append(
             self.__create_constraint_object(
                 description = f"starts with {name}",
@@ -309,6 +312,29 @@ class Compiler():
                         ltlf = self.ltlf.to_ltl_str(self.declare.exclusive_choice(split[0], split[1])),
                     )
                 )
+                self.compiled_sequence.append(
+                    self.__create_constraint_object(
+                        description = f"{split[0]} or {split[1]}",
+                        signal = self.signal.choice(split[0], split[1]),
+                        declare = self.declare.choice(split[0], split[1]),
+                        ltlf = self.ltlf.to_ltl_str(self.declare.choice(split[0], split[1])),
+                    )
+                )
+                predecessors = self.__get_cfo_predecessors()
+                if predecessors:
+                    for predecessor in predecessors:
+                        predecessor_name = self.__get_cfo_name(predecessor)
+                        for successor in successors:
+                            if not self.__is_valid_name(predecessor_name) and not self.__is_valid_name(successor):
+                                continue
+                            self.compiled_sequence.append(
+                                self.__create_constraint_object(
+                                    description= f"{predecessor_name} or {successor}",
+                                    signal = self.signal.choice(predecessor_name, successor),
+                                    declare = self.declare.choice(predecessor_name, successor),
+                                    ltlf = self.ltlf.to_ltl_str(self.declare.choice(predecessor_name, successor))
+                                )
+                            )              
 
     def __create_parallel_gateway_constraint(self):
         successors = self.__get_cfo_successors()
@@ -351,6 +377,22 @@ class Compiler():
                         ltlf = self.ltlf.to_ltl_str(self.declare.choice(split[0], split[1])),
                     )
                 )
+
+            predecessors = self.__get_cfo_predecessors()
+            if predecessors:
+                for predecessor in predecessors:
+                    predecessor_name = self.__get_cfo_name(predecessor)
+                    for successor in successors:
+                        if not self.__is_valid_name(predecessor_name) and not self.__is_valid_name(successor):
+                            continue
+                        self.compiled_sequence.append(
+                            self.__create_constraint_object(
+                                description= f"{predecessor_name} or {successor}",
+                                signal = self.signal.choice(predecessor_name, successor),
+                                declare = self.declare.choice(predecessor_name, successor),
+                                ltlf = self.ltlf.to_ltl_str(self.declare.choice(predecessor_name, successor))
+                            )
+                        )              
 
     def __get_cfo_name(self, cfo=None):
         if cfo:

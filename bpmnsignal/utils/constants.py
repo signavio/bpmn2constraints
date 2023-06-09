@@ -128,7 +128,10 @@ EXCLUDED_TRANSITIVE_NAMES = [
 DISCARDED_CONSTRAINTS = [
     "Exactly1",
     "Responded Existence",
-    "Absence2"
+    "Absence2",
+    "Existence1",
+    "Existence2",
+    "Exactly2"
 ]
 
 DISCARDED_START_EVENT_NAMES = [
@@ -159,4 +162,10 @@ ID = "id"
 PROPERTIES = "properties"
 NAME = "name"
 
-DECLARE_CONSTRAINT_REGEX_PATTERN = r'(\w+)\[(\w+), (\w+)\]'
+DECLARE_CONSTRAINT_REGEX_PATTERN = r'(\w+(?:-\w+)?(?: \w+)?)(?: \w+)?\[(.*?)\]'
+
+DECLARE_GATEWAYS = [
+    "Co-Existence",
+    "Choice",
+    "Exclusive Choice"
+]

@@ -5,7 +5,7 @@ from bpmnsignal.utils.script_utils import Setup
 from bpmnsignal.parser.bpmn_parser import Parser
 from bpmnsignal.compiler.bpmn_compiler import Compiler
 from bpmnsignal.utils.plot import Plot
-from bpmnsignal.utils.constants import DISCARDED_CONSTRAINTS, ALLOWED_GATEWAYS, DECLARE_CONSTRAINT_REGEX_PATTERN
+from bpmnsignal.utils.constants import DISCARDED_CONSTRAINTS, DECLARE_GATEWAYS, DECLARE_CONSTRAINT_REGEX_PATTERN
 
 class CompilerScript():
     
@@ -30,7 +30,14 @@ class CompilerScript():
         precision = []
 
         for model in models:
-            if model.get("model id") == "1bd1ef6b99d6492c9d533f9120462f18":
+            # if model.get("model id") == "1bd1ef6b99d6492c9d533f9120462f18":
+            # if model.get("model id") == "1bdf641694b9488d95332c88d7da1eba":
+            if model.get("model id") == "1bdd80c0fa334858a7960b8ed0d427c3":
+            # if model.get("model id") == "1bde4722c0bf40dfab2f77088cadb4de":
+            # if model.get("model id") == "1c0fdaf892db48759871b78bf54bba6b":
+
+
+            # if model["recall"] < 0.2 or model["precision"] < 0.2:
                 self.__print_model(model)
             recall.append(model.get("recall"))
             precision.append(model.get("precision"))
@@ -97,16 +104,23 @@ class CompilerScript():
                         continue
                     if parser.count_model_elements() < 5:
                         continue
+                    if parser.contains_multiple_starts():
+                        continue
+                    if parser.or_multiple_paths():
+                        continue
 
                     num_model_elements = parser.count_model_elements()
                     num_model_element_types = parser.count_model_element_types()
                     element_types = parser.get_element_types()
 
+
                     compiled_model.update({
                         "number of elements" : num_model_elements,
                         "number of element types" : num_model_element_types,
-                        "element types" : element_types
+                        "element types" : element_types,
                     })
+
+
 
                     compiler = Compiler(result, self.transitivity)
                     result = compiler.run()
@@ -140,22 +154,25 @@ class CompilerScript():
         model["petri net constraints"] = petri_net_constraints
         model["compiler constraints"] = compiler_constraints
 
-    def __rearrange_gateway_order(self, petri_net_constraints, compiler_constraints):
-        for compiler_constraint in compiler_constraints:
-            if compiler_constraint.startswith(tuple(ALLOWED_GATEWAYS)):
+    def __rearrange_gateway_order(self, petri_net_constraints, compiler_constraints, model_id):
+        for i, compiler_constraint in enumerate(compiler_constraints):
+            if compiler_constraint.startswith(tuple(DECLARE_GATEWAYS)):
                 match = re.match(DECLARE_CONSTRAINT_REGEX_PATTERN, compiler_constraint)
                 if match:
-                    compiler_constraint_set = set([match.group(1), match.group(2), match.group(3)])
+                    arguments = match.group(2).split(', ')
+                    compiler_constraint_set = set([match.group(1), arguments[0], arguments[1]])
                     for petri_net_constraint in petri_net_constraints:
-                        if petri_net_constraint.startswith(tuple(ALLOWED_GATEWAYS)):
+                        if petri_net_constraint.startswith(tuple(DECLARE_GATEWAYS)):
                             match = re.match(DECLARE_CONSTRAINT_REGEX_PATTERN, compiler_constraint)
                             if match:
-                                petri_net_constraint_set = set([match.group(1), match.group(2), match.group(3)])
+                                arguments = match.group(2).split(', ')
+                                petri_net_constraint_set = set([match.group(1), arguments[0], arguments[1]])
                                 if compiler_constraint_set == petri_net_constraint_set:
-                                    compiler_constraint = petri_net_constraint
+                                    if sorted(compiler_constraint) == sorted(petri_net_constraint):
+                                        compiler_constraints[i] = petri_net_constraint
 
     def __gateway_constraints_exists(self, compiler_constraints):
-        return any(constraint.startswith(tuple(ALLOWED_GATEWAYS)) for constraint in compiler_constraints)
+        return any(constraint.startswith(tuple(DECLARE_GATEWAYS)) for constraint in compiler_constraints)
 
     def __combine_models(self, petri_net_models, compiler_models):
         combined_models = []
@@ -179,7 +196,8 @@ class CompilerScript():
             if found_matching_model and len(compiler_constraints) > 0 and len(petri_net_constraints) > 0:
                 
                 if self.__gateway_constraints_exists(compiler_constraints):
-                    self.__rearrange_gateway_order(petri_net_constraints, compiler_constraints)
+                    self.__rearrange_gateway_order(petri_net_constraints, compiler_constraints, model_id)
+
 
                 combined_models.append({
                     "model id" : model_id,
@@ -191,8 +209,6 @@ class CompilerScript():
                     "precision" : self.__calculate_precision(petri_net_constraints, compiler_constraints),
                     "recall" : self.__calculate_recall(petri_net_constraints, compiler_constraints)
                 })
-                # self._remove_end_constraints(combined_models[-1])
-                # self._remove_init_constraints(combined_models[-1])
 
         return combined_models
 

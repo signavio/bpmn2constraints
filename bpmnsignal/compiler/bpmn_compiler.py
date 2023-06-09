@@ -100,18 +100,15 @@ class Compiler():
                     )
                 )
 
-                try:
-                    if "is in gateway" not in self.cfo:
-                        self.compiled_sequence.append(
-                            self.__create_constraint_object(
-                                description= f"{name} or {successor_name}",
-                                signal = self.signal.choice(name, successor_name),
-                                declare = self.declare.choice(name, successor_name),
-                                ltlf = self.ltlf.to_ltl_str(self.declare.choice(name, successor_name))
-                            )
+                if "is in gateway" not in self.cfo:
+                    self.compiled_sequence.append(
+                        self.__create_constraint_object(
+                            description= f"{name} or {successor_name}",
+                            signal = self.signal.choice(name, successor_name),
+                            declare = self.declare.choice(name, successor_name),
+                            ltlf = self.ltlf.to_ltl_str(self.declare.choice(name, successor_name))
                         )
-                except Exception:
-                    print("AJAJAJAJ") 
+                    )
 
                 if self.concurrent:
                     self.compiled_sequence.append(

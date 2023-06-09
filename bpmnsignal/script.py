@@ -1,13 +1,20 @@
 """Entry point for bpmnsignal command. Verifies argument and runs parser."""
 # pylint: disable=import-error
 import argparse
+import logging
+import sys
 from pathlib import Path
 from json import dumps
+from tqdm import tqdm
 from bpmnsignal.parser.bpmn_parser import Parser
 from bpmnsignal.compiler.bpmn_compiler import Compiler
 from bpmnsignal.utils.script_utils import Setup
 from bpmnsignal.compiler_script import CompilerScript
 from bpmnsignal.parser_script import ParserScript
+
+
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+
 
 
 
@@ -75,3 +82,30 @@ def run():
             script.run()
     else:
         parser.print_help()
+
+def compile_bpmn_diagram(path_to_bpmn_diagram, constraint_type):
+    constraints = []
+    setup = Setup(None)
+    path_to_bpmn_diagram = Path(path_to_bpmn_diagram)
+    if setup.is_file(path_to_bpmn_diagram):
+        res = Parser(path_to_bpmn_diagram, True, True).run()
+        res = Compiler(res, True).run()
+
+        if constraint_type == "SIGNAL":
+            logging.info("Generating SIGNAL constraints...")
+            for constraint in tqdm(res):
+                constraints.append(constraint.get("SIGNAL"))
+            
+        elif constraint_type == "DECLARE":
+            logging.info("Generating DECLARE constraints...")
+            for constraint in tqdm(res):
+                constraints.append(constraint.get("DECLARE"))
+
+        elif constraint_type == "LTLF":
+            logging.info("Generating LTLF constraints...")
+            for constraint in tqdm(res):
+                constraints.append(constraint.get("LTLf"))
+
+        else:
+            logging.warning("Unknown constraint type. Use 'SIGNAL', 'DECLARE' or 'LTLF'.")
+    return constraints

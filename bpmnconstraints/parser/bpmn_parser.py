@@ -1,11 +1,10 @@
 """
 Parser.
-I'll document it.. Later..
 """
 
-from json import load, JSONDecodeError, dumps
-from bpmnsignal.utils.constants import *
-from bpmnsignal.utils.sanitizer import Sanitizer
+from json import load, JSONDecodeError
+from bpmnconstraints.utils.constants import *
+from bpmnconstraints.utils.sanitizer import Sanitizer
 
 
 class Parser():

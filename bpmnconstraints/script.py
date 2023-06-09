@@ -6,11 +6,11 @@ import sys
 from pathlib import Path
 from json import dumps
 from tqdm import tqdm
-from bpmnsignal.parser.bpmn_parser import Parser
-from bpmnsignal.compiler.bpmn_compiler import Compiler
-from bpmnsignal.utils.script_utils import Setup
-from bpmnsignal.compiler_script import CompilerScript
-from bpmnsignal.parser_script import ParserScript
+from bpmnconstraints.parser.bpmn_parser import Parser
+from bpmnconstraints.compiler.bpmn_compiler import Compiler
+from bpmnconstraints.utils.script_utils import Setup
+from bpmnconstraints.compiler_script import CompilerScript
+from bpmnconstraints.parser_script import ParserScript
 
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)

@@ -1,11 +1,11 @@
 import json
 import re
 from tqdm import tqdm
-from bpmnsignal.utils.script_utils import Setup
-from bpmnsignal.parser.bpmn_parser import Parser
-from bpmnsignal.compiler.bpmn_compiler import Compiler
-from bpmnsignal.utils.plot import Plot
-from bpmnsignal.utils.constants import DISCARDED_CONSTRAINTS, DECLARE_GATEWAYS, DECLARE_CONSTRAINT_REGEX_PATTERN
+from bpmnconstraints.utils.script_utils import Setup
+from bpmnconstraints.parser.bpmn_parser import Parser
+from bpmnconstraints.compiler.bpmn_compiler import Compiler
+from bpmnconstraints.utils.plot import Plot
+from bpmnconstraints.utils.constants import DISCARDED_CONSTRAINTS, DECLARE_GATEWAYS, DECLARE_CONSTRAINT_REGEX_PATTERN
 
 class CompilerScript():
     

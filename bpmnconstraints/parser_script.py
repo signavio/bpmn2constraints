@@ -1,9 +1,9 @@
 
 from tqdm import tqdm
 
-from bpmnsignal.parser.bpmn_parser import Parser
-from bpmnsignal.utils.script_utils import Setup
-from bpmnsignal.utils.plot import Plot
+from bpmnconstraints.parser.bpmn_parser import Parser
+from bpmnconstraints.utils.script_utils import Setup
+from bpmnconstraints.utils.plot import Plot
 
 FAIL = "failed"
 SUCCESS = "successful"

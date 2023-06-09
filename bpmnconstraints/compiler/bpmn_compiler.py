@@ -1,11 +1,9 @@
 
 from itertools import combinations
-from json import dumps
-import traceback
-from bpmnsignal.templates.declare_templates import Declare
-from bpmnsignal.templates.matching_templates import Signal
-from bpmnsignal.compiler.ltl.declare2ltl import Declare2ltl
-from bpmnsignal.utils.constants import *
+from bpmnconstraints.templates.declare_templates import Declare
+from bpmnconstraints.templates.matching_templates import Signal
+from bpmnconstraints.compiler.ltl.declare2ltl import Declare2ltl
+from bpmnconstraints.utils.constants import *
 
 # TODO: Check the order of constraints..
 

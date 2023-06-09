@@ -89,4 +89,4 @@ class Signal():
     def co_existence(self, element_right, element_left):
         """{element_right} and {element_left} occur in the same process instance (AND gateway).
         Activated by {element_right} and {element_left}"""
-        return f"(^NOT({element_right}|{element_left})*(({element_right}ANY*{element_left}ANY*)|({element_left}ANY* '{element_right}' ANY*))* NOT('{element_right}'|'{element_left}')*$)"
+        return f"(^NOT('{element_right}'|'{element_left}')*(('{element_right}'ANY*'{element_left}'ANY*)|('{element_left}'ANY* '{element_right}' ANY*))* NOT('{element_right}'|'{element_left}')*$)"

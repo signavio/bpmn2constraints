@@ -60,6 +60,7 @@ class Compiler():
         name = self.__get_cfo_name()
         successors = self.__get_cfo_successors()
         for successor in successors:
+            # Should fix so it adds successors in nested gateways.
             if self.__get_cfo_type(successor) in ALLOWED_GATEWAYS:
                 if self.__get_cfo_gateway_successors(successor):
                     successors.extend(self.__get_cfo_gateway_successors(successor))
@@ -77,6 +78,9 @@ class Compiler():
             successor_name = self.__get_cfo_name(successor)
 
             if successor_name in ALLOWED_GATEWAYS:
+                continue
+
+            if not self.__is_valid_name(successor_name) or not self.__is_valid_name(name):
                 continue
 
             if not successor.get("gateway successor"):
@@ -108,15 +112,14 @@ class Compiler():
                         )
                     )
 
-                if self.concurrent:
-                    self.compiled_sequence.append(
-                        self.__create_constraint_object(
-                            description = f"{name} leads to {successor_name}",
-                            signal = self.signal.alternate_succession(name, successor_name),
-                            declare = self.declare.alternate_succession(name, successor_name),
-                            ltlf = self.ltlf.to_ltl_str(self.declare.alternate_succession(name, successor_name)),
-                        )
+                self.compiled_sequence.append(
+                    self.__create_constraint_object(
+                        description = f"{name} leads to {successor_name}",
+                        signal = self.signal.alternate_succession(name, successor_name),
+                        declare = self.declare.alternate_succession(name, successor_name),
+                        ltlf = self.ltlf.to_ltl_str(self.declare.alternate_succession(name, successor_name)),
                     )
+                )
             
     def __create_precedence_constraint(self):
         successors = self.__get_cfo_successors()
@@ -168,6 +171,8 @@ class Compiler():
         if name in ALLOWED_END_EVENTS:
             return False
         if name in ALLOWED_GATEWAYS:
+            return False
+        if name in EXCLUDED_TRANSITIVE_NAMES:
             return False
         return True
     
@@ -297,7 +302,7 @@ class Compiler():
         if successors:
             successors = [self.__get_cfo_name(successor) for successor in successors]
             for split in combinations(successors, 2):
-                if not self.__is_valid_name(split[0]) and not self.__is_valid_name(split[1]):
+                if not self.__is_valid_name(split[0]) or not self.__is_valid_name(split[1]):
                     continue
                 self.compiled_sequence.append(
                     self.__create_constraint_object(
@@ -315,12 +320,13 @@ class Compiler():
                         ltlf = self.ltlf.to_ltl_str(self.declare.choice(split[0], split[1])),
                     )
                 )
+
                 predecessors = self.__get_cfo_predecessors()
                 if predecessors:
                     for predecessor in predecessors:
                         predecessor_name = self.__get_cfo_name(predecessor)
                         for successor in successors:
-                            if not self.__is_valid_name(predecessor_name) and not self.__is_valid_name(successor):
+                            if not self.__is_valid_name(predecessor_name) or not self.__is_valid_name(successor):
                                 continue
                             self.compiled_sequence.append(
                                 self.__create_constraint_object(
@@ -341,7 +347,7 @@ class Compiler():
         if successors:
             successors = [self.__get_cfo_name(successor) for successor in successors]
             for split in combinations(successors, 2):
-                if not self.__is_valid_name(split[0]) and not self.__is_valid_name(split[1]):
+                if not self.__is_valid_name(split[0]) or not self.__is_valid_name(split[1]):
                     continue
                 self.compiled_sequence.append(
                     self.__create_constraint_object(
@@ -362,7 +368,7 @@ class Compiler():
         if successors:
             successors = [self.__get_cfo_name(successor) for successor in successors]
             for split in combinations(successors, 2):
-                if not self.__is_valid_name(split[0]) and not self.__is_valid_name(split[1]):
+                if not self.__is_valid_name(split[0]) or not self.__is_valid_name(split[1]):
                     continue
                 self.compiled_sequence.append(
                     self.__create_constraint_object(
@@ -378,7 +384,7 @@ class Compiler():
                 for predecessor in predecessors:
                     predecessor_name = self.__get_cfo_name(predecessor)
                     for successor in successors:
-                        if not self.__is_valid_name(predecessor_name) and not self.__is_valid_name(successor):
+                        if not self.__is_valid_name(predecessor_name) or not self.__is_valid_name(successor):
                             continue
                         self.compiled_sequence.append(
                             self.__create_constraint_object(

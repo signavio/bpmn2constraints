@@ -76,7 +76,7 @@ class Signal():
         """{element_right} or {element_left} or both eventually occur
         in the same process instance (OR gateway). Activated by {element_right} and {element_left}
         """
-        return f"('{element_right}'|'{element_left}')"
+        return f"(('{element_right}'|'{element_left}'))"
 
 
     def exclusive_choice(self, element_right, element_left):

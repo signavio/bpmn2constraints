@@ -15,6 +15,13 @@ pip install -e .
 ```
 When developing.
 
+## Video
+
+
+https://github.com/signavio/bpmn-to-signal/assets/126496635/4b9a027d-e502-4b35-9f34-91bc5253a5eb
+
+The original (high-resolution) video file is also contained in this repository and can be downloaded.
+
 ## Using the tool.
 The CLI tool offers several options. Here is some of the options available.
 

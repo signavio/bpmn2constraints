@@ -32,7 +32,7 @@ def run():
     parser.add_argument("--dataframe", type=str, help="Path to dataframe of compiled constraints")
     parser.add_argument("--parse_dataset", type=str, help="Path to dataset folder")
     parser.add_argument("--plot", type=bool, help="True if you want plots")
-
+    parser.add_argument("--constraint_type", type=str, help="type of constraint to be generated")
 
     args = parser.parse_args()
 
@@ -44,11 +44,16 @@ def run():
             print(dumps(res, indent=2))
 
     elif args.compile:
-        path = Path(args.compile)
-        setup = Setup(None)
-        if setup.is_file(path):
-            res = Parser(path, True, args.transitivity).run()
-            res = Compiler(res, args.transitivity).run()
+        if not args.constraint_type:
+            path = Path(args.compile)
+            setup = Setup(None)
+            if setup.is_file(path):
+                res = Parser(path, True, args.transitivity).run()
+                res = Compiler(res, args.transitivity).run()
+                print(dumps(res, indent=2))
+        else:
+            path = Path(args.compile)
+            res = compile_bpmn_diagram(path, args.constraint_type)
             print(dumps(res, indent=2))
     
     elif args.compare_constraints:

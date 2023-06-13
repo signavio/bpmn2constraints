@@ -1,8 +1,5 @@
 # BPMN2Constraints
 
-![CI status](https://github.com/signavio/bpmn-to-signal/actions/workflows/pylint.yml/badge.svg)
-![CI status](https://github.com/signavio/bpmn-to-signal/actions/workflows/main.yml/badge.svg)
-
 Tool for compiling BPMN diagrams in JSON format directly to declarative constraints.
 
 Install with:

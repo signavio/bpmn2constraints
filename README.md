@@ -14,8 +14,8 @@ When developing.
 
 ## Video & Tutorial
 
+https://github.com/signavio/bpmn2constraints/assets/5434565/51198a57-e041-4d37-85d4-2b4bb3b03fc3
 
-https://github.com/signavio/bpmn-to-signal/assets/126496635/4b9a027d-e502-4b35-9f34-91bc5253a5eb
 
 The original (high-resolution) video file is also contained in this repository and can be downloaded.
 

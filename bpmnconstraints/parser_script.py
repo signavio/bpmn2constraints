@@ -1,6 +1,5 @@
 
 from tqdm import tqdm
-
 from bpmnconstraints.parser.bpmn_parser import Parser
 from bpmnconstraints.utils.script_utils import Setup
 from bpmnconstraints.utils.plot import Plot
@@ -62,15 +61,12 @@ class ParserScript():
                             self.total_elements += parsable
 
                             if parsed == parsable:
-                                # Success
                                 self.successful_models += 1
                                 self.parsed_models.append(self.__create_scatter_object(
                                     SUCCESS, model_elements, model_element_types))
 
                         except Exception:
-                            # Failed
                             self.failed_models += 1
-                            # For some reason, I have to subtract here..
                             self.successful_models -= 1
                             self.parsed_models.append(self.__create_scatter_object(
                                 FAIL, model_elements, model_element_types))

@@ -5,8 +5,6 @@ from bpmnconstraints.templates.matching_templates import Signal
 from bpmnconstraints.compiler.ltl.declare2ltl import Declare2ltl
 from bpmnconstraints.utils.constants import *
 
-# TODO: Check the order of constraints..
-
 class Compiler():
 
     def __init__(self, sequence, transitivity) -> None:
@@ -60,7 +58,6 @@ class Compiler():
         name = self.__get_cfo_name()
         successors = self.__get_cfo_successors()
         for successor in successors:
-            # Should fix so it adds successors in nested gateways.
             if self.__get_cfo_type(successor) in ALLOWED_GATEWAYS:
                 if self.__get_cfo_gateway_successors(successor):
                     successors.extend(self.__get_cfo_gateway_successors(successor))

@@ -30,14 +30,6 @@ class CompilerScript():
         precision = []
 
         for model in models:
-            # These models are good to measure against.
-            # if model.get("model id") == "1bd1ef6b99d6492c9d533f9120462f18":
-            # if model.get("model id") == "1bdf641694b9488d95332c88d7da1eba":
-            if model.get("model id") == "1bdd80c0fa334858a7960b8ed0d427c3":
-            # if model.get("model id") == "1bde4722c0bf40dfab2f77088cadb4de":
-            # if model.get("model id") == "1c0fdaf892db48759871b78bf54bba6b":
-
-                self.__print_model(model)
             recall.append(model.get("recall"))
             precision.append(model.get("precision"))
         

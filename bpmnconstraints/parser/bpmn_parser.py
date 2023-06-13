@@ -1,11 +1,6 @@
-"""
-Parser.
-"""
-
 from json import load, JSONDecodeError
 from bpmnconstraints.utils.constants import *
 from bpmnconstraints.utils.sanitizer import Sanitizer
-
 
 class Parser():
 

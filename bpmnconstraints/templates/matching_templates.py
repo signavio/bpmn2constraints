@@ -1,7 +1,6 @@
 """Functions generating constraints as SIGNAL matches clauses according to
     Declare constraints.
 """
-# pylint: disable=line-too-long
 
 class Signal():
     def __init__(self) -> None:

@@ -12,11 +12,7 @@ from bpmnconstraints.utils.script_utils import Setup
 from bpmnconstraints.compiler_script import CompilerScript
 from bpmnconstraints.parser_script import ParserScript
 
-
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-
-
-
 
 def run():
     """Takes the provided BPMN JSON file and returns a list

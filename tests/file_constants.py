@@ -2,6 +2,7 @@ LINEAR_SEQUENCE_DIAGRAM_WITH_START_AND_END = {
     "path" : "examples/linear/linear_sequence.json",
     "start element id" : "sid-79912385-C358-446C-8EBB-07429B015548",
     "end element id" : "sid-BEA0DEB9-2482-42D9-9846-9E6C5541FA54",
+    "successor id" : "sid-338230CF-C52B-4C83-9B4E-A8388E336593"
 }
 
 LINEAR_SEQUENCE_DIAGRAM_WITHOUT_START_AND_END = {
@@ -30,4 +31,10 @@ THREE_SPLIT_XOR_GATEWAY_DIAGRAM = {
     "path" : "examples/xor_gates/3_way_split_xor.json",
     "splitting id" : "sid-7946CDE8-E0E9-4730-8D59-E48E15C331B8",
     "successors" : ["sid-DEEAF1CC-6862-41BE-8FE4-C9630A72A6E7", "sid-27B96763-D095-4BE1-8A75-3ADA952DF65B", "sid-C4EA710A-B1E4-4561-A8AE-03D48DD6B5A6"]
+}
+
+PARALLEL_GATEWAY_DIAGRAM = {
+    "path" : "examples/and_gates/longer_and.json",
+    "start element id" : "sid-2FE6222A-6971-4860-AD8D-535CED93A0A2",
+    "ending element id" : "sid-41F52A20-F3FC-4363-9A0C-A73114841060"
 }

@@ -6,5 +6,5 @@ def init_test_setup(diagram_constant):
     path = Path(diagram_constant.get("path"))
     setup = Setup(None)
     if setup.is_file(path):
-        res = Parser(path, True, False).run()
+        res = Parser(path, True, True).run()
         return res

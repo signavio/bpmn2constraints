@@ -1,6 +1,4 @@
-from pathlib import Path
-from bpmnconstraints.parser.bpmn_parser import Parser
-from bpmnconstraints.utils.script_utils import Setup
+from test_utils import init_test_setup
 
 from file_constants import (
     LINEAR_SEQUENCE_DIAGRAM_WITH_START_AND_END,
@@ -8,13 +6,6 @@ from file_constants import (
     MULTIPLE_STARTS_DIAGRAM,
 )
 
-def init_test_setup(diagram_constant):
-    path = Path(diagram_constant.get("path"))
-    setup = Setup(None)
-    if setup.is_file(path):
-        res = Parser(path, True, False).run()
-        return res
-    
 def test_element_is_marked_as_start_if_it_has_no_predecessors():
     res = init_test_setup(LINEAR_SEQUENCE_DIAGRAM_WITHOUT_START_AND_END)
     for elem in res:

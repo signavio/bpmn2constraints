@@ -1,4 +1,3 @@
-
 LINEAR_SEQUENCE_DIAGRAM_WITH_START_AND_END = {
     "path" : "examples/linear/linear_sequence.json",
     "start element id" : "sid-79912385-C358-446C-8EBB-07429B015548",
@@ -14,4 +13,9 @@ LINEAR_SEQUENCE_DIAGRAM_WITHOUT_START_AND_END = {
 MULTIPLE_STARTS_DIAGRAM = {
     "path" : "examples/misc/multiple_starts.json",
     "start elements" : ["sid-63552E64-B2A2-4D39-A168-2C6A30BB76F7", "sid-AB69BFC4-A028-480F-BC16-BAC74F4A8EDD"],
+}
+
+MULTIPLE_ENDINGS_DIAGRAM = {
+    "path" : "examples/misc/multiple_endings.json",
+    "ending elements" : ["sid-F54D1372-E982-4B0F-9543-F3CC3C6F595F", "sid-42CD2A75-895E-4E2C-9340-6CE7C5570EFF", "sid-E458F27F-287A-4901-BDE9-53A21534EB2F"]
 }

@@ -19,3 +19,15 @@ MULTIPLE_ENDINGS_DIAGRAM = {
     "path" : "examples/misc/multiple_endings.json",
     "ending elements" : ["sid-F54D1372-E982-4B0F-9543-F3CC3C6F595F", "sid-42CD2A75-895E-4E2C-9340-6CE7C5570EFF", "sid-E458F27F-287A-4901-BDE9-53A21534EB2F"]
 }
+
+SINGLE_XOR_GATEWAY_DIAGRAM = {
+    "path" : "examples/xor_gates/single_xor.json",
+    "splitting id" : "sid-E1967D7F-6A3B-40CB-A8E9-31606735C37A",
+    "joining id" : "sid-87FDC0D7-9BEE-4FB2-952A-FEDEA56F73AA",
+}
+
+THREE_SPLIT_XOR_GATEWAY_DIAGRAM = {
+    "path" : "examples/xor_gates/3_way_split_xor.json",
+    "splitting id" : "sid-7946CDE8-E0E9-4730-8D59-E48E15C331B8",
+    "successors" : ["sid-DEEAF1CC-6862-41BE-8FE4-C9630A72A6E7", "sid-27B96763-D095-4BE1-8A75-3ADA952DF65B", "sid-C4EA710A-B1E4-4561-A8AE-03D48DD6B5A6"]
+}

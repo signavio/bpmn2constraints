@@ -36,5 +36,14 @@ THREE_SPLIT_XOR_GATEWAY_DIAGRAM = {
 PARALLEL_GATEWAY_DIAGRAM = {
     "path" : "examples/and_gates/longer_and.json",
     "start element id" : "sid-2FE6222A-6971-4860-AD8D-535CED93A0A2",
-    "ending element id" : "sid-41F52A20-F3FC-4363-9A0C-A73114841060"
+    "ending element id" : "sid-41F52A20-F3FC-4363-9A0C-A73114841060",
+    "gateway elements" : [
+        "sid-88D31641-1A4E-4DA6-96FB-6CDEDCD3F8C4", 
+        "sid-A7B7239A-5E3E-47A7-8D0F-D183CA3B421D",
+        "sid-64F1770B-32AC-4C4D-B0B8-EFED88015C1E",
+        "sid-7D01BA2F-0D34-4F8A-9BAA-E7271C0E8879",
+        "sid-BFBA9C81-7675-4BCE-83B6-9E591C320E47",
+        "sid-E1E842E0-BC33-4DB3-97E6-778B589A07A0",
+    ],
+    "not gateway elements" : ["sid-2FE6222A-6971-4860-AD8D-535CED93A0A2", "sid-41F52A20-F3FC-4363-9A0C-A73114841060"],
 }

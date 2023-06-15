@@ -47,3 +47,11 @@ PARALLEL_GATEWAY_DIAGRAM = {
     ],
     "not gateway elements" : ["sid-2FE6222A-6971-4860-AD8D-535CED93A0A2", "sid-41F52A20-F3FC-4363-9A0C-A73114841060"],
 }
+
+XOR_GATEWAY_DIAGRAM = {
+    "path" : "examples/xor_gates/longer_xor.json"
+}
+
+XOR_GATEWAY_SEQUENCE_DIAGRAM = {
+    "path" : "examples/xor_gates/multiple_xor.json"
+}

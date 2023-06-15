@@ -1,14 +1,9 @@
-
-# pylint: disable=missing-class-docstring
-# pylint: disable=missing-function-docstring
-
 import json
 import os
 import pandas as pd
 
 
-class Setup():
-
+class Setup:
     def __init__(self, dir_path) -> None:
         self.dir_path = dir_path
         self.chunk_size = 8**2
@@ -30,7 +25,6 @@ class Setup():
 
     def load_models(self, chunk):
         return chunk["Model JSON"].apply(json.loads)
-    
+
     def load_dataframe(self, file):
         return pd.read_pickle(file)
-

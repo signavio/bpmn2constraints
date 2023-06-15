@@ -1,4 +1,3 @@
-
 from tqdm import tqdm
 from bpmnconstraints.parser.bpmn_parser import Parser
 from bpmnconstraints.utils.script_utils import Setup
@@ -7,7 +6,8 @@ from bpmnconstraints.utils.plot import Plot
 FAIL = "failed"
 SUCCESS = "successful"
 
-class ParserScript():
+
+class ParserScript:
     def __init__(self, path, create_plot) -> None:
         self.path = path
         self.setup = Setup(path)
@@ -24,7 +24,7 @@ class ParserScript():
         return {
             "outcome": model_outcome,
             "number of elements": element_count,
-            "number of element types": type_count
+            "number of element types": type_count,
         }
 
     def run(self):
@@ -62,19 +62,29 @@ class ParserScript():
 
                             if parsed == parsable:
                                 self.successful_models += 1
-                                self.parsed_models.append(self.__create_scatter_object(
-                                    SUCCESS, model_elements, model_element_types))
+                                self.parsed_models.append(
+                                    self.__create_scatter_object(
+                                        SUCCESS, model_elements, model_element_types
+                                    )
+                                )
 
                         except Exception:
                             self.failed_models += 1
                             self.successful_models -= 1
-                            self.parsed_models.append(self.__create_scatter_object(
-                                FAIL, model_elements, model_element_types))
+                            self.parsed_models.append(
+                                self.__create_scatter_object(
+                                    FAIL, model_elements, model_element_types
+                                )
+                            )
 
         if self.create_plot:
-            self.plot.scatter_plot_model_outcomes(self.parsed_models, "All Parsed Models")
+            self.plot.scatter_plot_model_outcomes(
+                self.parsed_models, "All Parsed Models"
+            )
             self.plot.bar_plot_model_outcomes(self.parsed_models)
 
         print(f"Successful: {self.successful_models} out of {self.total_models}")
         print(f"Failed: {self.failed_models} out of {self.total_models}")
-        print(f"Parsed {self.total_parsed_elements} out of {self.total_elements} elements.")
+        print(
+            f"Parsed {self.total_parsed_elements} out of {self.total_elements} elements."
+        )

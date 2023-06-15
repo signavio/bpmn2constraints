@@ -4,8 +4,8 @@ ALLOWED_GATEWAYS = [
     "Exclusive_Databased_Gateway",
     "ParallelGateway",
     "InclusiveGateway",
-    'ComplexGateway',
-    'EventbasedGateway',
+    "ComplexGateway",
+    "EventbasedGateway",
 ]
 
 ALLOWED_ACTIVITIES = [
@@ -74,8 +74,8 @@ GATEWAY_MAPPING = {
     ALLOWED_GATEWAYS[0]: "XOR",
     ALLOWED_GATEWAYS[1]: "AND",
     ALLOWED_GATEWAYS[2]: "OR",
-    ALLOWED_GATEWAYS[3]: 'COMPLEX',
-    ALLOWED_GATEWAYS[4]: 'EVENT_BASED'
+    ALLOWED_GATEWAYS[3]: "COMPLEX",
+    ALLOWED_GATEWAYS[4]: "EVENT_BASED",
 }
 
 END_EVENT_MAPPING = {
@@ -91,30 +91,30 @@ END_EVENT_MAPPING = {
 }
 
 ACTIVITY_MAPPING = {
-    "Task": 'Task',
-    "Event": 'Event',
-    "CollapsedSubprocess": 'Subprocess',
-    "EventSubprocess": 'Subprocess',
-    "CollapsedEventSubprocess": 'Subprocess',
-    "Subprocess": 'Subprocess',
-    "IntermediateMessageEventCatching": 'CatchActivity',
-    "IntermediateTimerEvent": 'IntermediateEvent',
-    "IntermediateEscalationEvent": 'IntermediateEvent',
-    "IntermediateConditionalEvent": 'IntermediateEvent',
-    "IntermediateLinkEventCatching": 'CatchActivity',
-    "IntermediateErrorEvent": 'IntermediateEvent',
-    "IntermediateCancelEvent": 'IntermediateEvent',
-    "IntermediateCompensationEventCatching": 'CatchActivity',
-    "IntermediateSignalEventCatching": 'CatchActivity',
-    "IntermediateMultipleEventCatching": 'CatchActivity',
-    "IntermediateParallelMultipleEventCatching": 'CatchActivity',
-    "IntermediateEvent": 'IntermediateEvent',
-    "IntermediateMessageEventThrowing": 'ThrowActivity',
-    "IntermediateEscalationEventThrowing": 'ThrowActivity',
-    "IntermediateLinkEventThrowing": 'ThrowActivity',
-    "IntermediateCompensationEventThrowing": 'ThrowActivity',
-    "IntermediateSignalEventThrowing": 'ThrowActivity',
-    "IntermediateMultipleEventThrowing": 'ThrowActivity',
+    "Task": "Task",
+    "Event": "Event",
+    "CollapsedSubprocess": "Subprocess",
+    "EventSubprocess": "Subprocess",
+    "CollapsedEventSubprocess": "Subprocess",
+    "Subprocess": "Subprocess",
+    "IntermediateMessageEventCatching": "CatchActivity",
+    "IntermediateTimerEvent": "IntermediateEvent",
+    "IntermediateEscalationEvent": "IntermediateEvent",
+    "IntermediateConditionalEvent": "IntermediateEvent",
+    "IntermediateLinkEventCatching": "CatchActivity",
+    "IntermediateErrorEvent": "IntermediateEvent",
+    "IntermediateCancelEvent": "IntermediateEvent",
+    "IntermediateCompensationEventCatching": "CatchActivity",
+    "IntermediateSignalEventCatching": "CatchActivity",
+    "IntermediateMultipleEventCatching": "CatchActivity",
+    "IntermediateParallelMultipleEventCatching": "CatchActivity",
+    "IntermediateEvent": "IntermediateEvent",
+    "IntermediateMessageEventThrowing": "ThrowActivity",
+    "IntermediateEscalationEventThrowing": "ThrowActivity",
+    "IntermediateLinkEventThrowing": "ThrowActivity",
+    "IntermediateCompensationEventThrowing": "ThrowActivity",
+    "IntermediateSignalEventThrowing": "ThrowActivity",
+    "IntermediateMultipleEventThrowing": "ThrowActivity",
 }
 
 EXCLUDED_TRANSITIVE_NAMES = [
@@ -131,17 +131,10 @@ DISCARDED_CONSTRAINTS = [
     "Absence2",
     "Existence1",
     "Existence2",
-    "Exactly2"
+    "Exactly2",
 ]
 
-DISCARDED_START_EVENT_NAMES = [
-    "start",
-    "Start",
-    "START",
-    "AND",
-    "XOR",
-    "OR"
-]
+DISCARDED_START_EVENT_NAMES = ["start", "Start", "START", "AND", "XOR", "OR"]
 
 DISCARDED_END_EVENT_NAMES = [
     "end",
@@ -162,10 +155,6 @@ ID = "id"
 PROPERTIES = "properties"
 NAME = "name"
 
-DECLARE_CONSTRAINT_REGEX_PATTERN = r'(\w+(?:-\w+)?(?: \w+)?)(?: \w+)?\[(.*?)\]'
+DECLARE_CONSTRAINT_REGEX_PATTERN = r"(\w+(?:-\w+)?(?: \w+)?)(?: \w+)?\[(.*?)\]"
 
-DECLARE_GATEWAYS = [
-    "Co-Existence",
-    "Choice",
-    "Exclusive Choice"
-]
+DECLARE_GATEWAYS = ["Co-Existence", "Choice", "Exclusive Choice"]

@@ -7,34 +7,37 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-class Plot():
-
+class Plot:
     def __init__(self) -> None:
         pass
 
     def scatter_plot_model_outcomes(self, data, title):
-        x_axis = [d['number of element types'] for d in data]
-        y_axis = [d['number of elements'] for d in data]
-        outcome = [d['outcome'] for d in data]
+        x_axis = [d["number of element types"] for d in data]
+        y_axis = [d["number of elements"] for d in data]
+        outcome = [d["outcome"] for d in data]
 
-        cmap = {'failed': 'red', 'partial': 'blue', 'successful': 'green'}
+        cmap = {"failed": "red", "partial": "blue", "successful": "green"}
 
         colour = [cmap[o] for o in outcome]
 
         _, fig = plt.subplots(figsize=(10, 6))
         fig.scatter(x_axis, y_axis, c=colour)
 
-        fig.set_xlabel('Number of Element Types')
-        fig.set_ylabel('Number of Elements')
+        fig.set_xlabel("Number of Element Types")
+        fig.set_ylabel("Number of Elements")
         fig.set_title(title)
 
         legend_elements = [
-            plt.Line2D([0], [0],
-                    marker='o',
-                    color='w',
-                    label=k,
-                    markerfacecolor=v,
-                    markersize=10) for k, v in cmap.items()
+            plt.Line2D(
+                [0],
+                [0],
+                marker="o",
+                color="w",
+                label=k,
+                markerfacecolor=v,
+                markersize=10,
+            )
+            for k, v in cmap.items()
         ]
         fig.legend(handles=legend_elements)
 
@@ -45,10 +48,10 @@ class Plot():
         values = data.values()
 
         plt.bar(keys, values)
-        plt.xticks(rotation=45, ha='right')
-        plt.xlabel('Percentage Span Parsed')
-        plt.ylabel('Number of Models')
-        plt.title('Degree of Parsing on Partial Models')
+        plt.xticks(rotation=45, ha="right")
+        plt.xlabel("Percentage Span Parsed")
+        plt.ylabel("Number of Models")
+        plt.title("Degree of Parsing on Partial Models")
         plt.show()
 
     def bar_plot_model_outcomes(self, data):
@@ -84,30 +87,35 @@ class Plot():
         partial_count = [x + bar_width for x in failed_count]
         success_count = [x + bar_width for x in partial_count]
 
-        plt.bar(failed_count,
-                failed_counts,
-                color='red',
-                width=bar_width,
-                edgecolor='white',
-                label='failed')
-        plt.bar(partial_count,
-                partial_counts,
-                color='blue',
-                width=bar_width,
-                edgecolor='white',
-                label='partial')
-        plt.bar(success_count,
-                successful_counts,
-                color='green',
-                width=bar_width,
-                edgecolor='white',
-                label='successful')
+        plt.bar(
+            failed_count,
+            failed_counts,
+            color="red",
+            width=bar_width,
+            edgecolor="white",
+            label="failed",
+        )
+        plt.bar(
+            partial_count,
+            partial_counts,
+            color="blue",
+            width=bar_width,
+            edgecolor="white",
+            label="partial",
+        )
+        plt.bar(
+            success_count,
+            successful_counts,
+            color="green",
+            width=bar_width,
+            edgecolor="white",
+            label="successful",
+        )
 
-        plt.xlabel('Number of Element Types')
-        plt.ylabel('Number of Models')
-        plt.title('Model Outcomes by Element Types')
-        plt.xticks([r + bar_width for r in range(len(unique_counts))],
-                unique_counts)
+        plt.xlabel("Number of Element Types")
+        plt.ylabel("Number of Models")
+        plt.title("Model Outcomes by Element Types")
+        plt.xticks([r + bar_width for r in range(len(unique_counts))], unique_counts)
         plt.legend()
         plt.show()
 
@@ -116,19 +124,19 @@ class Plot():
         recall_list = []
 
         for model in data:
-            precision_list.append(model['precision'])
-            recall_list.append(model['recall'])
+            precision_list.append(model["precision"])
+            recall_list.append(model["recall"])
 
         mean_precision = sum(precision_list) / len(precision_list)
         mean_recall = sum(recall_list) / len(recall_list)
 
-        print(f'Mean-Precision: {mean_precision}')
-        print(f'Mean-Recall: {mean_recall}')
+        print(f"Mean-Precision: {mean_precision}")
+        print(f"Mean-Recall: {mean_recall}")
 
         plt.scatter(recall_list, precision_list)
-        plt.xlabel('Recall')
-        plt.ylabel('Precision')
-        plt.title('Precision-Recall Curve')
+        plt.xlabel("Recall")
+        plt.ylabel("Precision")
+        plt.title("Precision-Recall Curve")
         plt.show()
 
     def scatter_plot_precision_element_types(self, data):
@@ -136,13 +144,13 @@ class Plot():
         element_num = []
 
         for model in data:
-            precision_list.append(model['precision'])
-            element_num.append(model['number of element types'])
+            precision_list.append(model["precision"])
+            element_num.append(model["number of element types"])
 
         plt.scatter(element_num, precision_list)
-        plt.ylabel('Precision')
-        plt.xlabel('Number of Element Types')
-        plt.title('Precision relative to Number of Element Types')
+        plt.ylabel("Precision")
+        plt.xlabel("Number of Element Types")
+        plt.title("Precision relative to Number of Element Types")
         plt.show()
 
     def scatter_plot_recall_element_types(self, data):
@@ -150,13 +158,13 @@ class Plot():
         element_num = []
 
         for model in data:
-            recall_list.append(model['recall'])
-            element_num.append(model['number of element types'])
+            recall_list.append(model["recall"])
+            element_num.append(model["number of element types"])
 
         plt.scatter(element_num, recall_list)
-        plt.ylabel('Recall')
-        plt.xlabel('Number of Element Types')
-        plt.title('Recall relative to Number of Element Types')
+        plt.ylabel("Recall")
+        plt.xlabel("Number of Element Types")
+        plt.title("Recall relative to Number of Element Types")
         plt.show()
 
     def bar_plot_total_generated_constraints(self, data):
@@ -164,8 +172,8 @@ class Plot():
         petri_net = []
 
         for model in data:
-            compiler_constraints = model['compiler constraints']
-            petri_net_constraints = model['petri net constraints']
+            compiler_constraints = model["compiler constraints"]
+            petri_net_constraints = model["petri net constraints"]
 
             if compiler_constraints and petri_net_constraints:
                 compiler.extend(list(set(compiler_constraints)))
@@ -174,11 +182,11 @@ class Plot():
         print(f"petri net constraints : {len(petri_net)}")
         print(f"compiler constraints : {len(compiler)}")
 
-        x_axis = ['Petri Net Constraints', 'Compiler Constraints']
+        x_axis = ["Petri Net Constraints", "Compiler Constraints"]
         y_axis = [len(petri_net), len(compiler)]
 
         plt.bar(x_axis, y_axis)
-        plt.title('Unique Constraints Generated per Tool')
-        plt.xlabel('Tool Type')
-        plt.ylabel('Number of Unique Constraints')
+        plt.title("Unique Constraints Generated per Tool")
+        plt.xlabel("Tool Type")
+        plt.ylabel("Number of Unique Constraints")
         plt.show()

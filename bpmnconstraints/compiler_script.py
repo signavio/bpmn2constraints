@@ -2,7 +2,7 @@ import json
 import re
 from tqdm import tqdm
 from bpmnconstraints.utils.script_utils import Setup
-from bpmnconstraints.parser.bpmn_parser import Parser
+from bpmnconstraints.parser.bpmn_json_parser import Parser
 from bpmnconstraints.compiler.bpmn_compiler import Compiler
 from bpmnconstraints.utils.plot import Plot
 from bpmnconstraints.utils.constants import (

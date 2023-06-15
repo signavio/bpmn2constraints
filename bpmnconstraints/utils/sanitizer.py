@@ -32,7 +32,7 @@ class Sanitizer:
 
         label = label.lower()
 
-        label = re.sub("\s{1,}", " ", label)
+        label = re.sub(r"\s{1,}", " ", label)
         return label
 
     def __camel_to_white(self, label):

@@ -1,5 +1,5 @@
 from pathlib import Path
-from bpmnconstraints.parser.bpmn_parser import Parser
+from bpmnconstraints.parser.bpmn_json_parser import Parser
 from bpmnconstraints.compiler.bpmn_compiler import Compiler
 from bpmnconstraints.utils.script_utils import Setup
 

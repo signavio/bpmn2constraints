@@ -51,3 +51,7 @@ PARALLEL_GATEWAY_DIAGRAM = {
 XOR_GATEWAY_DIAGRAM = {
     "path" : "examples/xor_gates/longer_xor.json"
 }
+
+XOR_GATEWAY_SEQUENCE_DIAGRAM = {
+    "path" : "examples/xor_gates/multiple_xor.json"
+}

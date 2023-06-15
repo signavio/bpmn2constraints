@@ -243,20 +243,23 @@ class Compiler():
                 if self.__get_cfo_type(successor) in ALLOWED_GATEWAYS:
                     continue
 
-                self.__create_constraint_object(
-                    description = f"{predecessor_name} responds to {successor_name}",
-                    signal = self.signal.response(predecessor_name, successor_name),
-                    declare = self.declare.response(predecessor_name, successor_name),
-                    ltlf = self.ltlf.to_ltl_str(self.declare.response(predecessor_name, successor_name)),
+                self.compiled_sequence.append(
+                        self.__create_constraint_object(
+                        description = f"{predecessor_name} responds to {successor_name}",
+                        signal = self.signal.response(predecessor_name, successor_name),
+                        declare = self.declare.response(predecessor_name, successor_name),
+                        ltlf = self.ltlf.to_ltl_str(self.declare.response(predecessor_name, successor_name)),
+                    )
                 )
 
-                if self.concurrent:
-                    self.__create_constraint_object(
+                self.compiled_sequence.append(
+                        self.__create_constraint_object(
                         description = f"{predecessor_name} responds to {successor_name}",
                         signal = self.signal.alternate_response(predecessor_name, successor_name),
                         declare = self.declare.alternate_response(predecessor_name, successor_name),
                         ltlf = self.ltlf.to_ltl_str(self.declare.alternate_response(predecessor_name, successor_name)),
                     )
+                )
 
     def __create_init_constraint(self):
 

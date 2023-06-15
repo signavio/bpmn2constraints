@@ -1,5 +1,12 @@
 from pylogics.syntax.base import And, Implies, Not, Or
-from pylogics.syntax.ltl import Always, Eventually, Next, Until, PropositionalTrue, Atomic
+from pylogics.syntax.ltl import (
+    Always,
+    Eventually,
+    Next,
+    Until,
+    PropositionalTrue,
+    Atomic,
+)
 from pylogics.utils.to_string import to_string
 
 # Declare Templates
@@ -37,7 +44,8 @@ NOT_SUCCESSION = "Not Succession"
 NOT_ALTERNATE_SUCCESSION = "Not Alternate Succession"
 NOT_CHAIN_SUCCESSION = "Not Chain Succession"
 
-class Declare2ltl():
+
+class Declare2ltl:
     def __init__(self) -> None:
         pass
 
@@ -51,14 +59,15 @@ class Declare2ltl():
             print(constraint_str)
             return "Not translatable"
 
-
     def __to_ltl(self, constraint_str):
         n = 0
         templ_str = constraint_str.split("[")[0]
         if templ_str[-1].isdigit():
             n = int(templ_str[-1])
             templ_str = templ_str[:-1]
-        activities = [act.strip() for act in constraint_str.split("[")[1].split("]")[0].split(",")]
+        activities = [
+            act.strip() for act in constraint_str.split("[")[1].split("]")[0].split(",")
+        ]
         activities = [act for act in activities if act != ""]
         if len(activities) == 0:
             return None
@@ -70,11 +79,45 @@ class Declare2ltl():
             if n == 1:
                 return Not(Eventually(activity_left))
             elif n == 2:
-                return Not(Eventually(And(activity_left, Next(Eventually(activity_left)))))
+                return Not(
+                    Eventually(And(activity_left, Next(Eventually(activity_left))))
+                )
             elif n == 3:
-                return Not(Eventually(And(activity_left, Next(Eventually(And(activity_left, Next(Eventually(activity_left))))))))
+                return Not(
+                    Eventually(
+                        And(
+                            activity_left,
+                            Next(
+                                Eventually(
+                                    And(activity_left, Next(Eventually(activity_left)))
+                                )
+                            ),
+                        )
+                    )
+                )
             elif n == 4:
-                return Not(Eventually(And(activity_left, Next(Eventually(And(activity_left, Next(Eventually(And(activity_left, Next(Eventually(activity_left)))))))))))
+                return Not(
+                    Eventually(
+                        And(
+                            activity_left,
+                            Next(
+                                Eventually(
+                                    And(
+                                        activity_left,
+                                        Next(
+                                            Eventually(
+                                                And(
+                                                    activity_left,
+                                                    Next(Eventually(activity_left)),
+                                                )
+                                            )
+                                        ),
+                                    )
+                                )
+                            ),
+                        )
+                    )
+                )
             else:
                 raise ValueError("Unsupported n: " + str(n))
 
@@ -84,20 +127,35 @@ class Declare2ltl():
             elif n == 2:
                 return Eventually(And(activity_left, Next(Eventually(activity_left))))
             elif n == 3:
-                return Eventually(And(activity_left, Next(Eventually(And(activity_left, Next(Eventually(activity_left)))))))
+                return Eventually(
+                    And(
+                        activity_left,
+                        Next(
+                            Eventually(
+                                And(activity_left, Next(Eventually(activity_left)))
+                            )
+                        ),
+                    )
+                )
             else:
                 raise ValueError("Unsupported n: " + str(n))
 
         elif templ_str == EXACTLY:
             if n == 1:
-                return And(self.__to_ltl(constraint_str.replace(EXACTLY, EXISTENCE)),
-                        self.__to_ltl(constraint_str.replace(EXACTLY + "1", ABSENCE + "2")))
+                return And(
+                    self.__to_ltl(constraint_str.replace(EXACTLY, EXISTENCE)),
+                    self.__to_ltl(constraint_str.replace(EXACTLY + "1", ABSENCE + "2")),
+                )
             elif n == 2:
-                return And(self.__to_ltl(constraint_str.replace(EXACTLY, EXISTENCE)),
-                        self.__to_ltl(constraint_str.replace(EXACTLY + "2", ABSENCE + "3")))
+                return And(
+                    self.__to_ltl(constraint_str.replace(EXACTLY, EXISTENCE)),
+                    self.__to_ltl(constraint_str.replace(EXACTLY + "2", ABSENCE + "3")),
+                )
             elif n == 3:
-                return And(self.__to_ltl(constraint_str.replace(EXACTLY, EXISTENCE)),
-                        self.__to_ltl(constraint_str.replace(EXACTLY + "3", ABSENCE + "4")))
+                return And(
+                    self.__to_ltl(constraint_str.replace(EXACTLY, EXISTENCE)),
+                    self.__to_ltl(constraint_str.replace(EXACTLY + "3", ABSENCE + "4")),
+                )
             else:
                 raise ValueError("Unsupported n: " + str(n))
 
@@ -111,8 +169,10 @@ class Declare2ltl():
             return Or(Eventually(activity_left), Eventually(activity_right))
 
         elif templ_str == EXCLUSIVE_CHOICE:
-            return And(Or(Eventually(activity_left), Eventually(activity_right)),
-                    Not(And(Eventually(activity_left), Eventually(activity_right))))
+            return And(
+                Or(Eventually(activity_left), Eventually(activity_right)),
+                Not(And(Eventually(activity_left), Eventually(activity_right))),
+            )
 
         elif templ_str == RESPONDED_EXISTENCE:
             return Implies(Eventually(activity_left), Eventually(activity_right))
@@ -121,44 +181,66 @@ class Declare2ltl():
             return Always(Implies(activity_left, Eventually(activity_right)))
 
         elif templ_str == ALTERNATE_RESPONSE:
-            return Always(Implies(activity_left, Next(Until(Not(activity_left), activity_right))))
+            return Always(
+                Implies(activity_left, Next(Until(Not(activity_left), activity_right)))
+            )
 
         elif templ_str == CHAIN_RESPONSE:
             return Always(Implies(activity_left, Next(activity_right)))
 
         elif templ_str == PRECEDENCE:
             return Or(
-                Until(Not(activity_right), activity_left),
-                Always(Not(activity_right))
+                Until(Not(activity_right), activity_left), Always(Not(activity_right))
             )
         elif templ_str == ALTERNATE_PRECEDENCE:
             return And(
-                Or(Until(Not(activity_right), activity_left), Always(Not(activity_right))),
-                Always(Implies(activity_right,
-                            Or(Until(Not(activity_right), activity_left), Always(Not(activity_right)))
-                            )))
+                Or(
+                    Until(Not(activity_right), activity_left),
+                    Always(Not(activity_right)),
+                ),
+                Always(
+                    Implies(
+                        activity_right,
+                        Or(
+                            Until(Not(activity_right), activity_left),
+                            Always(Not(activity_right)),
+                        ),
+                    )
+                ),
+            )
 
         elif templ_str == CHAIN_PRECEDENCE:
             return Always(Implies(Next(activity_right), activity_left))
 
         elif templ_str == SUCCESSION:
-            return And(self.__to_ltl(constraint_str.replace(SUCCESSION, RESPONSE)),
-                    self.__to_ltl(constraint_str.replace(SUCCESSION, PRECEDENCE)))
+            return And(
+                self.__to_ltl(constraint_str.replace(SUCCESSION, RESPONSE)),
+                self.__to_ltl(constraint_str.replace(SUCCESSION, PRECEDENCE)),
+            )
 
         elif templ_str == ALTERNATE_SUCCESSION:
-            return And(self.__to_ltl(
-                constraint_str.replace(ALTERNATE_SUCCESSION, ALTERNATE_RESPONSE)),
-                self.__to_ltl(constraint_str.replace(ALTERNATE_SUCCESSION,
-                                            ALTERNATE_PRECEDENCE)))
+            return And(
+                self.__to_ltl(
+                    constraint_str.replace(ALTERNATE_SUCCESSION, ALTERNATE_RESPONSE)
+                ),
+                self.__to_ltl(
+                    constraint_str.replace(ALTERNATE_SUCCESSION, ALTERNATE_PRECEDENCE)
+                ),
+            )
 
         elif templ_str == CHAIN_SUCCESSION:
             return And(
                 self.__to_ltl(constraint_str.replace(CHAIN_SUCCESSION, CHAIN_RESPONSE)),
-                self.__to_ltl(constraint_str.replace(CHAIN_SUCCESSION, CHAIN_PRECEDENCE)))
+                self.__to_ltl(
+                    constraint_str.replace(CHAIN_SUCCESSION, CHAIN_PRECEDENCE)
+                ),
+            )
 
         elif templ_str == CO_EXISTENCE:
-            return And(Implies(Eventually(activity_left), Eventually(activity_right)),
-                    Implies(Eventually(activity_right), Eventually(activity_left)))
+            return And(
+                Implies(Eventually(activity_left), Eventually(activity_right)),
+                Implies(Eventually(activity_right), Eventually(activity_left)),
+            )
 
         elif templ_str == NOT_RESPONDED_EXISTENCE:
             return Implies(Eventually(activity_left), Not(Eventually(activity_right)))
@@ -171,7 +253,9 @@ class Declare2ltl():
         elif templ_str == NOT_CHAIN_RESPONSE:
             return Always(Implies(Next(activity_left), Not(activity_right)))
         elif templ_str == NOT_SUCCESSION:
-            return And(self.__to_ltl(constraint_str.replace(NOT_SUCCESSION, NOT_RESPONSE)),
-                    self.__to_ltl(constraint_str.replace(NOT_SUCCESSION, NOT_PRECEDENCE)))
+            return And(
+                self.__to_ltl(constraint_str.replace(NOT_SUCCESSION, NOT_RESPONSE)),
+                self.__to_ltl(constraint_str.replace(NOT_SUCCESSION, NOT_PRECEDENCE)),
+            )
         else:
             raise ValueError("Unknown template: " + constraint_str)

@@ -2,8 +2,8 @@ from json import load, JSONDecodeError
 from bpmnconstraints.utils.constants import *
 from bpmnconstraints.utils.sanitizer import Sanitizer
 
-class Parser():
 
+class Parser:
     def __init__(self, bpmn, is_file, transitivity) -> None:
         self.transitivity = transitivity
         self.model = self.__create_model(bpmn, is_file)
@@ -44,7 +44,7 @@ class Parser():
             self.__add_transitivity()
 
         return self.sequence
-    
+
     def __mark_gateway_elements(self):
         for cfo in self.sequence:
             predecessors = cfo.get("predecessor")
@@ -52,24 +52,27 @@ class Parser():
                 predecessor_id = predecessor.get("id")
                 predecessor_cfo = self.__get_cfo_by_id(predecessor_id)
                 if predecessor_cfo:
-                    if predecessor_cfo.get("type") in ALLOWED_GATEWAYS and predecessor_cfo.get("splitting"):
-                        cfo.update({"is in gateway" : True})
+                    if predecessor_cfo.get(
+                        "type"
+                    ) in ALLOWED_GATEWAYS and predecessor_cfo.get("splitting"):
+                        cfo.update({"is in gateway": True})
 
-                    if predecessor_cfo.get("type") in ALLOWED_GATEWAYS and predecessor_cfo.get("joining"):
+                    if predecessor_cfo.get(
+                        "type"
+                    ) in ALLOWED_GATEWAYS and predecessor_cfo.get("joining"):
                         continue
 
                     if cfo.get("type") in ALLOWED_GATEWAYS and cfo.get("joining"):
                         continue
 
                     if "is in gateway" in predecessor_cfo:
-                        cfo.update({"is in gateway" : True})
-            
+                        cfo.update({"is in gateway": True})
 
     def __get_cfo_by_id(self, successor_id):
         for cfo in self.sequence:
             if successor_id == cfo.get("id"):
                 return cfo
-            
+
     def __get_parsed_cfo_by_bpmn_element(self, elem):
         elem_id = self.__get_id(elem)
         for parsed_cfo in self.sequence:
@@ -94,11 +97,7 @@ class Parser():
             transitivity = []
             self.__find_transitive_closure(cfo, transitivity)
             if transitivity:
-                cfo.update(
-                    {
-                        "transitivity": transitivity
-                    }
-                )
+                cfo.update({"transitivity": transitivity})
 
     def __parse(self):
         for elem in self.__get_diagram_elements():
@@ -107,7 +106,6 @@ class Parser():
                 self.sequence.append(cfo)
 
     def __create_cfo(self, elem):
-
         if self.__valid_cfo_element(elem):
             successor = self.__get_successors(elem)
             predecessor = self.__get_predecessors(elem)
@@ -118,17 +116,19 @@ class Parser():
                 "id": self.__get_id(elem),
                 "successor": self.__format_list(successor),
                 "predecessor": self.__format_list(predecessor),
-                "is start": len(predecessor) == 0 or self.__is_predecessor_start_event(predecessor),
-                "is end": len(successor) == 0 or self.__is_successor_end_event(successor),
+                "is start": len(predecessor) == 0
+                or self.__is_predecessor_start_event(predecessor),
+                "is end": len(successor) == 0
+                or self.__is_successor_end_event(successor),
             }
 
             if self.__is_element_gateway(elem):
-                cfo.update({
-                    "joining":
-                    len(self.__get_outgoing_connection(elem)) == 1,
-                    "splitting":
-                    len(self.__get_outgoing_connection(elem)) >= 2,
-                })
+                cfo.update(
+                    {
+                        "joining": len(self.__get_outgoing_connection(elem)) == 1,
+                        "splitting": len(self.__get_outgoing_connection(elem)) >= 2,
+                    }
+                )
 
             if cfo["successor"]:
                 for successor in cfo["successor"]:
@@ -136,9 +136,13 @@ class Parser():
                         elem_id = successor.get("id")
                         elem = self.__get_element_by_id(elem_id)
                         gateway_successors = self.__get_successors(elem)
-                        successor.update({
-                            "gateway successors": self.__format_list(gateway_successors, True)
-                        })
+                        successor.update(
+                            {
+                                "gateway successors": self.__format_list(
+                                    gateway_successors, True
+                                )
+                            }
+                        )
 
             return cfo
 
@@ -153,10 +157,9 @@ class Parser():
             return True
         if self.__is_element_end_event(elem) and self.__valid_end_name(elem):
             return True
-        
+
         return False
-        
-    
+
     def __valid_start_name(self, elem):
         try:
             start_name = self.__get_name(elem)
@@ -170,7 +173,7 @@ class Parser():
                 return False
         except KeyError:
             return False
-            
+
     def __valid_end_name(self, elem):
         try:
             end_name = self.__get_name(elem)
@@ -228,13 +231,12 @@ class Parser():
                     "name": self.__get_label(elem),
                     "type": self.__get_element_type(elem),
                     "id": self.__get_id(elem),
-                    "gateway successor" : gateway,
-                    "splitting" : len(self.__get_successors(elem)) >= 2,
-
+                    "gateway successor": gateway,
+                    "splitting": len(self.__get_successors(elem)) >= 2,
                 }
 
                 try:
-                    cfo.update({"splitting" : len(self.__get_successors(elem)) >= 2})
+                    cfo.update({"splitting": len(self.__get_successors(elem)) >= 2})
                 except Exception:
                     pass
 
@@ -246,11 +248,14 @@ class Parser():
 
     def __get_element_by_id(self, connection_id):
         try:
-            return next(e for e in self.__get_diagram_elements()
-                        if self.__get_id(e) == connection_id)
+            return next(
+                e
+                for e in self.__get_diagram_elements()
+                if self.__get_id(e) == connection_id
+            )
         except StopIteration:
             raise Exception(f"Could not find element with ID {connection_id}")
-            
+
     def __get_element_type(self, elem):
         return elem[STENCIL][ID]
 
@@ -282,7 +287,7 @@ class Parser():
                     return self.sanitizer.sanitize_label(self.__get_name(elem))
                 except KeyError:
                     return self.__get_activity_type(elem)
-            
+
             if self.__is_element_gateway(elem):
                 try:
                     return self.sanitizer.sanitize_label(self.__get_name(elem))
@@ -313,7 +318,10 @@ class Parser():
         for predecessor in predecessors:
             if predecessor:
                 predecessor_type = self.__get_element_type(predecessor)
-                if predecessor_type in ALLOWED_START_EVENTS and predecessor_type not in DISCARDED_START_EVENT_NAMES:
+                if (
+                    predecessor_type in ALLOWED_START_EVENTS
+                    and predecessor_type not in DISCARDED_START_EVENT_NAMES
+                ):
                     if self.__valid_start_name(predecessor):
                         return False
                     return True
@@ -341,17 +349,17 @@ class Parser():
 
     def count_model_element_types(self):
         return len(self.get_element_types())
-    
+
     def count_pools(self):
         count = 0
         for elem in self.diagram[CHILD_SHAPES]:
             if self.__get_element_type(elem) == "Pool":
                 count += 1
         return count
-    
+
     def has_start(self):
         return any(elem.get("is start") for elem in self.sequence)
-    
+
     def get_element_types(self):
         elem_types = {}
 
@@ -364,16 +372,19 @@ class Parser():
                 elem_types[elem_type] = 1
 
         return elem_types
-    
+
     def contains_multiple_starts(self):
         count = 0
         for elem in self.__get_diagram_elements():
             if self.__is_element_start_event(elem):
                 count += 1
         return count > 1
-    
+
     def or_multiple_paths(self):
         for elem in self.__get_diagram_elements():
-            if self.__get_element_type(elem) == "InclusiveGateway" and len(self.__get_outgoing_connection(elem)) >= 3:
+            if (
+                self.__get_element_type(elem) == "InclusiveGateway"
+                and len(self.__get_outgoing_connection(elem)) >= 3
+            ):
                 return True
         return False

@@ -5,10 +5,14 @@ from bpmnconstraints.utils.script_utils import Setup
 from bpmnconstraints.parser.bpmn_parser import Parser
 from bpmnconstraints.compiler.bpmn_compiler import Compiler
 from bpmnconstraints.utils.plot import Plot
-from bpmnconstraints.utils.constants import DISCARDED_CONSTRAINTS, DECLARE_GATEWAYS, DECLARE_CONSTRAINT_REGEX_PATTERN
+from bpmnconstraints.utils.constants import (
+    DISCARDED_CONSTRAINTS,
+    DECLARE_GATEWAYS,
+    DECLARE_CONSTRAINT_REGEX_PATTERN,
+)
 
-class CompilerScript():
-    
+
+class CompilerScript:
     def __init__(self, dataset_path, dataframe_path, create_plots) -> None:
         self.dataset_path = dataset_path
         self.dataframe_path = dataframe_path
@@ -16,7 +20,7 @@ class CompilerScript():
         self.plot = Plot()
         self.transitivity = True
         self.create_plot = create_plots
-    
+
     def __print_model(self, model):
         print(json.dumps(model, indent=2))
 
@@ -32,7 +36,7 @@ class CompilerScript():
         for model in models:
             recall.append(model.get("recall"))
             precision.append(model.get("precision"))
-        
+
         mean_recall = sum(recall) / len(recall)
         mean_precision = sum(precision) / len(precision)
 
@@ -54,14 +58,13 @@ class CompilerScript():
 
         for _, row in tqdm(df.iterrows(), "Parsing dataframe"):
             model = {
-                "model id" : row["model_id"],
-                "constraints" : [],
+                "model id": row["model_id"],
+                "constraints": [],
             }
 
             for constraint in row["constraints"]:
+                constraint = constraint[: constraint.find("|")].strip()
 
-                constraint = constraint[:constraint.find("|")].strip()
-                
                 discarded_constraint = constraint
                 if discarded_constraint.split("[")[0] in DISCARDED_CONSTRAINTS:
                     continue
@@ -73,14 +76,16 @@ class CompilerScript():
     def __parse_dataset(self):
         compiled_models = []
 
-        for chunk in tqdm(self.setup.read_csv_chunk(self.dataset_path), desc="Parsing dataset"):
+        for chunk in tqdm(
+            self.setup.read_csv_chunk(self.dataset_path), desc="Parsing dataset"
+        ):
             models = self.setup.load_models(chunk)
             model_id = chunk["Model ID"]
 
             for i, model in enumerate(models):
                 compiled_model = {
-                    "model id" : model_id.iloc[i],
-                    "constraints" : [],
+                    "model id": model_id.iloc[i],
+                    "constraints": [],
                 }
 
                 try:
@@ -104,33 +109,36 @@ class CompilerScript():
                     num_model_element_types = parser.count_model_element_types()
                     element_types = parser.get_element_types()
 
-
-                    compiled_model.update({
-                        "number of elements" : num_model_elements,
-                        "number of element types" : num_model_element_types,
-                        "element types" : element_types,
-                    })
-
-
+                    compiled_model.update(
+                        {
+                            "number of elements": num_model_elements,
+                            "number of element types": num_model_element_types,
+                            "element types": element_types,
+                        }
+                    )
 
                     compiler = Compiler(result, self.transitivity)
                     result = compiler.run()
 
                     for constraint in result:
                         compiled_model["constraints"].append(constraint.get("DECLARE"))
-                    
+
                     compiled_models.append(compiled_model)
 
                 except Exception:
                     continue
         return compiled_models
-    
+
     def __remove_init_constraints(self, model):
         petri_net_constraints = model.get("petri net constraints")
         compiler_constraints = model.get("compiler constraints")
 
-        petri_net_constraints = [x for x in petri_net_constraints if not x.startswith('Init')]
-        compiler_constraints = [x for x in compiler_constraints if not x.startswith('Init')]
+        petri_net_constraints = [
+            x for x in petri_net_constraints if not x.startswith("Init")
+        ]
+        compiler_constraints = [
+            x for x in compiler_constraints if not x.startswith("Init")
+        ]
 
         model["petri net constraints"] = petri_net_constraints
         model["compiler constraints"] = compiler_constraints
@@ -139,72 +147,103 @@ class CompilerScript():
         petri_net_constraints = model.get("petri net constraints")
         compiler_constraints = model.get("compiler constraints")
 
-        petri_net_constraints = [x for x in petri_net_constraints if not x.startswith('End')]
-        compiler_constraints = [x for x in compiler_constraints if not x.startswith('End')]
+        petri_net_constraints = [
+            x for x in petri_net_constraints if not x.startswith("End")
+        ]
+        compiler_constraints = [
+            x for x in compiler_constraints if not x.startswith("End")
+        ]
 
         model["petri net constraints"] = petri_net_constraints
         model["compiler constraints"] = compiler_constraints
 
-    def __rearrange_gateway_order(self, petri_net_constraints, compiler_constraints, model_id):
+    def __rearrange_gateway_order(
+        self, petri_net_constraints, compiler_constraints, model_id
+    ):
         for i, compiler_constraint in enumerate(compiler_constraints):
             if compiler_constraint.startswith(tuple(DECLARE_GATEWAYS)):
                 match = re.match(DECLARE_CONSTRAINT_REGEX_PATTERN, compiler_constraint)
                 if match:
-                    arguments = match.group(2).split(', ')
-                    compiler_constraint_set = set([match.group(1), arguments[0], arguments[1]])
+                    arguments = match.group(2).split(", ")
+                    compiler_constraint_set = set(
+                        [match.group(1), arguments[0], arguments[1]]
+                    )
                     for petri_net_constraint in petri_net_constraints:
                         if petri_net_constraint.startswith(tuple(DECLARE_GATEWAYS)):
-                            match = re.match(DECLARE_CONSTRAINT_REGEX_PATTERN, compiler_constraint)
+                            match = re.match(
+                                DECLARE_CONSTRAINT_REGEX_PATTERN, compiler_constraint
+                            )
                             if match:
-                                arguments = match.group(2).split(', ')
-                                petri_net_constraint_set = set([match.group(1), arguments[0], arguments[1]])
+                                arguments = match.group(2).split(", ")
+                                petri_net_constraint_set = set(
+                                    [match.group(1), arguments[0], arguments[1]]
+                                )
                                 if compiler_constraint_set == petri_net_constraint_set:
-                                    if sorted(compiler_constraint) == sorted(petri_net_constraint):
+                                    if sorted(compiler_constraint) == sorted(
+                                        petri_net_constraint
+                                    ):
                                         compiler_constraints[i] = petri_net_constraint
 
     def __gateway_constraints_exists(self, compiler_constraints):
-        return any(constraint.startswith(tuple(DECLARE_GATEWAYS)) for constraint in compiler_constraints)
+        return any(
+            constraint.startswith(tuple(DECLARE_GATEWAYS))
+            for constraint in compiler_constraints
+        )
 
     def __combine_models(self, petri_net_models, compiler_models):
         combined_models = []
-        
-        for petri_net_model in tqdm(petri_net_models, desc="Combining models"):
 
+        for petri_net_model in tqdm(petri_net_models, desc="Combining models"):
             model_id = petri_net_model.get("model id")
             petri_net_constraints = petri_net_model.get("constraints")
             found_matching_model = False
 
             for compiler_model in compiler_models:
-
                 if compiler_model.get("model id") == model_id:
-                    compiler_constraints =  compiler_model.get("constraints")
+                    compiler_constraints = compiler_model.get("constraints")
                     number_of_elements = compiler_model.get("number of elements")
-                    number_of_element_types = compiler_model.get("number of element types")
+                    number_of_element_types = compiler_model.get(
+                        "number of element types"
+                    )
                     element_types = compiler_model.get("element types")
                     found_matching_model = True
                     break
-            
-            if found_matching_model and len(compiler_constraints) > 0 and len(petri_net_constraints) > 0:
-                
+
+            if (
+                found_matching_model
+                and len(compiler_constraints) > 0
+                and len(petri_net_constraints) > 0
+            ):
                 if self.__gateway_constraints_exists(compiler_constraints):
-                    self.__rearrange_gateway_order(petri_net_constraints, compiler_constraints, model_id)
+                    self.__rearrange_gateway_order(
+                        petri_net_constraints, compiler_constraints, model_id
+                    )
 
-
-                combined_models.append({
-                    "model id" : model_id,
-                    "petri net constraints" : list(set(petri_net_constraints)),
-                    "compiler constraints" : list(set(compiler_constraints)),
-                    "number of elements" : number_of_elements,
-                    "number of element types" : number_of_element_types,
-                    "element types" : element_types,
-                    "precision" : self.__calculate_precision(petri_net_constraints, compiler_constraints),
-                    "recall" : self.__calculate_recall(petri_net_constraints, compiler_constraints)
-                })
+                combined_models.append(
+                    {
+                        "model id": model_id,
+                        "petri net constraints": list(set(petri_net_constraints)),
+                        "compiler constraints": list(set(compiler_constraints)),
+                        "number of elements": number_of_elements,
+                        "number of element types": number_of_element_types,
+                        "element types": element_types,
+                        "precision": self.__calculate_precision(
+                            petri_net_constraints, compiler_constraints
+                        ),
+                        "recall": self.__calculate_recall(
+                            petri_net_constraints, compiler_constraints
+                        ),
+                    }
+                )
 
         return combined_models
 
     def __calculate_precision(self, petri_net_constraints, compiler_constraints):
-        return len(set(petri_net_constraints).intersection(set(compiler_constraints))) / len(set(compiler_constraints))
+        return len(
+            set(petri_net_constraints).intersection(set(compiler_constraints))
+        ) / len(set(compiler_constraints))
 
     def __calculate_recall(self, petri_net_constraints, compiler_constraints):
-        return len(set(compiler_constraints).intersection(set(petri_net_constraints))) / len(set(petri_net_constraints))
+        return len(
+            set(compiler_constraints).intersection(set(petri_net_constraints))
+        ) / len(set(petri_net_constraints))

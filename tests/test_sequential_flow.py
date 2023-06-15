@@ -8,14 +8,14 @@ from test_utils import init_test_setup_for_compiler
 def test_choice_constraint_is_not_generated_for_elements_in_gateway_constructs():
     res = init_test_setup_for_compiler(XOR_GATEWAY_DIAGRAM)
     not_allowed_choice_constraints = [
-        "Choice[Second Activity Upper, Third Activity Upper]",
-        "Choice[Third Activity Upper, Second Activity Upper]",
-        "Choice[Third Activity Upper, Forth Activity Upper]",
-        "Choice[Forth Activity Upper, Third Activity Upper]",
-        "Choice[Second Activity Lower, Third Activity Lower]",
-        "Choice[Third Activity Lower, Second Activity Lower]",
-        "Choice[Third Activity Lower, Forth Activity Lower]",
-        "Choice[Forth Activity Lower, Third Activity Lower]",
+        "Choice[second Activity Upper, third Activity Upper]",
+        "Choice[third Activity Upper, second Activity Upper]",
+        "Choice[third Activity Upper, forth Activity Upper]",
+        "Choice[forth Activity Upper, third Activity Upper]",
+        "Choice[second Activity Lower, third Activity Lower]",
+        "Choice[third Activity Lower, second Activity Lower]",
+        "Choice[third Activity Lower, forth Activity Lower]",
+        "Choice[forth Activity Lower, third Activity Lower]",
     ]
     assert all(constraint not in res for constraint in not_allowed_choice_constraints)
 
@@ -46,11 +46,11 @@ def test_co_existence_constraints_generated_for_sequential_flow():
 def test_no_succession_between_element_and_gateway_element():
     res = init_test_setup_for_compiler(SINGLE_XOR_GATEWAY_DIAGRAM)
 
-    assert "Succession[Zero Activity, First Activity]" not in res
-    assert "Succession[Zero Activity, Second Activity]" not in res
+    assert "Succession[zero Activity, first Activity]" not in res
+    assert "Succession[zero Activity, second Activity]" not in res
 
 def test_no_co_existence_between_element_and_gateway_element():
     res = init_test_setup_for_compiler(SINGLE_XOR_GATEWAY_DIAGRAM)
 
-    assert "Co-Existence[Zero Activity, First Activity]" not in res
-    assert "Co-Existence[First Activity, Zero Activity]" not in res
+    assert "Co-Existence[zero Activity, first Activity]" not in res
+    assert "Co-Existence[first Activity, zero Activity]" not in res

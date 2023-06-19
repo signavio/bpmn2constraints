@@ -4,3 +4,6 @@ class JsonProperties:
 
     def get_child_shapes(self):
         pass
+
+    def get_elem_id():
+        pass

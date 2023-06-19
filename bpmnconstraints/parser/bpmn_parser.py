@@ -1,4 +1,7 @@
+import os
+import sys
 from json import load, JSONDecodeError
+from xml.etree import ElementTree
 from bpmnconstraints.utils.constants import *
 from bpmnconstraints.utils.sanitizer import Sanitizer
 
@@ -17,8 +20,14 @@ class Parser:
     def __create_model(self, bpmn, is_file):
         if is_file:
             try:
-                with open(bpmn, "r", encoding="utf-8") as file:
-                    return load(file)
+                _, file_extension = os.path.splitext(bpmn)
+                if not file_extension:
+                    print("No file extension found.")
+                if file_extension == ".xml":
+                    return ElementTree.parse(bpmn).getroot()
+                elif file_extension == ".json":
+                    with open(bpmn, "r", encoding="utf-8") as file:
+                        return load(file)
 
             except JSONDecodeError:
                 raise Exception("Something wrong with format of JSON file.")

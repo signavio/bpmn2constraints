@@ -1,5 +1,4 @@
-import os
-import sys
+from pathlib import Path
 from json import load, JSONDecodeError
 from xml.etree import ElementTree
 from bpmnconstraints.utils.constants import *
@@ -20,7 +19,7 @@ class Parser:
     def __create_model(self, bpmn, is_file):
         if is_file:
             try:
-                _, file_extension = os.path.splitext(bpmn)
+                file_extension = Path(bpmn).suffix
                 if not file_extension:
                     print("No file extension found.")
                 if file_extension == ".xml":

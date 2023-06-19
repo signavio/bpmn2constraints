@@ -1,5 +1,5 @@
 from tqdm import tqdm
-from bpmnconstraints.parser.bpmn_json_parser import Parser
+from bpmnconstraints.parser.bpmn_parser import Parser
 from bpmnconstraints.utils.script_utils import Setup
 from bpmnconstraints.utils.plot import Plot
 

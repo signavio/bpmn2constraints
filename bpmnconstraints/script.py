@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 from json import dumps
 from tqdm import tqdm
-from bpmnconstraints.parser.bpmn_json_parser import Parser
+from bpmnconstraints.parser.bpmn_parser import Parser
 from bpmnconstraints.compiler.bpmn_compiler import Compiler
 from bpmnconstraints.utils.script_utils import Setup
 from bpmnconstraints.compiler_script import CompilerScript

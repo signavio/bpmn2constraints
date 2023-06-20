@@ -9,4 +9,5 @@ def test_that_all_gateway_constraints_are_generated():
         "Exclusive Choice[activity three, activity two]",
         "Exclusive Choice[activity three, activity four]",
     ]
+    # assert res == expected_gateway_constraints
     assert all(constraint in res for constraint in expected_gateway_constraints)

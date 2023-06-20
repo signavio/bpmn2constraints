@@ -9,7 +9,7 @@ class JsonModel:
         return self.model[CHILD_SHAPES]
 
     def get_element_type(self, elem):
-        return elem[STENCIL][ID]
+        return elem[STENCIL][ID].lower()
 
     def get_diagram_elements(self):
         try:

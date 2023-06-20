@@ -3,7 +3,7 @@ from bpmnconstraints.utils.constants import *
 
 class XmlModel:
     def __init__(self, model) -> None:
-        self.model = model
+        self.model = model  # this is root.
 
     def get_child_models(self):
         pass

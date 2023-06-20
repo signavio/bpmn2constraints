@@ -42,14 +42,14 @@ class Compiler:
                     self.__create_response_constraint()
 
     def _create_gateway_constraints(self):
-        if self.__get_cfo_type() == "Exclusive_Databased_Gateway":
+        if self.__get_cfo_type() == "exclusive_databased_gateway":
             self.__create_exclusive_choice_constraint()
 
-        if self.__get_cfo_type() == "ParallelGateway":
+        if self.__get_cfo_type() == "parallelgateway":
             self.__create_parallel_gateway_constraint()
             self.concurrent = True
 
-        if self.__get_cfo_type() == "InclusiveGateway":
+        if self.__get_cfo_type() == "inclusivegateway":
             self.__create_inclusive_choice_constraint()
 
     def __create_succession_constraint(self):

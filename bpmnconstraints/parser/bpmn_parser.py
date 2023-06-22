@@ -24,10 +24,8 @@ class Parser:
         if is_file:
             try:
                 file_extension = Path(bpmn).suffix
-                if not file_extension:
-                    raise FileNotFoundError(
-                        f"File extension {file_extension} is not supported."
-                    )
+                if not file_extension or file_extension not in [".json", ".xml"]:
+                    raise FileNotFoundError
                 elif file_extension == ".xml":
                     return ElementTree.parse(bpmn).getroot()
                 elif file_extension == ".json":

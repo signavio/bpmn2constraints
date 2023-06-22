@@ -38,6 +38,7 @@ ALLOWED_ACTIVITIES = [
 ]
 
 ALLOWED_START_EVENTS = [
+    "startevent",
     "startnoneevent",
     "startmessageevent",
     "starttimerevent",
@@ -52,6 +53,7 @@ ALLOWED_START_EVENTS = [
 
 ALLOWED_END_EVENTS = [
     "end",
+    "endevent",
     "endnoneevent",
     "endescalationevent",
     "endmessageevent",

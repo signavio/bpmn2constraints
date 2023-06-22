@@ -1,5 +1,5 @@
 from pathlib import Path
-from json import load, JSONDecodeError
+from json import load, JSONDecodeError, dumps
 from xml.etree import ElementTree
 from bpmnconstraints.utils.constants import *
 from bpmnconstraints.utils.sanitizer import Sanitizer
@@ -54,6 +54,7 @@ class Parser:
             self.__flatten_model()
         else:
             self.model = XmlModel(self.bpmn_model)
+            # print(dumps(self.model.get_diagram_elements(), indent=2))
 
         self.__parse()
         self.__mark_gateway_elements()
@@ -174,7 +175,6 @@ class Parser:
             return True
         if self.__is_element_end_event(elem) and self.__valid_end_name(elem):
             return True
-
         return False
 
     def __valid_start_name(self, elem):
@@ -215,12 +215,14 @@ class Parser:
                 if connection:
                     connection_id = self.model.get_id(connection)
                     elem = self.__get_element_by_id(connection_id)
-
                     if self.model.get_element_type(elem) in ALLOWED_CONNECTING_OBJECTS:
                         connection = self.model.get_outgoing_connection(elem)
                         if connection:
-                            connection_id = self.model.get_id(connection[0])
-                            elem = self.__get_element_by_id(connection_id)
+                            if isinstance(connection, list):
+                                connection_id = self.model.get_id(connection[0])
+                                elem = self.__get_element_by_id(connection_id)
+                            else:
+                                elem = self.__get_element_by_id(connection)
                             activities.append(elem)
             return activities
         except TypeError:
@@ -229,14 +231,16 @@ class Parser:
     def __get_predecessors(self, current_elem):
         predecessors = []
         current_elem_id = self.model.get_id(current_elem)
-
-        for elem in self.model.get_diagram_elements():
-            successors = self.__get_successors(elem)
-            if successors:
-                for successor in successors:
-                    if successor:
-                        if self.model.get_id(successor) == current_elem_id:
-                            predecessors.append(elem)
+        try:
+            for elem in self.model.get_diagram_elements():
+                successors = self.__get_successors(elem)
+                if successors:
+                    for successor in successors:
+                        if successor:
+                            if self.model.get_id(successor) == current_elem_id:
+                                predecessors.append(elem)
+        except Exception:
+            pass
 
         return predecessors
 

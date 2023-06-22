@@ -56,7 +56,7 @@ class XmlModel:
         try:
             return elem["name"]
         except KeyError:
-            return elem["type"]
+            return elem["type"].lower()
 
     def get_id(self, elem):
         if isinstance(elem, str):

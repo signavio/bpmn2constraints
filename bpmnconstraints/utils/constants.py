@@ -147,6 +147,10 @@ DISCARDED_END_EVENT_NAMES = [
     "OR",
 ]
 
+XOR_GATEWAY = "exclusive_databased_gateway"
+AND_GATEWAY = "parallelgateway"
+OR_GATEWAY = "inclusivegateway"
+
 VALID_NAME_LENGTH = 5
 
 CHILD_SHAPES = "childShapes"

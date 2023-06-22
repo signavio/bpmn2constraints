@@ -117,7 +117,7 @@ class Compiler:
 
                 self.compiled_sequence.append(
                     self.__create_constraint_object(
-                        description=f"{name} leads to {successor_name}",
+                        description=f"{name} leads to (with loops) {successor_name}",
                         signal=self.signal.alternate_succession(name, successor_name),
                         declare=self.declare.alternate_succession(name, successor_name),
                         ltlf=self.ltlf.to_ltl_str(

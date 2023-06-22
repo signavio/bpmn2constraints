@@ -1,5 +1,5 @@
 from pathlib import Path
-from json import load, JSONDecodeError, dumps
+from json import load, JSONDecodeError
 from xml.etree import ElementTree
 from bpmnconstraints.utils.constants import *
 from bpmnconstraints.utils.sanitizer import Sanitizer
@@ -25,8 +25,10 @@ class Parser:
             try:
                 file_extension = Path(bpmn).suffix
                 if not file_extension:
-                    print("No file extension found.")
-                if file_extension == ".xml":
+                    raise FileNotFoundError(
+                        f"File extension {file_extension} is not supported."
+                    )
+                elif file_extension == ".xml":
                     return ElementTree.parse(bpmn).getroot()
                 elif file_extension == ".json":
                     with open(bpmn, "r", encoding="utf-8") as file:
@@ -54,7 +56,6 @@ class Parser:
             self.__flatten_model()
         else:
             self.model = XmlModel(self.bpmn_model)
-            # print(dumps(self.model.get_diagram_elements(), indent=2))
 
         self.__parse()
         self.__mark_gateway_elements()

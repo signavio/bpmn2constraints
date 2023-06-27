@@ -11,6 +11,7 @@ from bpmnconstraints.compiler.bpmn_compiler import Compiler
 from bpmnconstraints.utils.script_utils import Setup
 from bpmnconstraints.script_utils.constraint_comparison import ComparisonScript
 from bpmnconstraints.script_utils.dataset_parsing import ParserScript
+from bpmnconstraints.script_utils.dataset_compiling import CompilingScript
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
@@ -34,6 +35,7 @@ def run():
     parser.add_argument(
         "--constraint_type", type=str, help="type of constraint to be generated"
     )
+    parser.add_argument("--compile_dataset", type=str, help="Path to dataset folder")
 
     args = parser.parse_args()
 
@@ -85,6 +87,19 @@ def run():
 
         if setup.is_directory(dataset_path):
             script = ParserScript(dataset_path, plot)
+            script.run()
+            print("Done")
+
+    elif args.compile_dataset:
+        dataset_path = Path(args.compile_dataset)
+        setup = Setup(None)
+        plot = args.plot
+
+        if dataset_path is None:
+            print("?")
+            return
+        if setup.is_directory(dataset_path):
+            script = CompilingScript(dataset_path, True, False)
             script.run()
     else:
         parser.print_help()

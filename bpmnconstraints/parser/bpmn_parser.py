@@ -1,6 +1,7 @@
 from pathlib import Path
 from json import load, JSONDecodeError
 from xml.etree import ElementTree
+import logging
 from bpmnconstraints.utils.constants import *
 from bpmnconstraints.utils.sanitizer import Sanitizer
 from bpmnconstraints.parser.json_model import JsonModel
@@ -25,7 +26,7 @@ class Parser:
             try:
                 file_extension = Path(bpmn).suffix
                 if not file_extension or file_extension not in [".json", ".xml"]:
-                    raise FileNotFoundError
+                    return None
                 elif file_extension == ".xml":
                     return ElementTree.parse(bpmn).getroot()
                 elif file_extension == ".json":
@@ -49,18 +50,23 @@ class Parser:
         return elements
 
     def run(self):
-        if self.is_json:
-            self.model = JsonModel(self.bpmn_model)
-            self.__flatten_model()
-        else:
-            self.model = XmlModel(self.bpmn_model)
+        try:
+            if self.is_json:
+                self.model = JsonModel(self.bpmn_model)
+                self.__flatten_model()
+            else:
+                self.model = XmlModel(self.bpmn_model)
 
-        self.__parse()
-        self.__mark_gateway_elements()
-        if self.transitivity:
-            self.__add_transitivity()
+            self.__parse()
+            self.__mark_gateway_elements()
+            if self.transitivity:
+                self.__add_transitivity()
 
-        return self.sequence
+            return self.sequence
+        except Exception:
+            logging.warn(
+                "\nCould not execute model. Make sure that model is:\n1. Formatted correctly.\n2. File ends with .xml or .json."
+            )
 
     def __mark_gateway_elements(self):
         for cfo in self.sequence:

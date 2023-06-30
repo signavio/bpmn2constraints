@@ -11,9 +11,9 @@ setuptools.setup(
     long_description=long_description,
     author='Arvid Bergman, Timotheus Kampik, Adrian Rebmann',
     author_email='timotheus.kampik@sap.com',
-    url='https://github.com/signavio/bpmn-to-signal',
+    url='https://github.com/signavio/bpmn2constraints',
     py_modules=['bpmnconstraints'],
     entry_points={'console_scripts': ['bpmnconstraints=bpmnconstraints.script:run']},
-    install_requires=[],
+    install_requires=['pylogics', 'xmltodict'],
     keywords='BPMN Conformance',
     classifiers=['BPMN', 'Conformance Checking'])

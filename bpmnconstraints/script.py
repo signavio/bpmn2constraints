@@ -42,7 +42,8 @@ def run():
         setup = Setup(None)
         if setup.is_file(path):
             res = Parser(path, True, args.transitivity).run()
-            print(dumps(res, indent=2))
+            if res:
+                print(dumps(res, indent=2))
 
     elif args.compile:
         if not args.constraint_type:
@@ -51,11 +52,13 @@ def run():
             if setup.is_file(path):
                 res = Parser(path, True, args.transitivity).run()
                 res = Compiler(res, args.transitivity).run()
-                print(dumps(res, indent=2))
+                if res:
+                    print(dumps(res, indent=2))
         else:
             path = Path(args.compile)
             res = compile_bpmn_diagram(path, args.constraint_type)
-            print(dumps(res, indent=2))
+            if res:
+                print(dumps(res, indent=2))
 
     elif args.compare_constraints:
         dataframe_path = None

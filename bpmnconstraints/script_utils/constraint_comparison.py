@@ -12,7 +12,7 @@ from bpmnconstraints.utils.constants import (
 )
 
 
-class CompilerScript:
+class ComparisonScript:
     def __init__(self, dataset_path, dataframe_path, create_plots) -> None:
         self.dataset_path = dataset_path
         self.dataframe_path = dataframe_path

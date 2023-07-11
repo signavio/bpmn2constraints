@@ -1,6 +1,8 @@
 # BPMN2Constraints
 [![REUSE status](https://api.reuse.software/badge/github.com/signavio/bpmn2constraints)](https://api.reuse.software/info/github.com/signavio/bpmn2constraints)
 [![Test](https://github.com/signavio/bpmn2constraints/actions/workflows/main.yml/badge.svg)](https://github.com/signavio/bpmn2constraints/actions/workflows/main.yml/badge.svg)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
 
 
 Tool for compiling BPMN models directly to constraints. Currently, BPMN2Constraints can compile BPMN models stored in both `JSON` and `XML` format and output to `DECLARE`, `SIGNAL` and `Linear Temporal Logic on Finite Traces` (LTLf).

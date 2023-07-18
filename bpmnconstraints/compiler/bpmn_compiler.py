@@ -6,7 +6,7 @@ from bpmnconstraints.utils.constants import *
 
 
 class Compiler:
-    def __init__(self, sequence, transitivity) -> None:
+    def __init__(self, sequence, transitivity, skip_named_gateways) -> None:
         self.sequence = sequence
         self.transitivity = transitivity
         self.declare = Declare()
@@ -15,6 +15,7 @@ class Compiler:
         self.concurrent = True
         self.compiled_sequence = []
         self.cfo = None
+        self.skip_named_gateways = skip_named_gateways
 
     def run(self):
         for cfo in self.sequence:
@@ -73,6 +74,9 @@ class Compiler:
             successor_name = self.__get_cfo_name(successor)
 
             if successor_name in ALLOWED_GATEWAYS:
+                continue
+
+            if self.skip_named_gateways and successor["type"] in ALLOWED_GATEWAYS:
                 continue
 
             if not self.__is_valid_name(successor_name) or not self.__is_valid_name(

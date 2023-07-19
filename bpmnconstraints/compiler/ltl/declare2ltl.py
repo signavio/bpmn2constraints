@@ -1,3 +1,4 @@
+import logging
 from pylogics.syntax.base import And, Implies, Not, Or
 from pylogics.syntax.ltl import (
     Always,
@@ -56,7 +57,7 @@ class Declare2ltl:
                 return "Not translatable"
             return to_string(formula)
         except Exception:
-            print(constraint_str)
+            logging.error(constraint_str)
             return "Not translatable"
 
     def __to_ltl(self, constraint_str):

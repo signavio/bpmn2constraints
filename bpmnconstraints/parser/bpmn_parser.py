@@ -64,7 +64,7 @@ class Parser:
 
             return self.sequence
         except Exception:
-            logging.warn(
+            logging.warning(
                 "\nCould not execute model. Make sure that model is:\n1. Formatted correctly.\n2. File ends with .xml or .json."
             )
 

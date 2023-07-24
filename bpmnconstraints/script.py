@@ -36,6 +36,9 @@ def run():
         "--constraint_type", type=str, help="type of constraint to be generated"
     )
     parser.add_argument("--compile_dataset", type=str, help="Path to dataset folder")
+    parser.add_argument(
+        "--skip_named_gateways", type=bool, help="Skips adding gateways as tokens."
+    )
 
     args = parser.parse_args()
 
@@ -53,12 +56,14 @@ def run():
             setup = Setup(None)
             if setup.is_file(path):
                 res = Parser(path, True, args.transitivity).run()
-                res = Compiler(res, args.transitivity).run()
+                res = Compiler(res, args.transitivity, args.skip_named_gateways).run()
                 if res:
                     print(dumps(res, indent=2))
         else:
             path = Path(args.compile)
-            res = compile_bpmn_diagram(path, args.constraint_type)
+            res = compile_bpmn_diagram(
+                path, args.constraint_type, args.skip_named_gateways
+            )
             if res:
                 print(dumps(res, indent=2))
 
@@ -91,7 +96,6 @@ def run():
         if setup.is_directory(dataset_path):
             script = ParserScript(dataset_path, plot)
             script.run()
-            print("Done")
 
     elif args.compile_dataset:
         dataset_path = Path(args.compile_dataset)
@@ -99,7 +103,6 @@ def run():
         plot = args.plot
 
         if dataset_path is None:
-            print("?")
             return
         if setup.is_directory(dataset_path):
             script = CompilingScript(dataset_path, True, False)
@@ -108,13 +111,13 @@ def run():
         parser.print_help()
 
 
-def compile_bpmn_diagram(path_to_bpmn_diagram, constraint_type):
+def compile_bpmn_diagram(path_to_bpmn_diagram, constraint_type, skip_named_gateways):
     constraints = []
     setup = Setup(None)
     path_to_bpmn_diagram = Path(path_to_bpmn_diagram)
     if setup.is_file(path_to_bpmn_diagram):
         res = Parser(path_to_bpmn_diagram, True, True).run()
-        res = Compiler(res, True).run()
+        res = Compiler(res, True, skip_named_gateways).run()
 
         if constraint_type == "SIGNAL":
             logging.info("Generating SIGNAL constraints...")

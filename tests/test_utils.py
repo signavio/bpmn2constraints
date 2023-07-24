@@ -18,7 +18,7 @@ def init_test_setup_for_compiler(diagram_constant):
     setup = Setup(None)
     if setup.is_file(path):
         res = Parser(path, True, False).run()
-        res = Compiler(res, True).run()
+        res = Compiler(res, True, False).run()
         for con in res:
             constraints.append(con.get("DECLARE"))
         return constraints

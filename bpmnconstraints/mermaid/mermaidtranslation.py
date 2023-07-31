@@ -8,6 +8,7 @@ class Mermaid:
     def __init__(self, bpmn) -> None:
         self.bpmn = bpmn
         self.ids = {}
+        self.styles = []
 
     def translate(self):
         rows = []
@@ -21,6 +22,8 @@ class Mermaid:
             elif elem["type"] in ALLOWED_GATEWAYS:
                 rows.extend(self.__create_node(elem, self.__gen_gateway_str))
 
+        # Add styles in the end, less messy for humans to read.
+        rows.extend(self.styles)
         return self.__gen_flowchart(rows)
 
     def __get_node_name(self, elem):
@@ -33,19 +36,26 @@ class Mermaid:
         successor_id = self.__gen_new_id(successor["id"])
         successor_name = self.__get_node_name(successor)
         if successor["is end"]:
-            return self.__gen_event_str(successor_id, successor_name)
+            # If end event, return a styled event string.
+            return (
+                self.__gen_event_str(successor_id, successor_name),
+                f"style {successor_id} fill:stroke:#000,stroke-width:4px",
+            )
         elif successor["type"] in ALLOWED_ACTIVITIES:
-            return self.__gen_activity_str(successor_id, successor_name)
+            return self.__gen_activity_str(successor_id, successor_name), None
         elif successor["type"] in ALLOWED_GATEWAYS:
-            return self.__gen_gateway_str(successor_id, successor_name)
+            return self.__gen_gateway_str(successor_id, successor_name), None
 
     def __create_node(self, elem, gen_str_func):
         rows = []
         for successor in elem["successor"]:
             node_id = self.__gen_new_id(elem["id"])
             node_name = self.__get_node_name(elem)
-            row = f"{gen_str_func(node_id, node_name)}{SEQUENCE_FLOW}{self.__match_successor_str(successor)}"
-            rows.append(row)
+            result = self.__match_successor_str(successor)
+            rows.append(f"{gen_str_func(node_id, node_name)}{SEQUENCE_FLOW}{result[0]}")
+            style = result[1]
+            if style:
+                self.styles.append(style)
         return rows
 
     def __gen_new_id(self, old_id):

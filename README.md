@@ -48,10 +48,15 @@ bpmnconstraints --parse_dataset path/to/folder/which/contains/dataset[.xml, .jso
 > Note: The script requires the path to be towards the folder in which the CSV files are stored, not to a CSV file directly.
 4. Comparing constraints.
 The tool can be used to compare it's generated constraints through the metrics of precision and recall.
-```terminal
+```bash
 bpmnconstraints --compare_constraints True --dataframe path/to/dataframe --dataset path/to/dataset
 ```
 > Note: The dataframe must be a pickled dataframe, containing a "model_id" column aswell as a "constraints" column. The dataset should be a CSV file.
+
+5. Compiling to a Mermaid.js flowchart.
+```bash
+bpmnconstraints --compile_to_mermaid path/to/process/diagram[.xml, .json]
+```
 
 Optional flags:
 1.  `--transitivity` (set to True) for generating constraints with transitive closure.
@@ -62,6 +67,7 @@ Optional flags:
 To parse an dataset, the CSV file must contain a column which is named `Model JSON`, in which the model is stored.
 
 ## Examples:
+![Linear BPMN diagram](/assets/linear.png)
 1. Parsing a linear diagram, without transitivity.
 ```json
 [
@@ -75,7 +81,8 @@ To parse an dataset, the CSV file must contain a column which is named `Model JS
         "type": "task",
         "id": "sid-338230CF-C52B-4C83-9B4E-A8388E336593",
         "gateway successor": false,
-        "splitting": false
+        "splitting": false,
+        "is end": false
       }
     ],
     "predecessor": [
@@ -84,7 +91,8 @@ To parse an dataset, the CSV file must contain a column which is named `Model JS
         "type": "startnoneevent",
         "id": "sid-8FB33325-7680-4AAD-A043-3C38D2758329",
         "gateway successor": false,
-        "splitting": false
+        "splitting": false,
+        "is end": false
       }
     ],
     "is start": true,
@@ -100,7 +108,8 @@ To parse an dataset, the CSV file must contain a column which is named `Model JS
         "type": "task",
         "id": "sid-BEA0DEB9-2482-42D9-9846-9E6C5541FA54",
         "gateway successor": false,
-        "splitting": false
+        "splitting": false,
+        "is end": true
       }
     ],
     "predecessor": [
@@ -109,7 +118,8 @@ To parse an dataset, the CSV file must contain a column which is named `Model JS
         "type": "task",
         "id": "sid-79912385-C358-446C-8EBB-07429B015548",
         "gateway successor": false,
-        "splitting": false
+        "splitting": false,
+        "is end": false
       }
     ],
     "is start": false,
@@ -125,7 +135,8 @@ To parse an dataset, the CSV file must contain a column which is named `Model JS
         "type": "endnoneevent",
         "id": "sid-EFFF67BA-ECAB-4A2F-ADE8-A97373DF23F1",
         "gateway successor": false,
-        "splitting": false
+        "splitting": false,
+        "is end": true
       }
     ],
     "predecessor": [
@@ -134,7 +145,8 @@ To parse an dataset, the CSV file must contain a column which is named `Model JS
         "type": "task",
         "id": "sid-338230CF-C52B-4C83-9B4E-A8388E336593",
         "gateway successor": false,
-        "splitting": false
+        "splitting": false,
+        "is end": false
       }
     ],
     "is start": false,
@@ -171,7 +183,7 @@ To parse an dataset, the CSV file must contain a column which is named `Model JS
     "LTLf": "(F(check_invoice)) | (F(register_invoice))"
   },
   {
-    "description": "register invoice leads to check invoice",
+    "description": "register invoice leads to (with loops) check invoice",
     "SIGNAL": "( ^ NOT('register invoice'|'check invoice')* ('register invoice'NOT('register invoice'|'check invoice')*'check invoice'NOT('register invoice'|'check invoice')*)*NOT('register invoice'|'check invoice')* $)",
     "DECLARE": "Alternate Succession[register invoice, check invoice]",
     "LTLf": "(G((register_invoice) -> (X[!]((~(register_invoice)) U (check_invoice))))) & (((~(check_invoice)) U (register_invoice)) | (G(~(check_invoice)))) & (G((check_invoice) -> (((~(check_invoice)) U (register_invoice)) | (G(~(check_invoice))))))"
@@ -195,7 +207,7 @@ To parse an dataset, the CSV file must contain a column which is named `Model JS
     "LTLf": "(F(accept_invoice)) | (F(check_invoice))"
   },
   {
-    "description": "check invoice leads to accept invoice",
+    "description": "check invoice leads to (with loops) accept invoice",
     "SIGNAL": "( ^ NOT('check invoice'|'accept invoice')* ('check invoice'NOT('check invoice'|'accept invoice')*'accept invoice'NOT('check invoice'|'accept invoice')*)*NOT('check invoice'|'accept invoice')* $)",
     "DECLARE": "Alternate Succession[check invoice, accept invoice]",
     "LTLf": "(G((check_invoice) -> (X[!]((~(check_invoice)) U (accept_invoice))))) & (((~(accept_invoice)) U (check_invoice)) | (G(~(accept_invoice)))) & (G((accept_invoice) -> (((~(accept_invoice)) U (check_invoice)) | (G(~(accept_invoice))))))"
@@ -207,4 +219,10 @@ To parse an dataset, the CSV file must contain a column which is named `Model JS
     "LTLf": "F((accept_invoice) & (X[!](false)))"
   }
 ]
+```
+3. Translating the diagram to Mermaid.js.
+```yaml
+flowchart LR
+    id0((register invoice))-->id1(check invoice)
+    id1(check invoice)-->id2((accept invoice))
 ```

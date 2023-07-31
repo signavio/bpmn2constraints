@@ -2,6 +2,8 @@ from bpmnconstraints.utils.constants import *
 
 DEFAULT_DIRECTION = "LR"
 SEQUENCE_FLOW = "-->"
+END_EVENT_STYLING_DEF = "classDef EndEvent fill:stroke:#000,stroke-width:4px"
+END_EVENT_STYLE = ":::EndEvent"
 
 
 class Mermaid:
@@ -23,39 +25,34 @@ class Mermaid:
                 rows.extend(self.__create_node(elem, self.__gen_gateway_str))
 
         # Add styles in the end, less messy for humans to read.
-        rows.extend(self.styles)
+        rows.append(END_EVENT_STYLING_DEF)
         return self.__gen_flowchart(rows)
 
     def __get_node_name(self, elem):
-        successor_name = elem["name"]
-        if successor_name == "":
-            successor_name = elem["type"]
-        return successor_name
+        name = elem["name"]
+        if name == "":
+            name = elem["type"]
+        return name
 
     def __match_successor_str(self, successor):
         successor_id = self.__gen_new_id(successor["id"])
         successor_name = self.__get_node_name(successor)
         if successor["is end"]:
             # If end event, return a styled event string.
-            return (
-                self.__gen_event_str(successor_id, successor_name),
-                f"style {successor_id} fill:stroke:#000,stroke-width:4px",
-            )
+            return self.__gen_event_str(successor_id, successor_name) + END_EVENT_STYLE
         elif successor["type"] in ALLOWED_ACTIVITIES:
-            return self.__gen_activity_str(successor_id, successor_name), None
+            return self.__gen_activity_str(successor_id, successor_name)
         elif successor["type"] in ALLOWED_GATEWAYS:
-            return self.__gen_gateway_str(successor_id, successor_name), None
+            return self.__gen_gateway_str(successor_id, successor_name)
 
     def __create_node(self, elem, gen_str_func):
         rows = []
         for successor in elem["successor"]:
             node_id = self.__gen_new_id(elem["id"])
             node_name = self.__get_node_name(elem)
-            result = self.__match_successor_str(successor)
-            rows.append(f"{gen_str_func(node_id, node_name)}{SEQUENCE_FLOW}{result[0]}")
-            style = result[1]
-            if style:
-                self.styles.append(style)
+            rows.append(
+                f"{gen_str_func(node_id, node_name)}{SEQUENCE_FLOW}{self.__match_successor_str(successor)}"
+            )
         return rows
 
     def __gen_new_id(self, old_id):

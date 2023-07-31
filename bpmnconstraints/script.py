@@ -40,7 +40,11 @@ def run():
     parser.add_argument(
         "--skip_named_gateways", type=bool, help="Skips adding gateways as tokens."
     )
-    parser.add_argument("--compile_to_mermaid", type=str, help="Outputs BPMN diagram in parsable mermaid format")
+    parser.add_argument(
+        "--compile_to_mermaid",
+        type=str,
+        help="Outputs BPMN diagram in parsable mermaid format",
+    )
 
     args = parser.parse_args()
 

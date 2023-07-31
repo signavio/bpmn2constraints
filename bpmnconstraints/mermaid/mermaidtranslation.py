@@ -1,7 +1,9 @@
 from bpmnconstraints.utils.constants import *
+
 DEFAULT_DIRECTION = "LR"
 SEQUENCE_FLOW = "-->"
-        
+
+
 class Mermaid:
     def __init__(self, bpmn) -> None:
         self.bpmn = bpmn
@@ -53,7 +55,7 @@ class Mermaid:
         return self.ids[old_id]
 
     def __gen_flowchart(self, rows):
-        flowchart = "flowchart TD\n"
+        flowchart = f"flowchart {DEFAULT_DIRECTION}\n"
         for row in rows:
             flowchart += f"    {row}\n"
         return flowchart

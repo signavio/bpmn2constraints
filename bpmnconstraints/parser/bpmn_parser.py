@@ -260,7 +260,8 @@ class Parser:
                     "id": self.model.get_id(elem),
                     "gateway successor": gateway,
                     "splitting": len(successors) >= 2,
-                    "is end" : len(successors) == 0 or self.__is_successor_end_event(successors)
+                    "is end": len(successors) == 0
+                    or self.__is_successor_end_event(successors),
                 }
 
                 try:

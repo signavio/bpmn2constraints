@@ -9,6 +9,7 @@ from tqdm import tqdm
 from bpmnconstraints.parser.bpmn_parser import Parser
 from bpmnconstraints.compiler.bpmn_compiler import Compiler
 from bpmnconstraints.utils.script_utils import Setup
+from bpmnconstraints.mermaid.mermaidtranslation import Mermaid
 from bpmnconstraints.script_utils.constraint_comparison import ComparisonScript
 from bpmnconstraints.script_utils.dataset_parsing import ParserScript
 from bpmnconstraints.script_utils.dataset_compiling import CompilingScript
@@ -38,6 +39,11 @@ def run():
     parser.add_argument("--compile_dataset", type=str, help="Path to dataset folder")
     parser.add_argument(
         "--skip_named_gateways", type=bool, help="Skips adding gateways as tokens."
+    )
+    parser.add_argument(
+        "--compile_to_mermaid",
+        type=str,
+        help="Outputs BPMN diagram in parsable mermaid format",
     )
 
     args = parser.parse_args()
@@ -107,6 +113,16 @@ def run():
         if setup.is_directory(dataset_path):
             script = CompilingScript(dataset_path, True, False)
             script.run()
+
+    elif args.compile_to_mermaid:
+        path = Path(args.compile_to_mermaid)
+        setup = Setup(None)
+        if setup.is_file(path):
+            res = Parser(path, True, False).run()
+            if res:
+                flowchart = Mermaid(res).translate()
+                print(flowchart)
+
     else:
         parser.print_help()
 

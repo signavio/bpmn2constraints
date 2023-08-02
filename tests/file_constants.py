@@ -74,3 +74,13 @@ XOR_GATEWAY_DIAGRAM = {"path": "examples/xor_gates/longer_xor.json"}
 XOR_GATEWAY_SEQUENCE_DIAGRAM = {"path": "examples/xor_gates/multiple_xor.json"}
 
 REQUIREMENTS_TXT = {"path": "requirements.txt"}
+
+LINEAR_MERMAID_GRAPH = {
+    "path": "examples/linear/linear_sequence.json",
+    "output": "flowchart LR\n0((register invoice))-->1(check invoice)\n1-->2((accept invoice))\n",
+}
+
+GATEWAY_MERMAID_GRAPH = {
+    "path": "examples/xor_gates/single_xor.json",
+    "output": "flowchart LR\n0{XOR}-->1(second activity)\n0-->2(first activity)\n3{XOR}-->4((third activity))\n2-->3\n1-->3\n5((zero activity))-->0\n",
+}

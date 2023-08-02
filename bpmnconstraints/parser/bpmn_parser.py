@@ -253,12 +253,15 @@ class Parser:
         formatted = []
         for elem in elems:
             if elem:
+                successors = self.__get_successors(elem)
                 cfo = {
                     "name": self.__get_label(elem),
                     "type": self.model.get_element_type(elem),
                     "id": self.model.get_id(elem),
                     "gateway successor": gateway,
-                    "splitting": len(self.__get_successors(elem)) >= 2,
+                    "splitting": len(successors) >= 2,
+                    "is end": len(successors) == 0
+                    or self.__is_successor_end_event(successors),
                 }
 
                 try:

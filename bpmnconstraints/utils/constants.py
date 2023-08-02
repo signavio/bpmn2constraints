@@ -164,3 +164,8 @@ NAME = "name"
 DECLARE_CONSTRAINT_REGEX_PATTERN = r"(\w+(?:-\w+)?(?: \w+)?)(?: \w+)?\[(.*?)\]"
 
 DECLARE_GATEWAYS = ["Co-Existence", "Choice", "Exclusive Choice"]
+
+DEFAULT_DIRECTION = "LR"
+SEQUENCE_FLOW = "-->"
+# END_EVENT_STYLING_DEF = "classDef EndEvent fill:stroke:#000,stroke-width:4px"
+# END_EVENT_STYLE = ":::EndEvent"

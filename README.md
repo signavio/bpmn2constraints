@@ -222,7 +222,7 @@ To parse an dataset, the CSV file must contain a column which is named `Model JS
 ```
 3. Translating the diagram to Mermaid.js.
 ```yaml
-flowchart LR
-    id0((register invoice))-->id1(check invoice)
-    id1(check invoice)-->id2((accept invoice))
+    flowchart LR
+    0((register invoice))-->1(check invoice)
+    1-->2((accept invoice))
 ```

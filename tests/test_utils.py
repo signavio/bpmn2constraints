@@ -31,5 +31,3 @@ def init_test_setup_for_mermaid(diagram_constant):
     if setup.is_file(path):
         bpmn = Parser(path, True, False).run()
         return Mermaid(bpmn).translate()
-    
-

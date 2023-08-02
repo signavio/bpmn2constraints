@@ -77,7 +77,7 @@ class Mermaid:
         return (
             node_id
             if node_id in self.generated_nodes
-            else "{}{{{}}}".format(node_id, msg) # Can't use f-string 'cus {}.
+            else "{}{{{}}}".format(node_id, msg)  # Can't use f-string 'cus {}.
         )
 
     def __gen_activity_str(self, node_id, msg):

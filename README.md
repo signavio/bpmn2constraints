@@ -8,7 +8,7 @@
 
 
 
-Tool for compiling BPMN models directly to constraints. Currently, BPMN2Constraints can compile BPMN models stored in both `JSON` and `XML` format and output to `DECLARE`, `SIGNAL` and `Linear Temporal Logic on Finite Traces` (LTLf).
+Tool for compiling BPMN models directly to constraints. Currently, BPMN2Constraints can compile BPMN models stored in both `JSON` and `XML` format and output to `DECLARE`, `SIGNAL` and `Linear Temporal Logic on Finite Traces` (LTLf). BPMN2Constraints can also compile BPMN diagrams to Mermaid.js compatible flowcharts.
 
 ## Installation.
 Install with:

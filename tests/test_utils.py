@@ -24,6 +24,7 @@ def init_test_setup_for_compiler(diagram_constant):
             constraints.append(con.get("DECLARE"))
         return constraints
 
+
 def init_test_setupt_for_mermaid(diagram_constant):
     path = Path(diagram_constant.get("path"))
     setup = Setup(None)

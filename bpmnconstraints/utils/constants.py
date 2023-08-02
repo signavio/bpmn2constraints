@@ -119,7 +119,7 @@ ACTIVITY_MAPPING = {
     "intermediatemultipleeventthrowing": "throwactivity",
 }
 
-EXCLUDED_TRANSITIVE_NAMES = [
+GATEWAY_NAMES = [
     "AND",
     "XOR",
     "OR",

@@ -47,10 +47,12 @@ class Mermaid:
         successor_id = self.__gen_new_id(successor["id"])
         successor_name = self.__get_node_name(successor)
         if successor["is end"]:
-            # If end event, return a styled event string.
-            successor_str = self.__gen_event_str(
-                successor_id, successor_name
-            )  # + END_EVENT_STYLE
+            if successor["type"] in ALLOWED_GATEWAYS:
+                successor_str = self.__gen_gateway_str(successor_id, successor_name)
+            else:
+                successor_str = self.__gen_event_str(
+                    successor_id, successor_name
+                )  # + END_EVENT_STYLE
         elif successor["type"] in ALLOWED_ACTIVITIES:
             successor_str = self.__gen_activity_str(successor_id, successor_name)
         elif successor["type"] in ALLOWED_GATEWAYS:

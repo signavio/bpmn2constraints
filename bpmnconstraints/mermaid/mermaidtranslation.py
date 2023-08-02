@@ -36,7 +36,8 @@ class Mermaid:
     def __get_node_name(self, elem):
         if elem["type"] in ALLOWED_GATEWAYS:
             return (
-                elem["name"] if elem["name"] in GATEWAY_NAMES 
+                elem["name"]
+                if elem["name"] in GATEWAY_NAMES 
                 else f"{GATEWAY_MAPPING.get(elem['type'])}: {elem['name']}"
             )
         return elem["name"] if elem["name"] != "" else elem["type"]

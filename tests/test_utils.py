@@ -25,10 +25,9 @@ def init_test_setup_for_compiler(diagram_constant):
         return constraints
 
 
-def init_test_setupt_for_mermaid(diagram_constant):
+def init_test_setup_for_mermaid(diagram_constant):
     path = Path(diagram_constant.get("path"))
     setup = Setup(None)
     if setup.is_file(path):
         bpmn = Parser(path, True, False).run()
-        flowchart = Mermaid(bpmn).translate()
-        return flowchart
+        return Mermaid(bpmn).translate()

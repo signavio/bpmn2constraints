@@ -82,5 +82,5 @@ LINEAR_MERMAID_GRAPH = {
 
 GATEWAY_MERMAID_GRAPH = {
     "path": "examples/xor_gates/single_xor.json",
-    "output": "flowchart LR\n0{XOR}-->1(second activity)\n0-->2(first activity)\n3{XOR}-->4((third activity))\n2-->3\n1-->3\n5((zero activity))-->0\n",
+    "output": "flowchart LR\n0{XOR}-->1(second activity)\n0{XOR}-->2(first activity)\n3{XOR}-->4((third activity))\n2-->3\n1-->3\n5((zero activity))-->0\n",
 }

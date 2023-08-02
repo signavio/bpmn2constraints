@@ -34,7 +34,7 @@ class Mermaid:
         return self.__gen_flowchart(rows)
 
     def __get_node_name(self, elem):
-        return elem["name"] if elem["name"] is not "" else elem["type"]
+        return elem["name"] if elem["name"] != "" else elem["type"]
 
     def __match_successor_str(self, successor):
         successor_id = self.__gen_new_id(successor["id"])
@@ -65,7 +65,9 @@ class Mermaid:
 
     def __gen_flowchart(self, rows):
         flowchart = f"flowchart {DEFAULT_DIRECTION}\n"
-        flowchart += "\n".join(rows)
+        for row in rows:
+            # Skip indent to minimise use of tokens, as it's not required by the mermaid interpreter.
+            flowchart += f"{row}\n"
         return flowchart
 
     def __gen_event_str(self, node_id, msg):

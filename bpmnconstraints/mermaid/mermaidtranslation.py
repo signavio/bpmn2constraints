@@ -34,6 +34,11 @@ class Mermaid:
         return self.__gen_flowchart(rows)
 
     def __get_node_name(self, elem):
+        if elem["type"] in ALLOWED_GATEWAYS:
+            return (
+                elem["name"] if elem["name"] in GATEWAY_NAMES 
+                else f"{GATEWAY_MAPPING.get(elem['type'])}: {elem['name']}"
+            )
         return elem["name"] if elem["name"] != "" else elem["type"]
 
     def __match_successor_str(self, successor):
@@ -65,9 +70,7 @@ class Mermaid:
 
     def __gen_flowchart(self, rows):
         flowchart = f"flowchart {DEFAULT_DIRECTION}\n"
-        for row in rows:
-            # Skip indent to minimise use of tokens, as it's not required by the mermaid interpreter.
-            flowchart += f"{row}\n"
+        flowchart += "\n".join(rows)
         return flowchart
 
     def __gen_event_str(self, node_id, msg):

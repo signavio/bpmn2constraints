@@ -193,7 +193,7 @@ class Compiler:
             return False
         if name in ALLOWED_GATEWAYS:
             return False
-        if name in EXCLUDED_TRANSITIVE_NAMES:
+        if name in GATEWAY_NAMES:
             return False
         return True
 

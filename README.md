@@ -229,3 +229,10 @@ To parse an dataset, the CSV file must contain a column which is named `Model JS
 Which results in the following graph, if interpreted by Mermaid.js.
 <img width="836" alt="Screenshot 2023-08-02 at 17 11 37" src="https://github.com/signavio/bpmn2constraints/assets/80515896/6f104b61-8bf2-454c-adda-89b66315d834">
 
+## Acknowledgements.
+This project has been authored by:
+- Arvid Bergman ([@arvidbt](https://github.com/arvidbt)),
+- Timotheus Kampik ([@TimKam](https://github.com/TimKam)),
+- Adrian Rebmann ([@adrianrebmann](https://github.com/adrianrebmann)
+
+

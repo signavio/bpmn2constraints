@@ -233,6 +233,6 @@ Which results in the following graph, if interpreted by Mermaid.js.
 This project has been authored by:
 - Arvid Bergman ([@arvidbt](https://github.com/arvidbt)),
 - Timotheus Kampik ([@TimKam](https://github.com/TimKam)),
-- Adrian Rebmann ([@adrianrebmann](https://github.com/adrianrebmann)
+- Adrian Rebmann ([@adrianrebmann](https://github.com/adrianrebmann)).
 
 

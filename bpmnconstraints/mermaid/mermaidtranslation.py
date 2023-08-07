@@ -24,6 +24,14 @@ class Mermaid:
         rows = []
         for elem in self.bpmn:
             if elem["is start"]:
+                if len(elem["predecessor"]) > 0:
+                    for predecessor in elem["predecessor"]:
+                        rows.append(
+                            f"{self.__match_successor_str(predecessor)}{SEQUENCE_FLOW}{self.__match_successor_str(elem)}"
+                        )
+                rows.extend(self.__create_node(elem, self.__gen_event_str))
+
+            elif elem["is end"]:
                 rows.extend(self.__create_node(elem, self.__gen_event_str))
 
             elif elem["type"] in ALLOWED_ACTIVITIES and not elem["is end"]:
@@ -43,22 +51,22 @@ class Mermaid:
         return elem["name"] if elem["name"] != "" else elem["type"]
 
     def __match_successor_str(self, successor):
-        successor_id = self.__gen_new_id(successor["id"])
+        successor_id = self.__gen_new_id(successor)
         successor_name = self.__get_node_name(successor)
-        if successor["is end"]:
-            if successor["type"] in ALLOWED_GATEWAYS:
-                successor_str = self.__gen_gateway_str(successor_id, successor_name)
-            else:
-                successor_str = self.__gen_event_str(successor_id, successor_name)
-        elif successor["type"] in ALLOWED_ACTIVITIES:
+        if successor["type"] in ALLOWED_ACTIVITIES:
             successor_str = self.__gen_activity_str(successor_id, successor_name)
         elif successor["type"] in ALLOWED_GATEWAYS:
             successor_str = self.__gen_gateway_str(successor_id, successor_name)
+        elif (
+            successor["type"] in ALLOWED_START_EVENTS
+            or successor["type"] in ALLOWED_END_EVENTS
+        ):
+            successor_str = self.__gen_event_str(successor_id, successor_name)
         self.generated_nodes.append(successor_id)
         return successor_str
 
     def __create_node(self, elem, gen_str_func):
-        id = self.__gen_new_id(elem["id"])
+        id = self.__gen_new_id(elem)
         rows = [
             f"{gen_str_func(id, self.__get_node_name(elem))}{SEQUENCE_FLOW}{self.__match_successor_str(successor)}"
             for successor in elem["successor"]
@@ -66,8 +74,10 @@ class Mermaid:
         self.generated_nodes.append(id)
         return rows
 
-    def __gen_new_id(self, old_id):
-        return self.ids.setdefault(old_id, str(len(self.ids)))
+    def __gen_new_id(self, elem):
+        id = self.ids.setdefault(elem["id"], str(len(self.ids)))
+        id += f":{elem['type']}:"
+        return id
 
     def __gen_flowchart(self, rows):
         flowchart = f"flowchart {DEFAULT_DIRECTION}\n"

@@ -26,12 +26,14 @@ class Mermaid:
             if elem["is start"]:
                 if len(elem["predecessor"]) > 0:
                     for predecessor in elem["predecessor"]:
-                        rows.append(f"{self.__match_successor_str(predecessor)}{SEQUENCE_FLOW}{self.__match_successor_str(elem)}")
+                        rows.append(
+                            f"{self.__match_successor_str(predecessor)}{SEQUENCE_FLOW}{self.__match_successor_str(elem)}"
+                        )
                 rows.extend(self.__create_node(elem, self.__gen_event_str))
 
             elif elem["is end"]:
                 rows.extend(self.__create_node(elem, self.__gen_event_str))
-                
+
             elif elem["type"] in ALLOWED_ACTIVITIES and not elem["is end"]:
                 rows.extend(self.__create_node(elem, self.__gen_activity_str))
 
@@ -55,7 +57,10 @@ class Mermaid:
             successor_str = self.__gen_activity_str(successor_id, successor_name)
         elif successor["type"] in ALLOWED_GATEWAYS:
             successor_str = self.__gen_gateway_str(successor_id, successor_name)
-        elif successor["type"] in ALLOWED_START_EVENTS or successor["type"] in ALLOWED_END_EVENTS:
+        elif (
+            successor["type"] in ALLOWED_START_EVENTS
+            or successor["type"] in ALLOWED_END_EVENTS
+        ):
             successor_str = self.__gen_event_str(successor_id, successor_name)
         self.generated_nodes.append(successor_id)
         return successor_str

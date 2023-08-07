@@ -77,10 +77,10 @@ REQUIREMENTS_TXT = {"path": "requirements.txt"}
 
 LINEAR_MERMAID_GRAPH = {
     "path": "examples/linear/linear_sequence.json",
-    "output": "flowchart LR\n0((register invoice))-->1(check invoice)\n1-->2((accept invoice))",
+    "output": "flowchart LR\n0:startnoneevent:((start))-->1:task:(register invoice)\n1:task:-->2:task:(check invoice)\n2:task:-->3:task:(accept invoice)\n3:task:-->4:endnoneevent:((end))",
 }
 
 GATEWAY_MERMAID_GRAPH = {
     "path": "examples/xor_gates/single_xor.json",
-    "output": "flowchart LR\n0{XOR}-->1(second activity)\n0{XOR}-->2(first activity)\n3{XOR}-->4((third activity))\n2-->3\n1-->3\n5((zero activity))-->0",
+    "output": "flowchart LR\n0:exclusive_databased_gateway:{XOR}-->1:task:(second activity)\n0:exclusive_databased_gateway:{XOR}-->2:task:(first activity)\n3:exclusive_databased_gateway:{XOR}-->4:task:(third activity)\n2:task:-->3:exclusive_databased_gateway:\n1:task:-->3:exclusive_databased_gateway:\n4:task:-->5:endnoneevent:((endnoneevent))\n6:startnoneevent:((startnoneevent))-->7:task:(zero activity)\n7:task:-->0:exclusive_databased_gateway:",
 }

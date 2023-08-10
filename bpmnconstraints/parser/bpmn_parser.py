@@ -1,7 +1,7 @@
+import logging
 from pathlib import Path
 from json import load, JSONDecodeError
 from xml.etree import ElementTree
-import logging
 from bpmnconstraints.utils.constants import *
 from bpmnconstraints.utils.sanitizer import Sanitizer
 from bpmnconstraints.parser.json_model import JsonModel
@@ -32,7 +32,6 @@ class Parser:
                 elif file_extension == ".json":
                     with open(bpmn, "r", encoding="utf-8") as file:
                         return load(file)
-
             except JSONDecodeError:
                 raise Exception("Something wrong with format of JSON file.")
             except OSError:
@@ -56,12 +55,10 @@ class Parser:
                 self.__flatten_model()
             else:
                 self.model = XmlModel(self.bpmn_model)
-
             self.__parse()
             self.__mark_gateway_elements()
             if self.transitivity:
                 self.__add_transitivity()
-
             return self.sequence
         except Exception:
             logging.warning(
@@ -79,15 +76,12 @@ class Parser:
                         "type"
                     ) in ALLOWED_GATEWAYS and predecessor_cfo.get("splitting"):
                         cfo.update({"is in gateway": True})
-
                     if predecessor_cfo.get(
                         "type"
                     ) in ALLOWED_GATEWAYS and predecessor_cfo.get("joining"):
                         continue
-
                     if cfo.get("type") in ALLOWED_GATEWAYS and cfo.get("joining"):
                         continue
-
                     if "is in gateway" in predecessor_cfo:
                         cfo.update({"is in gateway": True})
 
@@ -110,7 +104,6 @@ class Parser:
                 if successor:
                     if "is in gateway" not in successor:
                         transitivity.append(successor)
-
                     for successor in cfo.get("successor"):
                         successor_cfo = self.__get_cfo_by_id(successor.get("id"))
                         self.__find_transitive_closure(successor_cfo, transitivity)
@@ -152,7 +145,6 @@ class Parser:
                         "splitting": len(self.model.get_outgoing_connection(elem)) >= 2,
                     }
                 )
-
             if cfo["successor"]:
                 for successor in cfo["successor"]:
                     if successor.get("type") in ALLOWED_GATEWAYS:
@@ -166,7 +158,6 @@ class Parser:
                                 )
                             }
                         )
-
             return cfo
 
     def __valid_cfo_element(self, elem):
@@ -216,18 +207,26 @@ class Parser:
             if len(connection_objects) == 0:
                 return []
             activities = []
+            if isinstance(connection_objects, str):
+                connection_objects = [connection_objects]
             for connection in connection_objects:
                 if connection:
-                    connection_id = self.model.get_id(connection)
+                    connection_id = (
+                        self.model.get_id(connection[0])
+                        if isinstance(connection, list)
+                        else self.model.get_id(connection)
+                    )
                     elem = self.__get_element_by_id(connection_id)
                     if self.model.get_element_type(elem) in ALLOWED_CONNECTING_OBJECTS:
                         connection = self.model.get_outgoing_connection(elem)
                         if connection:
-                            if isinstance(connection, list):
-                                connection_id = self.model.get_id(connection[0])
-                                elem = self.__get_element_by_id(connection_id)
-                            else:
-                                elem = self.__get_element_by_id(connection)
+                            elem = (
+                                self.__get_element_by_id(
+                                    self.model.get_id(connection[0])
+                                )
+                                if isinstance(connection, list)
+                                else self.__get_element_by_id(connection)
+                            )
                             activities.append(elem)
             return activities
         except TypeError:
@@ -245,8 +244,7 @@ class Parser:
                             if self.model.get_id(successor) == current_elem_id:
                                 predecessors.append(elem)
         except Exception:
-            pass
-
+            raise Exception
         return predecessors
 
     def __format_list(self, elems, gateway=False):
@@ -268,7 +266,6 @@ class Parser:
                     cfo.update({"splitting": len(self.__get_successors(elem)) >= 2})
                 except Exception:
                     pass
-
                 formatted.append(cfo)
         return formatted
 
@@ -298,13 +295,11 @@ class Parser:
                     return self.sanitizer.sanitize_label(self.model.get_name(elem))
                 except KeyError:
                     return self.__get_activity_type(elem)
-
             if self.__is_element_gateway(elem):
                 try:
                     return self.sanitizer.sanitize_label(self.model.get_name(elem))
                 except KeyError:
                     return self.__get_gateway_type(elem)
-
             if self.__is_element_start_event(elem) or self.__is_element_end_event(elem):
                 try:
                     return self.sanitizer.sanitize_label(self.model.get_name(elem))
@@ -381,7 +376,6 @@ class Parser:
                 elem_types[elem_type] += 1
             else:
                 elem_types[elem_type] = 1
-
         return elem_types
 
     def contains_multiple_starts(self):

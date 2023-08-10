@@ -6,6 +6,7 @@ ALLOWED_GATEWAYS = [
     "inclusivegateway",
     "complexgateway",
     "eventbasedgateway",
+    "exclusivegateway"
 ]
 
 ALLOWED_ACTIVITIES = [

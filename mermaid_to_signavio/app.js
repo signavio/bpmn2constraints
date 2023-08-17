@@ -26,6 +26,8 @@ class CoordinateExtractor {
         this.extractCircleCoordinates($, circleElements);
         this.extractRectangleCoordinates($, rectangleElements);
 
+        const jsonCoorditanes = JSON.stringify(this.coordinatesArray);
+        console.log('Coordinates json: ', jsonCoorditanes);
         console.log('Coordinates Array:', this.coordinatesArray);
     }
 

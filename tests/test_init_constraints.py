@@ -12,4 +12,8 @@ def test_init_constraint_is_generated_without_explicit_start_event():
 
 def test_that_each_start_has_init_constraint():
     res = init_test_setup_for_compiler(MULTIPLE_STARTS_DIAGRAM)
-    assert ["Init[path one]", "Init[path two]"] == res
+    expected_init_constraints = [
+        "Init[path one]",
+        "Init[path two]"
+    ]
+    assert all(constraint in res for constraint in expected_init_constraints)

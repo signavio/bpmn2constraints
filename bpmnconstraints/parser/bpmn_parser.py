@@ -59,12 +59,27 @@ class Parser:
             self.__mark_gateway_elements()
             if self.transitivity:
                 self.__add_transitivity()
+            self.__validate_end_constrains()
             return self.sequence
         except Exception:
             logging.warning(
                 "\nCould not execute model. Make sure that model is:\n1. Formatted correctly.\n2. File ends with .xml or .json."
             )
 
+    def __validate_end_constrains(self):
+        for cfo in self.sequence:                
+            if cfo['is end'] and cfo['name'] in GATEWAY_NAMES:
+                valid_constraint = False
+                """ for successor in cfo['successor']:
+                    if successor['name'] in ALLOWED_END_EVENTS:
+                        valid_constraint = True """
+                if not valid_constraint:        
+                    cfo['is end'] = False
+                    for predecessor in cfo['predecessor']:
+                        for item in self.sequence:
+                            if item['name'] == predecessor['name']:
+                                item['is end'] = True
+        return
     def __mark_gateway_elements(self):
         for cfo in self.sequence:
             predecessors = cfo.get("predecessor")

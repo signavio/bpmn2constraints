@@ -20,17 +20,14 @@ def test_end_constraint_is_generated_with_linear_parser():
     res = init_test_setup_for_parser(LINEAR_MERMAID_GRAPH)
     assert res[-1]['is end'] == True
 
-
 def test_end_constraint_is_generated_without_explicit_end_event():
     res = init_test_setup_for_compiler(LINEAR_SEQUENCE_DIAGRAM_WITHOUT_START_AND_END)
     assert "End[second element]" in res
-
 
 def test_end_constraint_is_generated_when_multiple_endings():
     res = init_test_setup_for_parser(XOR_GATEWAY_SEQUENCE_DIAGRAM)
 
     assert res[-1]['is end'] and res[-2]['is end'] and not res[3]['is end']
-
 
 def test_end_constraint_is_generated_when_xor_gateway():
     res = init_test_setup_for_compiler(XOR_GATEWAY_SEQUENCE_DIAGRAM)

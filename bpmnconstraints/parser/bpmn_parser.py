@@ -79,7 +79,6 @@ class Parser:
                 for predecessor in cfo['predecessor']:
                     self.sequence[item_indices[predecessor['name']]]['is end'] = True
 
-                            
     def __mark_gateway_elements(self):
         for cfo in self.sequence:
             predecessors = cfo.get("predecessor")

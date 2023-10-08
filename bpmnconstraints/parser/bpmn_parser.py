@@ -59,14 +59,14 @@ class Parser:
             self.__mark_gateway_elements()
             if self.transitivity:
                 self.__add_transitivity()
-            self.__validate_end_constrains()
+            self.validate_edge_cases()
             return self.sequence
         except Exception:
             logging.warning(
                 "\nCould not execute model. Make sure that model is:\n1. Formatted correctly.\n2. File ends with .xml or .json."
             )
 
-    def __validate_end_constrains(self):
+    def validate_edge_cases(self):
         for cfo in self.sequence:                
             if cfo['is end'] and cfo['name'] in GATEWAY_NAMES:
                 valid_constraint = False

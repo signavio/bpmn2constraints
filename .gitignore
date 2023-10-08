@@ -136,6 +136,5 @@ dmypy.json
 
 .vscode/
 
-# This might be weird, but I think this is where the conf.py should be
 tutorial/conf.py
 test.mmd

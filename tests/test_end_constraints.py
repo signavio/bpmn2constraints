@@ -16,6 +16,7 @@ def test_end_constraint_is_generated_when_multiple_endings():
     ]
     assert all(constraint in res for constraint in expected_ending_constraints)
 
+
 def test_end_constraint_is_generated_with_linear_parser():
     res = init_test_setup_for_parser(LINEAR_MERMAID_GRAPH)
     assert res[-1]["is end"] == True

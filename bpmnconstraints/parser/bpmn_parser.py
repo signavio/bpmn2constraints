@@ -68,6 +68,7 @@ class Parser:
 
     def validate_edge_cases(self):
         item_indices = {item["name"]: index for index, item in enumerate(self.sequence)}
+        
         for cfo in self.sequence:                
             if cfo["is start"] and cfo["name"] == "XOR":
                 cfo["is start"] = False

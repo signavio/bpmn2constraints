@@ -67,19 +67,19 @@ class Parser:
             )
 
     def validate_edge_cases(self):
+        item_indices = {item['name']: index for index, item in enumerate(self.sequence)}
+
         for cfo in self.sequence:                
+            if cfo['is start'] and cfo['name'] == 'XOR':
+                cfo['is start'] = False
+                for successor in cfo['successor']:
+                    self.sequence[item_indices[successor['name']]]['is start'] = True
             if cfo['is end'] and cfo['name'] in GATEWAY_NAMES:
-                valid_constraint = False
-                """ for successor in cfo['successor']:
-                    if successor['name'] in ALLOWED_END_EVENTS:
-                        valid_constraint = True """
-                if not valid_constraint:        
-                    cfo['is end'] = False
-                    for predecessor in cfo['predecessor']:
-                        for item in self.sequence:
-                            if item['name'] == predecessor['name']:
-                                item['is end'] = True
-        return
+                cfo['is end'] = False
+                for predecessor in cfo['predecessor']:
+                    self.sequence[item_indices[predecessor['name']]]['is end'] = True
+
+                            
     def __mark_gateway_elements(self):
         for cfo in self.sequence:
             predecessors = cfo.get("predecessor")

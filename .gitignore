@@ -135,6 +135,3 @@ dmypy.json
 .idea/
 
 .vscode/
-
-tutorial/conf.py
-test.mmd

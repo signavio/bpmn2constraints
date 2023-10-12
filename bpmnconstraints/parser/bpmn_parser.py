@@ -59,11 +59,28 @@ class Parser:
             self.__mark_gateway_elements()
             if self.transitivity:
                 self.__add_transitivity()
+            self.validate_splitting_and_joining_gateway_cases()
             return self.sequence
         except Exception:
             logging.warning(
                 "\nCould not execute model. Make sure that model is:\n1. Formatted correctly.\n2. File ends with .xml or .json."
             )
+
+    def validate_splitting_and_joining_gateway_cases(self):
+        """Update 'is start' and 'is end' attributes of cfo based on splitting/joining gateways.
+        Otherwise, the parser interprets the gateways as start/end events instead of the activities.
+        """
+
+        item_indices = {item["name"]: index for index, item in enumerate(self.sequence)}
+        for cfo in self.sequence:
+            if cfo["is start"] and cfo["name"] == "XOR":
+                cfo["is start"] = False
+                for successor in cfo["successor"]:
+                    self.sequence[item_indices[successor["name"]]]["is start"] = True
+            if cfo["is end"] and cfo["name"] in GATEWAY_NAMES:
+                cfo["is end"] = False
+                for predecessor in cfo["predecessor"]:
+                    self.sequence[item_indices[predecessor["name"]]]["is end"] = True
 
     def __mark_gateway_elements(self):
         for cfo in self.sequence:

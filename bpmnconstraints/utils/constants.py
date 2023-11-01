@@ -9,6 +9,8 @@ ALLOWED_GATEWAYS = [
     "exclusivegateway",
 ]
 
+DISCARDED_START_GATEWAYS = ["exclusive_databased_gateway", "exclusivegateway"]
+
 ALLOWED_ACTIVITIES = [
     "task",
     "event",
@@ -148,7 +150,7 @@ DISCARDED_END_EVENT_NAMES = [
     "OR",
 ]
 
-XOR_GATEWAY = "exclusive_databased_gateway"
+XOR_GATEWAY = ["exclusive_databased_gateway", "exclusivegateway"]
 AND_GATEWAY = "parallelgateway"
 OR_GATEWAY = "inclusivegateway"
 

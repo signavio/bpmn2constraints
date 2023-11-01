@@ -73,11 +73,13 @@ class Parser:
 
         item_indices = {item["name"]: index for index, item in enumerate(self.sequence)}
         for cfo in self.sequence:
-            if cfo["is start"] and cfo["name"] == "XOR":
+            if cfo["is start"] and (cfo["type"] in DISCARDED_START_GATEWAYS):
                 cfo["is start"] = False
                 for successor in cfo["successor"]:
                     self.sequence[item_indices[successor["name"]]]["is start"] = True
-            if cfo["is end"] and cfo["name"] in GATEWAY_NAMES:
+            if cfo["is end"] and (
+                cfo["name"] in GATEWAY_NAMES or cfo["type"] == "exclusivegateway"
+            ):
                 cfo["is end"] = False
                 for predecessor in cfo["predecessor"]:
                     self.sequence[item_indices[predecessor["name"]]]["is end"] = True

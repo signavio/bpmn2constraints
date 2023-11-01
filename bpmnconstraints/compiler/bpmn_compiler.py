@@ -43,7 +43,7 @@ class Compiler:
                     self.__create_response_constraint()
 
     def _create_gateway_constraints(self):
-        if self.__get_cfo_type() == XOR_GATEWAY:
+        if self.__get_cfo_type() in XOR_GATEWAY:
             self.__create_exclusive_choice_constraint()
 
         if self.__get_cfo_type() == AND_GATEWAY:

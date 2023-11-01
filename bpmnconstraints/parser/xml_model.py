@@ -22,7 +22,10 @@ class XmlModel:
                 if key.startswith("@"):
                     new_dict[key[1:]] = value
                 elif key.endswith(":outgoing"):
-                    new_dict["outgoing"].append(value)
+                    if isinstance(value, list):
+                        new_dict["outgoing"].extend(value)
+                    else:
+                        new_dict["outgoing"].append(value)
                 else:
                     new_dict[key] = value
         return new_dict

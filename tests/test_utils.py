@@ -5,16 +5,16 @@ from bpmnconstraints.utils.script_utils import Setup
 from bpmnconstraints.mermaid.mermaidtranslation import Mermaid
 
 
-def init_test_setup_for_parser(diagram_constant):
-    path = Path(diagram_constant.get("path"))
+def init_test_setup_for_parser(diagram_constant, test_xml=False):
+    path = Path(diagram_constant["xmlpath" if test_xml else "path"])
     setup = Setup(None)
     if setup.is_file(path):
         res = Parser(path, True, True).run()
         return res
 
 
-def init_test_setup_for_compiler(diagram_constant):
-    path = Path(diagram_constant.get("path"))
+def init_test_setup_for_compiler(diagram_constant, test_xml=False):
+    path = Path(diagram_constant["xmlpath" if test_xml else "path"])
     constraints = []
     setup = Setup(None)
     if setup.is_file(path):
@@ -25,8 +25,8 @@ def init_test_setup_for_compiler(diagram_constant):
         return constraints
 
 
-def init_test_setup_for_mermaid(diagram_constant):
-    path = Path(diagram_constant.get("path"))
+def init_test_setup_for_mermaid(diagram_constant, test_xml=False):
+    path = Path(diagram_constant["xmlpath" if test_xml else "path"])
     setup = Setup(None)
     if setup.is_file(path):
         bpmn = Parser(path, True, False).run()

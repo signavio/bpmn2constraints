@@ -1,6 +1,7 @@
 """
 Module for plotting functions.
 """
+
 # pylint: disable=import-error
 
 import matplotlib.pyplot as plt

@@ -23,6 +23,11 @@ class Trace:
             return result
         else:
             raise StopIteration
+    def __split__(self):
+        spl = []
+        for node in self.nodes:
+            spl.append(node)
+        return spl
 
 class Explainer:
     def __init__(self):
@@ -31,7 +36,16 @@ class Explainer:
         """
         self.constraints = []  # List to store constraints (regex patterns)
         self.nodes = set()     # Set to store unique nodes involved in constraints
+        self.constraint_fulfillment_alpha = 1
+        self.repetition_alpha = 1
+        self.sub_trace_adherence_alpha = 1
 
+    def set_heuristic_alpha(self, constraint_fulfillment_alpha = 1, repetition_alpha = 1, sub_trace_adherence_alpha = 1):
+        self.constraint_fulfillment_alpha = constraint_fulfillment_alpha
+        self.repetition_alpha = repetition_alpha
+        self.sub_trace_adherence_alpha
+        return
+    
     def add_constraint(self, regex):
         """
         Adds a new constraint and updates the nodes list.
@@ -109,130 +123,126 @@ class Explainer:
 
     def counterfactual_expl(self, trace):
         """
-        Provides a counterfactual explanation for a non-conformant trace, suggesting changes to adhere to the constraints.
-        
-        :param trace: A Trace instance.
-        :return: Suggestion to make the trace conformant.
+            3 Heuristics: 
+                Constraint fulfillment - Prioritize modifications that maximize the number of constraints the trace fulfills.
+                Minimal Deviation - Seek the least number of changes necessary to make the trace adhere to constraints.
+                Sub-trace Adherence - Evaluate the proportion of the trace that adheres to constraints after each modification.
         """
         if self.conformant(trace):
             return "The trace is already conformant, no changes needed."
+        # Evaluate heuristic for original trace
+        constraint_fulfillment_score = 1
+        if len(self.constraints) > 1:
+            constraint_fulfillment_score = self.evaluate(trace, "constraint_fulfillment")
+        sub_trace_adherence_score = self.evaluate(trace, "sub_trace_adherence")
+        repetition_score = self.evaluate(trace, "repetition")
+        # Identify the lowest score and the corresponding heuristic
+        scores = {
+            'constraint_fulfillment': constraint_fulfillment_score,
+            'sub_trace_adherence': sub_trace_adherence_score,
+            'repetition' : repetition_score
+        }
+        
+        lowest_heuristic, lowest_score = min(scores.items(), key=lambda x: x[1])
 
-        violated_constraints = self.identify_violated_constraints(trace)
-        if not violated_constraints:
-            return "Unable to identify specific violated constraints."
-
-        counterfactuals = []
-        for constraint in violated_constraints:
-            counterfactuals.extend(self.generate_potential_counterfactuals(trace, constraint))
-
-        conformant_counterfactuals = [cf for cf in counterfactuals if self.conformant(cf[0])]
-        if conformant_counterfactuals:
-            selected_counterfactual = min(conformant_counterfactuals, key=lambda x: len(x[0].nodes))  # Example selection criteria
-            return f"Suggested change to make the trace ({trace.nodes}) conformant: {selected_counterfactual[1]}"
+        # Perform operation based on the lowest scoring heuristic
+        if lowest_heuristic:
+            return self.operate_on_trace(trace, lowest_heuristic, lowest_score, "")
         else:
-            return "Unable to generate potential counterfactuals."
-
-
-    def identify_violated_constraints(self, trace):
-        """
-        Identifies which constraints are violated by the given trace.
+            return "Error identifying the lowest scoring heuristic."
         
-        :param trace: A Trace instance to check against the constraints.
-        :return: A list of constraints that the trace violates.
-        """
-        violated = []
-        trace_str = ''.join(trace.nodes)
-        for constraint in self.constraints:
-            if not re.search(constraint, trace_str):
-                violated.append(constraint)
-        return violated
-    
-    def introduces_new_violations(self, counterfactual, violated_constraints):
-        """
-        Checks if a counterfactual trace introduces new violations.
+    def counter_factual_helper(self, working_trace, explanation, depth = 0):
+        if self.conformant(working_trace):
+            print(depth)
+            return explanation
+        if depth > 100:
+            return f'{explanation}\n Maximum depth of {depth -1} reached'
+        # Evaluate heuristic for original trace
+        constraint_fulfillment_score = 1
+        if len(self.constraints) > 1:
+            constraint_fulfillment_score = self.evaluate(working_trace, "constraint_fulfillment")
+        sub_trace_adherence_score = self.evaluate(working_trace, "sub_trace_adherence")
+        repetition_score = self.evaluate(working_trace, "repetition")
+        if constraint_fulfillment_score == 0 and sub_trace_adherence_score == 0:
+            self.constraint_fulfillment_alpha = 1
+            self.sub_trace_adherence_alpha = 1
+            return self.counter_factual_helper(working_trace, explanation, depth + 1)
+        # Identify the lowest score and the corresponding heuristic
+        scores = {
+            'sub_trace_adherence': sub_trace_adherence_score,
+            'repetition' : repetition_score,
+            'constraint_fulfillment': constraint_fulfillment_score,
+        }
         
-        :param counterfactual: A modified Trace instance to check.
-        :param violated_constraints: Constraints that were initially violated.
-        :return: True if new violations are introduced, False otherwise.
-        """
-        for constraint in self.constraints:
-            if constraint not in violated_constraints and not re.search(constraint, ''.join(counterfactual.nodes)):
-                return True
-        return False
-    
-    def generate_potential_counterfactuals(self, trace, violated_constraint):
-        """
-        Generates potential counterfactual modifications for a trace based on a violated constraint.
-        
-        :param trace: The original Trace instance.
-        :param violated_constraint: The specific constraint that is violated.
-        :return: A list of counterfactuals suggesting how to modify the trace.
-        """
-        trace_str = "".join(trace)
-        if re.search(violated_constraint, trace_str):
-           return f"Trace: {trace_str} is conformant for the constraint: {violated_constraint}"     
-        # Extrace all the nodes in the constraint
-        used_nodes = self.get_nodes_from_constraint(violated_constraint)
-        # Extract which part of the trace that violates the constraint
-        violating_subtraces = self.get_violating_subtrace(trace, violated_constraint)
-        # Generate counterfactuals
-        addition_counterfactuals = self.addition_modification(trace, used_nodes, violating_subtraces)
-        subtraction_counterfactuals = self.subtraction_modification(trace)
-        reordering_counterfactuals = self.reordering_modification(trace)
-        substitution_counterfactuals = self.substitution_modification(trace, used_nodes)
+        lowest_heuristic, lowest_score = min(scores.items(), key=lambda x: x[1])
+        # Perform operation based on the lowest scoring heuristic
+        if lowest_heuristic:
+            return self.operate_on_trace(working_trace, lowest_heuristic, lowest_score, explanation, depth)
+        else:
+            return "Error identifying the lowest scoring heuristic."
 
-        return addition_counterfactuals + subtraction_counterfactuals + reordering_counterfactuals + substitution_counterfactuals
+    def operate_on_trace(self, trace, heuristic, score, explanation_path, depth = 0):
+        explanation = None
+        counter_factuals = self.modify_subtrace(trace)
+        best_subtrace = None
+        best_score = -float('inf')
+        for subtrace in counter_factuals:
+            current_score = self.evaluate(subtrace[0], heuristic)
+            if current_score > best_score and current_score > score:
+                best_score = current_score
+                best_subtrace = subtrace[0]
+                explanation = subtrace[1]
+        if best_subtrace == None:
+            for subtrace in counter_factuals:
+                print(subtrace[0].nodes)
+                print(heuristic)
+                self.operate_on_trace(subtrace[0], heuristic, score, explanation_path, depth + 1)
+        explanation_string = explanation_path + '\n' + str(explanation) + f", based on heurstic {heuristic}"
+        return self.counter_factual_helper(best_subtrace, explanation_string, depth + 1)
 
-    
-    def get_nodes_from_constraint(self, constraint):
+    def get_nodes_from_constraint(self, constraint = None):
         """
         Extracts unique nodes from a constraint pattern.
         
         :param constraint: The constraint pattern as a string.
         :return: A list of unique nodes found within the constraint.
         """
-        return list(set(re.findall(r'[A-Za-z]', constraint)))
+        if constraint is None:
+            all_nodes = set()
+            for constr in self.constraints:
+                all_nodes.update(re.findall(r'[A-Za-z]+', constr))
+            return list(set(all_nodes))
+        else:
+            return list(set(re.findall(r'[A-Za-z]', constraint)))
+    
+    def modify_subtrace(self, trace):
+        
+        add_mod = self.addition_modification(trace)
+        sub_mod = self.subtraction_modification(trace)
 
-    def select_best_counterfactual(self, counter_factuals):
-        """
-        Selects the best counterfactual modification from a list.
-        
-        :param counter_factuals: A list of counterfactual modifications.
-        :return: The selected best counterfactual modification.
-        TODO: Implement this based on a heuristic 
-        """
-        return counter_factuals[0]
+        return sub_mod + add_mod
     
-    def get_violating_subtrace(self, trace, constraint):
+    from itertools import combinations, chain
+
+    def addition_modification(self, trace):
         """
-        Finds subtraces of a given trace that violate a specific constraint.
-        
-        :param trace: The Trace instance to analyze.
-        :param constraint: The constraint to check against the trace.
-        :return: A list of subtraces that violate the given constraint.
-        """
-        violating_subtrace = []
-        for subtrace in get_sublists(trace):
-            trace_str = ''.join(subtrace)
-            if not re.search(constraint, trace_str):
-                violating_subtrace.append(subtrace)
-        return violating_subtrace
-    
-    def addition_modification(self, trace, used_nodes, violating_subtraces):
-        """
-        Suggests additions to the trace to meet constraints.
+        Suggests additions to the trace to meet constraints, but only one node at a time.
         """
         counterfactuals = []
-        for subtrace in violating_subtraces:
-            for i in range(len(subtrace) - 1):
-                for node in used_nodes:
-                    new_trace = list(trace.nodes)  # Ensure we're working with a full trace copy
-                    new_trace.insert(i + 1, node)  # Insert a node between each node in the subtrace
-                    new_trace_str = "Addition: " + "->".join(new_trace)  
-                    counterfactuals.append((Trace(new_trace), new_trace_str))
+        possible_additions = self.get_nodes_from_constraint()
+
+        # Only add one node at a time
+        for added_node in possible_additions:
+            for insertion_point in range(len(trace.nodes) + 1):
+                # Create a new trace with the added node
+                new_trace_nodes = trace.nodes[:insertion_point] + [added_node] + trace.nodes[insertion_point:]
+                new_trace_str = f"Addition (Added {added_node} at position {insertion_point}): " + "->".join(new_trace_nodes)
+                
+                counterfactuals.append((Trace(new_trace_nodes), new_trace_str))
+        
         return counterfactuals
 
-
+    
     def subtraction_modification(self, trace):
         """
         Suggests node removals from the trace for conformance.
@@ -249,38 +259,67 @@ class Explainer:
                 counterfactuals.append((Trace(modified_trace_nodes), new_trace_str))
         return counterfactuals
 
+    def evaluate(self, trace, heurstic):
+        if heurstic == "constraint_fulfillment":
+            return self.evaluate_constraint_fulfillment(trace)
+        elif heurstic == "sub_trace_adherence":
+            return self.evaluate_sub_trace_adherence(trace)
+        elif heurstic == "repetition":
+            return self.evaluate_repetition(trace)
+        else:
+            return "No valid evaluation method"
+    
+    def evaluate_constraint_fulfillment(self, optional_trace):
+        if self.constraint_fulfillment_alpha == 0:
+            return 0
+        fulfilled_constraints = sum(1 for constraint in self.constraints if re.search(constraint,"".join(optional_trace)))
+        total_constraints = len(self.constraints)
+        return (fulfilled_constraints / total_constraints) * self.constraint_fulfillment_alpha if total_constraints else 0
+
+    def evaluate_repetition(self, trace):
+        if self.repetition_alpha == 0:
+            return 1
+
+        node_counts = {}
+        for node in trace.nodes:
+            if node in node_counts:
+                node_counts[node] += 1
+            else:
+                node_counts[node] = 1
+
+        # Calculate the deviation of each node's occurrence from 1
+        deviations = [count - 1 for count in node_counts.values()]
+
+        # Normalize deviation: Here, we take the sum of deviations and divide by the total number of nodes
+        # This gives an average deviation per node, which we normalize by dividing by the length of the trace
+        # This assumes the worst case where every node in the trace is different and repeated once
+        if trace.nodes:
+            normalized_deviation = sum(deviations) / len(trace.nodes)
+        else:
+            normalized_deviation = 0
+
+        # Ensure the score is between 0 and 1
+        normalized_deviation = 1 - min(max(normalized_deviation, 0), 1)
+
+        return normalized_deviation * self.repetition_alpha
 
 
-    def reordering_modification(self, trace):
-        """
-        Suggests reordering of nodes in the trace for conformance.
-        """
-        counterfactuals = []
-        permutations = itertools.permutations(trace.nodes)
-        for perm in permutations:
-            if perm not in [cf[0].nodes for cf in counterfactuals]:
-                new_trace_str = "Reordering: " + "->".join(perm)  # Descriptive string
-                counterfactuals.append((Trace(list(perm)), new_trace_str))
-        return counterfactuals
-
-
-    def substitution_modification(self, trace, used_nodes):
-        """
-        Suggests substitutions within the trace to meet constraints.
-        """
-        counterfactuals = []
-        for i, node in enumerate(trace.nodes):
-            if node in used_nodes:
-                for replacement_node in (self.nodes - set([node])):  # Ensure it's a set operation
-                    new_trace_nodes = trace.nodes[:]  # Copy the list of nodes
-                    new_trace_nodes[i] = replacement_node
-                    new_trace_str = f"Substitution: Replace {node} with {replacement_node} at position {i+1}"
-                    new_trace = Trace(new_trace_nodes)
-                    if new_trace not in [cf[0] for cf in counterfactuals]:
-                        counterfactuals.append((new_trace, new_trace_str))
-        return counterfactuals
-
+    def evaluate_sub_trace_adherence(self, optional_trace):
         
+        sub_lists = list(set([node for node in optional_trace]))
+        adherence_scores = [[0 for _ in self.constraints] for _ in sub_lists]
+        for i, sub_trace in enumerate(sub_lists):
+            trace_string = "".join(sub_trace)
+            for j, con in enumerate(self.constraints):
+                match = re.search(trace_string, con)
+                if match:
+                    adherence_scores[i][j] = 1
+        num_nodes = len(self.get_nodes_from_constraint())
+        total_scores = sum(sum(row) for row in adherence_scores)
+        
+        average_score = total_scores / num_nodes if num_nodes else 0
+        return average_score * self.sub_trace_adherence_alpha
+
 def get_sublists(lst):
     """
     Generates all possible non-empty sublists of a list.
@@ -292,3 +331,53 @@ def get_sublists(lst):
     for r in range(2, len(lst) + 1):  # Generate combinations of length 2 to n
         sublists.extend(combinations(lst, r))
     return sublists
+def get_sublists1(lst, n):
+    """
+    Generates all possible non-empty contiguous sublists of a list, maintaining order.
+    
+    :param lst: The input list.
+    :return: A list of all non-empty contiguous sublists.
+    """
+    sublists = []
+    for i in range(len(lst)):
+        
+        for j in range(i + 2, min(i + n + 1, len(lst) + 1)):
+            sub = lst[i:j]
+            sublists.append(sub)
+    return sublists
+
+def levenshtein_distance(seq1, seq2):
+    """
+    Calculates the Levenshtein distance between two sequences.
+    """
+    size_x = len(seq1) + 1
+    size_y = len(seq2) + 1
+    matrix = [[0] * size_y for _ in range(size_x)]
+    for x in range(size_x):
+        matrix[x][0] = x
+    for y in range(size_y):
+        matrix[0][y] = y
+
+    for x in range(1, size_x):
+        for y in range(1, size_y):
+            if seq1[x-1] == seq2[y-1]:
+                matrix[x][y] = matrix[x-1][y-1]
+            else:
+                matrix[x][y] = min(
+                    matrix[x-1][y] + 1,  # Deletion
+                    matrix[x][y-1] + 1,  # Insertion
+                    matrix[x-1][y-1] + 1  # Substitution
+                )
+    return matrix[size_x-1][size_y-1]
+
+exp = Explainer()
+exp.add_constraint('A.*B.*C.*D')
+#exp.add_constraint('A.*B.*C')
+#exp.add_constraint('A.*B')
+#optional_trace = Trace(['A', 'B', 'C', 'E', 'E'])
+optional_trace = Trace(['A', 'B', 'B'])
+print(exp.evaluate_repetition(optional_trace))
+
+
+#print(exp.counterfactual_expl(optional_trace))
+

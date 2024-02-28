@@ -1,6 +1,6 @@
 import itertools
 import re
-from itertools import combinations
+from itertools import combinations, permutations, product
 
 class Trace:
     def __init__(self, nodes):
@@ -39,6 +39,7 @@ class Explainer:
         self.constraint_fulfillment_alpha = 1
         self.repetition_alpha = 1
         self.sub_trace_adherence_alpha = 1
+        self.adherent_trace = None
 
     def set_heuristic_alpha(self, constraint_fulfillment_alpha = 1, repetition_alpha = 1, sub_trace_adherence_alpha = 1):
         self.constraint_fulfillment_alpha = constraint_fulfillment_alpha
@@ -53,6 +54,9 @@ class Explainer:
         :param regex: A regular expression representing the constraint.
         """
         self.constraints.append(regex)
+        if self.contradiction():
+            self.constraints.remove(regex)
+            print(f"Constraint {regex} contradicts the other constraints.")
         # Extract unique characters (nodes) from the regex and update the nodes set
         unique_nodes = set(filter(str.isalpha, regex))
         self.nodes.update(unique_nodes)
@@ -95,6 +99,18 @@ class Explainer:
         """
         trace_str = ''.join(trace)
         return all(re.search(constraint, trace_str) for constraint in self.constraints)
+
+    def contradiction(self):
+        nodes = self.get_nodes_from_constraint()
+        max_length = 10  # Set a reasonable max length to avoid infinite loops
+
+        for length in range(1, max_length + 1):
+            for combination in product(nodes, repeat=length):
+                test_str = ''.join(combination)
+                if all(re.search(con, test_str) for con in self.constraints):
+                    self.adherent_trace = test_str
+                    return False  # Found a match
+        return True  # No combination satisfied all constraints
 
 
     def minimal_expl(self, trace):
@@ -144,25 +160,25 @@ class Explainer:
         }
         
         lowest_heuristic, lowest_score = min(scores.items(), key=lambda x: x[1])
-
+        lowest_heuristic = 'similarity'
+        lowest_score = self.evaluate_similarity(trace)
         # Perform operation based on the lowest scoring heuristic
         if lowest_heuristic:
-            return self.operate_on_trace(trace, lowest_heuristic, lowest_score, "")
+            return self.operate_on_trace(trace, lowest_heuristic, lowest_score, f'{trace.nodes}')
         else:
             return "Error identifying the lowest scoring heuristic."
         
     def counter_factual_helper(self, working_trace, explanation, depth = 0):
         if self.conformant(working_trace):
-            print(depth)
-            return explanation
+            return f'{explanation}\n{working_trace.nodes}'
         if depth > 100:
             return f'{explanation}\n Maximum depth of {depth -1} reached'
         # Evaluate heuristic for original trace
         constraint_fulfillment_score = 1
         if len(self.constraints) > 1:
-            constraint_fulfillment_score = self.evaluate(working_trace, "constraint_fulfillment")
-        sub_trace_adherence_score = self.evaluate(working_trace, "sub_trace_adherence")
-        repetition_score = self.evaluate(working_trace, "repetition")
+            constraint_fulfillment_score = 1#self.evaluate(working_trace, "constraint_fulfillment")
+        sub_trace_adherence_score = 1# self.evaluate(working_trace, "sub_trace_adherence")
+        repetition_score = 1 #self.evaluate(working_trace, "repetition")
         if constraint_fulfillment_score == 0 and sub_trace_adherence_score == 0:
             self.constraint_fulfillment_alpha = 1
             self.sub_trace_adherence_alpha = 1
@@ -175,6 +191,8 @@ class Explainer:
         }
         
         lowest_heuristic, lowest_score = min(scores.items(), key=lambda x: x[1])
+        lowest_heuristic = 'similarity'
+        lowest_score = self.evaluate_similarity(working_trace)
         # Perform operation based on the lowest scoring heuristic
         if lowest_heuristic:
             return self.operate_on_trace(working_trace, lowest_heuristic, lowest_score, explanation, depth)
@@ -214,7 +232,20 @@ class Explainer:
             return list(set(all_nodes))
         else:
             return list(set(re.findall(r'[A-Za-z]', constraint)))
-    
+    def get_nodes_from_constraint_ordered(self, constraint = None):
+        """
+        Extracts unique nodes from a constraint pattern in order.
+        
+        :param constraint: The constraint pattern as a string.
+        :return: A list of unique nodes found within the constraint.
+        """
+        if constraint is None:
+            all_nodes = set()
+            for constr in self.constraints:
+                all_nodes.update(re.findall(r'[A-Za-z]+', constr))
+            return list(all_nodes)
+        else:
+            return list(re.findall(r'[A-Za-z]', constraint))
     def modify_subtrace(self, trace):
         
         add_mod = self.addition_modification(trace)
@@ -231,10 +262,8 @@ class Explainer:
         counterfactuals = []
         possible_additions = self.get_nodes_from_constraint()
 
-        # Only add one node at a time
         for added_node in possible_additions:
             for insertion_point in range(len(trace.nodes) + 1):
-                # Create a new trace with the added node
                 new_trace_nodes = trace.nodes[:insertion_point] + [added_node] + trace.nodes[insertion_point:]
                 new_trace_str = f"Addition (Added {added_node} at position {insertion_point}): " + "->".join(new_trace_nodes)
                 
@@ -262,6 +291,8 @@ class Explainer:
     def evaluate(self, trace, heurstic):
         if heurstic == "constraint_fulfillment":
             return self.evaluate_constraint_fulfillment(trace)
+        elif heurstic == "similarity":
+            return self.evaluate_similarity(trace)
         elif heurstic == "sub_trace_adherence":
             return self.evaluate_sub_trace_adherence(trace)
         elif heurstic == "repetition":
@@ -269,6 +300,14 @@ class Explainer:
         else:
             return "No valid evaluation method"
     
+    def evaluate_similarity(self, trace):
+        length = len(self.adherent_trace)
+        trace_len = len("".join(trace))
+        lev_distance = levenshtein_distance(self.adherent_trace, "".join(trace))
+        max_distance = max(length, trace_len)
+        normalized_score = 1 - lev_distance / max_distance
+        return normalized_score
+
     def evaluate_constraint_fulfillment(self, optional_trace):
         if self.constraint_fulfillment_alpha == 0:
             return 0
@@ -287,18 +326,13 @@ class Explainer:
             else:
                 node_counts[node] = 1
 
-        # Calculate the deviation of each node's occurrence from 1
         deviations = [count - 1 for count in node_counts.values()]
 
-        # Normalize deviation: Here, we take the sum of deviations and divide by the total number of nodes
-        # This gives an average deviation per node, which we normalize by dividing by the length of the trace
-        # This assumes the worst case where every node in the trace is different and repeated once
         if trace.nodes:
             normalized_deviation = sum(deviations) / len(trace.nodes)
         else:
             normalized_deviation = 0
 
-        # Ensure the score is between 0 and 1
         normalized_deviation = 1 - min(max(normalized_deviation, 0), 1)
 
         return normalized_deviation * self.repetition_alpha
@@ -336,6 +370,7 @@ def get_sublists1(lst, n):
     Generates all possible non-empty contiguous sublists of a list, maintaining order.
     
     :param lst: The input list.
+            n: the minmum length of sublists
     :return: A list of all non-empty contiguous sublists.
     """
     sublists = []
@@ -345,7 +380,6 @@ def get_sublists1(lst, n):
             sub = lst[i:j]
             sublists.append(sub)
     return sublists
-
 def levenshtein_distance(seq1, seq2):
     """
     Calculates the Levenshtein distance between two sequences.
@@ -364,20 +398,18 @@ def levenshtein_distance(seq1, seq2):
                 matrix[x][y] = matrix[x-1][y-1]
             else:
                 matrix[x][y] = min(
-                    matrix[x-1][y] + 1,  # Deletion
-                    matrix[x][y-1] + 1,  # Insertion
-                    matrix[x-1][y-1] + 1  # Substitution
+                    matrix[x-1][y] + 1, 
+                    matrix[x][y-1] + 1,  
+                    matrix[x-1][y-1] + 1  
                 )
     return matrix[size_x-1][size_y-1]
-
+"""
 exp = Explainer()
-exp.add_constraint('A.*B.*C.*D')
-#exp.add_constraint('A.*B.*C')
-#exp.add_constraint('A.*B')
-#optional_trace = Trace(['A', 'B', 'C', 'E', 'E'])
-optional_trace = Trace(['A', 'B', 'B'])
-print(exp.evaluate_repetition(optional_trace))
+exp.add_constraint('B.*A.*B.*C')
+exp.add_constraint('A.*B.*C.*')
+exp.add_constraint('A.*D.*B*')
+exp.add_constraint('A[^D]*B')
+optional_trace = Trace(['A'])
 
-
-#print(exp.counterfactual_expl(optional_trace))
-
+print(exp.counterfactual_expl(optional_trace))
+"""

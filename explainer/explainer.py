@@ -197,8 +197,8 @@ class Explainer:
                                                     f"Addition (Added {add} at position {i+1}): " + "->"
                                                     .join(s_trace + [add] + trace.nodes[i+1:])])
                         potential_subtraces.append([Trace(s_trace[:-1] + [add] + trace.nodes[i:]),
-                                                    f"Addition (Added {add} at position {i+1}): " + "->"
-                                                    .join(s_trace + [add] + trace.nodes[i+1:])])
+                                                    f"Addition (Added {add} at position {i}): " + "->"
+                                                    .join(s_trace[:-1] + [add] + trace.nodes[i:])])
                     
                     potential_subtraces.append([Trace(s_trace[:-1] + trace.nodes[i+1:]),
                                                  f"Subtraction (Removed {s_trace[i]} from position {i}): " + "->".

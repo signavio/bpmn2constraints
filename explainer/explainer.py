@@ -74,8 +74,13 @@ class Explainer:
         :param trace: A Trace instance.
         :return: Boolean indicating if any constraint is activated.
         """
-        trace_str = ''.join(trace.nodes)
-        return any(re.search(constraint, trace_str) for constraint in self.constraints)
+        con_activation = [0] * len(self.constraints)
+        for idx, con in enumerate(self.constraints):
+            for event in trace.nodes:
+                if event in con:
+                    con_activation[idx] = 1
+                    continue
+        return con_activation
 
     def conformant(self, trace):
         """
@@ -84,6 +89,13 @@ class Explainer:
         :param trace: A Trace instance.
         :return: Boolean indicating if the trace is conformant with all constraints.
         """
+        activation = self.activation(trace)
+        if any(value == 0 for value in activation):
+            new_explainer = Explainer()
+            for idx, value in enumerate(activation):
+                if value == 1:
+                    new_explainer.add_constraint(self.constraints[idx])
+            return new_explainer.conformant(trace)
         trace_str = ''.join(trace)
         return all(re.search(constraint, trace_str) for constraint in self.constraints)
 
@@ -107,9 +119,18 @@ class Explainer:
         :param trace: A Trace instance.
         :return: Explanation of why the trace is non-conformant.
         """
+        
+        # Because constraints that are not activated should not be considered we create a new explainer with the relevant constraints in this case
+        activation = self.activation(trace)
+        if any(value == 0 for value in activation):
+            new_explainer = Explainer()
+            for idx, value in enumerate(activation):
+                if value == 1:
+                    new_explainer.add_constraint(self.constraints[idx])
+            return new_explainer.minimal_expl(trace)
+        
         if self.conformant(trace):
             return "The trace is already conformant, no changes needed."
-        
         explanations = None
         
         for constraint in self.constraints:
@@ -125,6 +146,15 @@ class Explainer:
             return "Trace is non-conformant, but the specific constraint violation could not be determined."
 
     def counterfactual_expl(self, trace):
+        
+        activation = self.activation(trace)
+        if any(value == 0 for value in activation):
+            new_explainer = Explainer()
+            for idx, value in enumerate(activation):
+                if value == 1:
+                    new_explainer.add_constraint(self.constraints[idx])
+            return new_explainer.counterfactual_expl(trace)
+        
         if self.conformant(trace):
             return "The trace is already conformant, no changes needed."
         score = self.evaluate_similarity(trace)
@@ -262,3 +292,12 @@ def levenshtein_distance(seq1, seq2):
                 )
     return matrix[size_x-1][size_y-1]
 
+trace = Trace(['A', 'C', 'F'])
+
+exp = Explainer()
+
+exp.add_constraint(".*AC.*")
+exp.add_constraint("XY")
+
+print(exp.conformant(trace))
+print(exp.counterfactual_expl(trace))

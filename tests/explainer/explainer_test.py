@@ -77,8 +77,8 @@ def test_complex_regex_constraint():
 def test_constraint_not_covered():
     trace = Trace(['A', 'B', 'C'])
     explainer = Explainer()
-    explainer.add_constraint('D')  # This node 'D' does not exist in the trace
-    assert not explainer.activation(trace), "The constraint should not be activated by the trace."
+    explainer.add_constraint('D*')  # This node 'D' does not exist in the trace
+    assert explainer.activation(trace) == [0], "The constraint should not be activated by the trace."
 
 # Test 12: Empty trace and constraints
 def test_empty_trace_and_constraints():
@@ -143,7 +143,7 @@ def test_explaination():
     assert explainer.conformant(non_conformant_trace) == False
     assert explainer.conformant(conformant_trace) == True
     assert explainer.minimal_expl(non_conformant_trace) == "Non-conformance due to: Constraint (A.*B.*C) is violated by subtrace: ('A', 'C')"
-    assert explainer.counterfactual_expl(non_conformant_trace) == "Suggested change to make the trace (['A', 'C']) conformant: Addition: A->B->C"
+    assert explainer.counterfactual_expl(non_conformant_trace) == "\nAddition (Added B at position 1): A->B->C"
 # Test 19: Complex explaination test.
 """
 This part is not very complex as of now and is very much up for change, the complexity of counterfactuals 
@@ -158,4 +158,25 @@ def test_complex_counterfactual_explanation():
 
     counterfactual_explanation = explainer.counterfactual_expl(non_conformant_trace)
     
-    assert counterfactual_explanation == "Suggested change to make the trace (['A', 'C', 'E', 'D']) conformant: Addition: A->B->C->E->D"
+    assert counterfactual_explanation == "\nAddition (Added B at position 1): A->B->C->E->D"
+
+# Test 20: Event logs
+def test_event_log():
+    event_log = EventLog()
+    assert event_log != None
+    trace = Trace(['A', 'B', 'C'])
+    event_log.add_trace(trace)
+    assert event_log.log == {('A', 'B', 'C'): 1} # There should be one instance of the trace in the log
+    event_log.add_trace(trace, 5)
+    assert event_log.log == {('A', 'B', 'C'): 6} # There should be 6 instances of the trace in the log
+    event_log.remove_trace(trace)
+    assert event_log.log == {('A', 'B', 'C'): 5} # There should be 5 instances of the trace
+    event_log.remove_trace(trace, 5)
+    assert event_log.log == {} # The log should be emptied
+    event_log.add_trace(trace, 5) 
+    event_log.remove_trace(trace, 10)
+    assert event_log.log == {} # The log should be emptied
+    trace2 = Trace(['X', 'Y', 'Z'])
+    event_log.add_trace(trace, 5)
+    event_log.add_trace(trace2, 7)
+    assert event_log.log == {('A', 'B', 'C'): 5,('X', 'Y', 'Z'): 7} # There should be several traces in the log

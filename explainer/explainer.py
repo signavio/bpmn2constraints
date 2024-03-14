@@ -178,7 +178,6 @@ class Explainer:
         if constraints:
             return all(re.search(constraint, trace_str) for constraint in constraints)
         return all(re.search(constraint, trace_str) for constraint in self.constraints)
-    
     def contradiction(self):
         nodes = self.get_nodes_from_constraint()
         max_length = 10  # Set a reasonable max length to avoid infinite loops
@@ -190,6 +189,29 @@ class Explainer:
                     self.adherent_trace = test_str
                     return False  # Found a match
         return True  # No combination satisfied all constraints
+    """
+    def contradiction(self):
+        nodes = self.get_nodes_from_constraint()
+        nodes = [] + nodes + nodes
+        event_str = ""
+        match_found = False
+        for event in nodes:
+            event_str = event
+            if all(re.search(con, event_str) for con in self.constraints):
+                    self.adherent_trace = event_str
+                    match_found = True
+                    break
+            for event2 in nodes:
+                if (str(event) != str(event2)):
+                    event_str += event2
+                if all(re.search(con, event_str) for con in self.constraints):
+                    self.adherent_trace = event_str
+                    match_found = True
+                    break
+
+        return not match_found
+            """
+
 
 
     def minimal_expl(self, trace):
@@ -422,10 +444,10 @@ def levenshtein_distance(seq1, seq2):
     return matrix[size_x-1][size_y-1]
 
 #event_log = EventLog()
-exp = Explainer()
-exp.add_constraint('^A')
-exp.add_constraint('C$')
-print(exp.conformant(Trace(['AXC'])))
+#exp = Explainer()
+#exp.add_constraint('^A')
+#exp.add_constraint('ABC')
+#print(exp.conformant(Trace(['AXC'])))
 #trace1 = Trace(['A','B','C'])
 #trace2 = Trace(['B', 'C'])
 #trace3 = Trace(['A', 'B'])

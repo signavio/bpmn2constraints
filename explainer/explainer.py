@@ -136,7 +136,7 @@ class Explainer:
             if target:
                 con_activation[idx] = 1
                 continue
-            for event in trace.nodes:
+            for event in con:
                     if event in con:
                         con_activation[idx] = 1
                         activated = True

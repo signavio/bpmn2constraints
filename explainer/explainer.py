@@ -30,16 +30,15 @@ class Trace:
             spl.append(node)
         return spl
 class EventLog:
-    def __init__(self, traces=None):
+    def __init__(self, trace=None):
         """
         Initializes an EventLog instance.
 
         :param traces: A list of Trace instances.
         """
         self.log = {}
-        if traces:
-            for trace in traces:
-                self.add_trace(trace)
+        if trace:
+            self.add_trace(trace)
 
     def add_trace(self, trace, count = 1):
         """
@@ -119,16 +118,18 @@ class Explainer:
                 if node not in remaining_nodes:
                     self.nodes.discard(node)
 
-    def activation(self, trace):
+    def activation(self, trace, constraints = None):
         """
         Checks if any of the nodes in the trace activates any constraint.
         
         :param trace: A Trace instance.
         :return: Boolean indicating if any constraint is activated.
         """
-        con_activation = [0] * len(self.constraints)
+        if not constraints:
+            constraints = self.constraints
+        con_activation = [0] * len(constraints)
         activated = False
-        for idx, con in enumerate(self.constraints):
+        for idx, con in enumerate(constraints):
             if activated:
                 activated = False
                 continue
@@ -136,7 +137,7 @@ class Explainer:
             if target:
                 con_activation[idx] = 1
                 continue
-            for event in con:
+            for event in trace:
                     if event in con:
                         con_activation[idx] = 1
                         activated = True
@@ -167,7 +168,7 @@ class Explainer:
         :param trace: A Trace instance.
         :return: Boolean indicating if the trace is conformant with all constraints.
         """
-        activation = self.activation(trace)
+        activation = self.activation(trace, constraints)
         if any(value == 0 for value in activation):
             new_explainer = Explainer()
             for idx, value in enumerate(activation):
@@ -361,9 +362,46 @@ class Explainer:
             constraints_without = [c for c in constraints if c in lsubset]
             constraints_with = [c for c in constraints if c in lsubset + [contributor]]
             weight = (math.factorial(len(lsubset)) * math.factorial(len(constraints)-1-len(lsubset)))/math.factorial(len(constraints))
-            sub_ctrb = weight * (self.determine_conformance_rate(log, constraints_without) - self.determine_conformance_rate(log, constraints_with))
+            sub_ctrb = weight * (self.determine_conformance_rate(log, constraints_without)  - self.determine_conformance_rate(log, constraints_with))
             sub_ctrbs.append(sub_ctrb)
         return sum(sub_ctrbs)
+    
+    def determine_shapley_values_traces(self, log):
+        """
+        Determines the Shapley value-based contribution of each trace to the overall conformance rate.
+
+        Args:
+            log (EventLog): The event log containing the traces.
+
+        Returns:
+            dict: A dictionary with trace representations as keys and their Shapley values as values.
+        """
+        shapley_values = {}
+        traces = [Trace(list(t)) for t in log.log.keys()]  # Convert trace tuples to Trace instances
+        total_traces = len(traces)
+        
+        for trace in traces:
+            trace_contribution = 0
+            for subset_size in range(total_traces):
+                for subset in combinations(traces, subset_size):
+                    if trace in subset:
+                        continue
+                    subset_with_trace = list(subset) + [trace]
+                    # Use the existing log to create a new EventLog with the subset of traces
+                    log_without_trace = EventLog()
+                    log_with_trace = EventLog()
+                    for t in subset:
+                        log_without_trace.add_trace(t, log.log[tuple(t.nodes)])
+                    log_with_trace.add_trace(trace, log.log[tuple(trace.nodes)])
+                    for t in subset:
+                        log_with_trace.add_trace(t, log.log[tuple(t.nodes)])
+
+                    weight = (math.factorial(len(subset)) * math.factorial(total_traces - len(subset) - 1)) / math.factorial(total_traces)
+                    marginal_contribution = self.determine_conformance_rate(log_with_trace) - self.determine_conformance_rate(log_without_trace)
+                    trace_contribution += weight * marginal_contribution
+            shapley_values[str(trace.nodes)] = trace_contribution
+        
+        return shapley_values
 
     def evaluate_similarity(self, trace):
         length = len(self.adherent_trace)
@@ -376,11 +414,18 @@ class Explainer:
     def determine_conformance_rate(self, event_log, constraints = None):
         if not self.constraints and not constraints:
             return "The explainer have no constraints"
-        conformant = 0
-        for trace in event_log:
-            if self.conformant(trace, constraints):
-                conformant += 1
-        return round(conformant / len(event_log), 2)
+        len_log = len(event_log)
+        if len_log == 0:
+            return 1
+        non_conformant = 0
+        if constraints == None:
+            constraints = self.constraints
+        for trace, count in event_log.log.items():
+            for con in constraints:
+                if not re.search(con, "".join(trace)):
+                    non_conformant += count
+                    break
+        return (len_log - non_conformant) / len_log
     
     
 def determine_powerset(elements):
@@ -444,8 +489,21 @@ def levenshtein_distance(seq1, seq2):
     return matrix[size_x-1][size_y-1]
 
 #event_log = EventLog()
-#exp = Explainer()
-#exp.add_constraint('^A')
+exp = Explainer()
+exp.add_constraint('^A')
+exp.add_constraint('C$')
+trace0 = Trace(['A', 'B', 'C'])
+trace1 = Trace(['B', 'C'])
+trace2 = Trace(['A','B'])
+trace3 = Trace(['B'])
+eventlog = EventLog()
+eventlog.add_trace(trace0, 5)
+eventlog.add_trace(trace1, 10)
+eventlog.add_trace(trace2, 5)
+eventlog.add_trace(trace3, 5)
+print('Contribution ^a:', exp.determine_shapley_value(eventlog, exp.constraints, 0))
+print('Contribution c$:',  exp.determine_shapley_value(eventlog, exp.constraints, 1))
+print(exp.determine_shapley_values_traces(eventlog))
 #exp.add_constraint('ABC')
 #print(exp.conformant(Trace(['AXC'])))
 #trace1 = Trace(['A','B','C'])

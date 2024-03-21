@@ -64,6 +64,10 @@ class EventLog:
                 self.log[trace_tuple] -= count
             else:
                 del self.log[trace_tuple]
+    def get_trace_cardinality(self, trace):
+        trace_tuple = tuple(trace.nodes)
+        if trace_tuple in self.log:
+            return self.log[trace_tuple]
     def __str__(self):
         return str(self.log)
     def __len__(self):
@@ -190,30 +194,6 @@ class Explainer:
                     self.adherent_trace = test_str
                     return False  # Found a match
         return True  # No combination satisfied all constraints
-    """
-    def contradiction(self):
-        nodes = self.get_nodes_from_constraint()
-        nodes = [] + nodes + nodes
-        event_str = ""
-        match_found = False
-        for event in nodes:
-            event_str = event
-            if all(re.search(con, event_str) for con in self.constraints):
-                    self.adherent_trace = event_str
-                    match_found = True
-                    break
-            for event2 in nodes:
-                if (str(event) != str(event2)):
-                    event_str += event2
-                if all(re.search(con, event_str) for con in self.constraints):
-                    self.adherent_trace = event_str
-                    match_found = True
-                    break
-
-        return not match_found
-            """
-
-
 
     def minimal_expl(self, trace):
         """
@@ -382,25 +362,27 @@ class Explainer:
         
         for trace in traces:
             trace_contribution = 0
-            for subset_size in range(total_traces):
+            for subset_size in range(total_traces + 1):
                 for subset in combinations(traces, subset_size):
-                    if trace in subset:
-                        continue
+                    weight = 1 / (total_traces * (total_traces - 1))  # Recalculate weight for each subset size
                     subset_with_trace = list(subset) + [trace]
-                    # Use the existing log to create a new EventLog with the subset of traces
-                    log_without_trace = EventLog()
-                    log_with_trace = EventLog()
-                    for t in subset:
-                        log_without_trace.add_trace(t, log.log[tuple(t.nodes)])
-                    log_with_trace.add_trace(trace, log.log[tuple(trace.nodes)])
-                    for t in subset:
-                        log_with_trace.add_trace(t, log.log[tuple(t.nodes)])
+                    subset_without_trace = list(subset)
+                    if trace not in subset:  # Trace not in this subset
+                        subset_with_trace = list(subset) + [trace]
+                        subset_without_trace = list(subset)
+                        log_with_trace = EventLog()
+                        log_without_trace = EventLog()
+                        for t in subset_with_trace:
+                            log_with_trace.add_trace(t, log.log[tuple(t.nodes)])
+                        for t in subset_without_trace:
+                            log_without_trace.add_trace(t, log.log[tuple(t.nodes)])
 
-                    weight = (math.factorial(len(subset)) * math.factorial(total_traces - len(subset) - 1)) / math.factorial(total_traces)
-                    marginal_contribution = self.determine_conformance_rate(log_with_trace) - self.determine_conformance_rate(log_without_trace)
-                    trace_contribution += weight * marginal_contribution
+                        con_wt = self.determine_conformance_rate(log_with_trace)
+                        con_wo = self.determine_conformance_rate(log_without_trace)
+                        marginal_contribution = con_wt - con_wo
+                        trace_contribution += weight * marginal_contribution
             shapley_values[str(trace.nodes)] = trace_contribution
-        
+            
         return shapley_values
 
     def evaluate_similarity(self, trace):
@@ -491,40 +473,21 @@ def levenshtein_distance(seq1, seq2):
 #event_log = EventLog()
 exp = Explainer()
 exp.add_constraint('^A')
-exp.add_constraint('C$')
-trace0 = Trace(['A', 'B', 'C'])
-trace1 = Trace(['B', 'C'])
-trace2 = Trace(['A','B'])
-trace3 = Trace(['B'])
+exp.add_constraint('D$')
+trace0 = Trace(['A', 'B', 'C', 'D'])
+trace1 = Trace(['A', 'C', 'D', 'B'])
+trace2 = Trace(['C'])
+trace3 = Trace(['D'])
 eventlog = EventLog()
-eventlog.add_trace(trace0, 5)
+eventlog.add_trace(trace0, 10)
 eventlog.add_trace(trace1, 10)
-eventlog.add_trace(trace2, 5)
-eventlog.add_trace(trace3, 5)
-print('Contribution ^a:', exp.determine_shapley_value(eventlog, exp.constraints, 0))
-print('Contribution c$:',  exp.determine_shapley_value(eventlog, exp.constraints, 1))
-print(exp.determine_shapley_values_traces(eventlog))
-#exp.add_constraint('ABC')
-#print(exp.conformant(Trace(['AXC'])))
-#trace1 = Trace(['A','B','C'])
-#trace2 = Trace(['B', 'C'])
-#trace3 = Trace(['A', 'B'])
-#trace4 = Trace(['B'])
-#
-## Adding traces
-#event_log.add_trace(trace1, 5)
-#event_log.add_trace(trace2, 10)
-#event_log.add_trace(trace3, 5)
-#event_log.add_trace(trace4, 5)
-#for con in exp.constraints:
-#    print(f"existance constraints: {exp.identify_existance_constraints(con)}")
-##print(event_log)
-##print(exp.determine_conformance_rate(event_log))
-#print("False: " + str(exp.conformant(trace2))+ " activated: " + str(exp.activation(trace2)))
-#print("False: " + str(exp.conformant(trace3))+ " activated: " + str(exp.activation(trace3)))
-#print("False: " + str(exp.conformant(trace4))+ " activated: " + str(exp.activation(trace4)))
-#print("True:  " +  str(exp.conformant(trace1))+ " activated: " + str(exp.activation(trace1)))
-#
-#
-#print('Contribution ^a:', exp.determine_shapley_value(event_log, exp.constraints, 0))
-#print('Contribution c$:', exp.determine_shapley_value(event_log, exp.constraints, 1))
+eventlog.add_trace(trace2, 10)
+eventlog.add_trace(trace3, 20)
+print('Conformance rate: ' + str(exp.determine_conformance_rate(eventlog)))
+print('Contribution ^A:', exp.determine_shapley_value(eventlog, exp.constraints, 0))
+print('Contribution D$:',  exp.determine_shapley_value(eventlog, exp.constraints, 1))
+values = exp.determine_shapley_values_traces(eventlog)
+print(eventlog)
+print("^A, D$")
+for t, v in values.items():
+    print(t +" : " + str(round(v, 2)))

@@ -16,7 +16,7 @@ def test_remove_constraint():
     explainer.remove_constraint(0)
     assert (
         "A.*B.*C" not in explainer.constraints,
-    ),"Constraint 'A.*B.*C' should be removed."
+    ), "Constraint 'A.*B.*C' should be removed."
 
 
 # Test 3: Activation of constraints
@@ -54,6 +54,7 @@ def test_overlapping_constraints():
         trace
     ), "The trace should be conformant with overlapping constraints."
 
+
 # Test 7: Partially meeting constraints
 def test_partial_conformance():
     trace = Trace(["A", "C", "B"])
@@ -71,6 +72,7 @@ def test_constraints_with_repeated_nodes():
         trace
     ), "The trace should conform to the constraint with repeated nodes."
 
+
 # Test 9: Removing constraints and checking nodes list
 def test_remove_constraint_and_check_nodes():
     explainer = Explainer()
@@ -80,6 +82,7 @@ def test_remove_constraint_and_check_nodes():
     assert (
         "A" not in explainer.nodes and "B" in explainer.nodes and "C" in explainer.nodes
     ), "Node 'A' should be removed, while 'B' and 'C' remain."
+
 
 # Test 10: Complex regex constraint
 def test_complex_regex_constraint():
@@ -102,6 +105,7 @@ def test_constraint_not_covered():
         0
     ], "The constraint should not be activated by the trace."
 
+
 # Test 12: Empty trace and constraints
 def test_empty_trace_and_constraints():
     trace = Trace([])
@@ -120,6 +124,7 @@ def test_remove_nonexistent_constraint():
     assert (
         len(explainer.constraints) == 1
     ), "Removing a non-existent constraint should not change the constraints list."
+
 
 # Test 14: Activation with no constraints
 def test_activation_with_no_constraints():
@@ -218,6 +223,7 @@ def test_complex_counterfactual_explanation():
             counterfactual_explanation
             == "\nAddition (Added B at position 1): A->B->C->E->D"
     )
+
 
 # Test 20: Event logs
 def test_event_log():

@@ -1,4 +1,5 @@
 """Entry point for bpmnsignal command. Verifies argument and runs parser."""
+
 # pylint: disable=import-error
 import argparse
 import logging

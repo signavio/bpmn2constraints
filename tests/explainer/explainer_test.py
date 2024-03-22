@@ -162,7 +162,7 @@ def test_explaination():
 
     assert explainer.conformant(non_conformant_trace) == False
     assert explainer.conformant(conformant_trace) == True
-    assert explainer.minimal_expl(non_conformant_trace) == "Non-conformance due to: Constraint (A.*B.*C) is violated by subtrace: ("A", "C")"
+    assert explainer.minimal_expl(non_conformant_trace) == "Non-conformance due to: Constraint (A.*B.*C) is violated by subtrace: ('A', 'C')"
     assert explainer.counterfactual_expl(non_conformant_trace) == "\nAddition (Added B at position 1): A->B->C"
 
 

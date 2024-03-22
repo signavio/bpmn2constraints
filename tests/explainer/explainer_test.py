@@ -89,7 +89,7 @@ def test_complex_regex_constraint():
     trace = Trace(["A", "X", "B", "Y", "C"])
     explainer = Explainer()
     explainer.add_constraint(
-         "A.*X.*B.*Y.*C"
+        "A.*X.*B.*Y.*C"
     )  # Specifically expects certain nodes in order
     assert explainer.conformant(
         trace
@@ -161,8 +161,10 @@ def test_conformant_trace_handled_correctly():
     explainer = Explainer()
     explainer.add_constraint("AB")
 
-    assert explainer.minimal_expl(trace) == "The trace is already conformant, no changes needed."
-
+    assert (
+        explainer.minimal_expl(trace)
+        == "The trace is already conformant, no changes needed."
+    )
 
 # Test 17: Conformant trace
 def test_explainer_methods():
@@ -188,8 +190,8 @@ def test_explainer_methods():
 def test_explaination():
     explainer = Explainer()
     
-    conformant_trace = Trace(["A","B","C"])
-    non_conformant_trace = Trace(["A","C"])
+    conformant_trace = Trace(["A", "B", "C"])
+    non_conformant_trace = Trace(["A", "C"])
     
     explainer.add_constraint("A.*B.*C")
 
@@ -220,8 +222,8 @@ def test_complex_counterfactual_explanation():
     counterfactual_explanation = explainer.counterfactual_expl(non_conformant_trace)
     
     assert (
-            counterfactual_explanation
-            == "\nAddition (Added B at position 1): A->B->C->E->D"
+        counterfactual_explanation
+        == "\nAddition (Added B at position 1): A->B->C->E->D"
     )
 
 

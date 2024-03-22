@@ -1,7 +1,6 @@
-import itertools
 import math
 import re
-from itertools import combinations, permutations, product,combinations_with_replacement, chain
+from itertools import combinations, product, chain
 
 class Trace:
     def __init__(self, nodes):
@@ -12,12 +11,21 @@ class Trace:
         """
         self.nodes = nodes
     def __len__(self):
+        """
+        Returns the number of nodes in the trace.
+        """
         return len(self.nodes)
     def __iter__(self):
+        """
+        Initializes the iteration over the nodes in the trace.
+        """
         self.index = 0
         return self
 
     def __next__(self):
+        """
+        Returns the next node in the trace during iteration.
+        """
         if self.index < len(self.nodes):
             result = self.nodes[self.index]
             self.index += 1
@@ -25,6 +33,11 @@ class Trace:
         else:
             raise StopIteration
     def __split__(self):
+        """
+        Splits the nodes of the trace into a list.
+
+        :return: A list containing the nodes of the trace.
+        """
         spl = []
         for node in self.nodes:
             spl.append(node)
@@ -64,12 +77,13 @@ class EventLog:
                 self.log[trace_tuple] -= count
             else:
                 del self.log[trace_tuple]
-    def get_trace_cardinality(self, trace):
-        trace_tuple = tuple(trace.nodes)
-        if trace_tuple in self.log:
-            return self.log[trace_tuple]
+
     def __str__(self):
+        """
+        Returns a string representation of the event log.
+        """
         return str(self.log)
+    
     def __len__(self):
         """
         Returns the total number of trace occurrences in the log.
@@ -149,7 +163,12 @@ class Explainer:
         return con_activation
 
     def identify_existance_constraints(self, pattern):
+        """
+        Identifies existance constraints within a pattern.
 
+        :param pattern: The constraint pattern as a string.
+        :return: A tuple indicating the type of existance constraint and the node involved.
+        """
         # Check for AtLeastOne constraint
         for match in re.finditer(r'(?<!^)(.)\.\*', pattern):
             return ('ALO, 'f'{match.group(1)}')
@@ -183,7 +202,13 @@ class Explainer:
         if constraints:
             return all(re.search(constraint, trace_str) for constraint in constraints)
         return all(re.search(constraint, trace_str) for constraint in self.constraints)
+    
     def contradiction(self):
+        """
+        Checks if there is a contradiction among the constraints.
+
+        :return: Boolean indicating if there is a contradiction.
+        """
         nodes = self.get_nodes_from_constraint()
         max_length = 10  # Set a reasonable max length to avoid infinite loops
         nodes = nodes + nodes
@@ -229,7 +254,12 @@ class Explainer:
             return "Trace is non-conformant, but the specific constraint violation could not be determined."
 
     def counterfactual_expl(self, trace):
-        
+        """
+        Generates a counterfactual explanation for a given trace.
+
+        :param trace: The trace to be explained.
+        :return: A string explaining why the trace is non-conformant or a message indicating no changes are needed.
+        """
         activation = self.activation(trace)
         if any(value == 0 for value in activation):
             new_explainer = Explainer()
@@ -246,6 +276,14 @@ class Explainer:
 
         
     def counter_factual_helper(self, working_trace, explanation, depth = 0):
+        """
+        Recursively explores counterfactual explanations for a working trace.
+
+        :param working_trace: The trace being explored.
+        :param explanation: The current explanation path.
+        :param depth: The current recursion depth.
+        :return: A string explaining why the working trace is non-conformant or a message indicating the maximum depth has been reached.
+        """
         if self.conformant(working_trace):
             return f'{explanation}'
         if depth > 100:
@@ -255,6 +293,15 @@ class Explainer:
 
 
     def operate_on_trace(self, trace, score, explanation_path, depth = 0):
+        """
+        Finds and applies modifications to the trace to make it conformant.
+
+        :param trace: The trace to be modified.
+        :param score: The similarity score of the trace.
+        :param explanation_path: The current explanation path.
+        :param depth: The current recursion depth.
+        :return: A string explaining why the best subtrace is non-conformant or a message indicating the maximum depth has been reached.
+        """
         explanation = None
         counter_factuals = self.modify_subtrace(trace)
         best_subtrace = None
@@ -346,46 +393,13 @@ class Explainer:
             sub_ctrbs.append(sub_ctrb)
         return sum(sub_ctrbs)
     
-    def determine_shapley_values_traces(self, log):
-        """
-        Determines the Shapley value-based contribution of each trace to the overall conformance rate.
-
-        Args:
-            log (EventLog): The event log containing the traces.
-
-        Returns:
-            dict: A dictionary with trace representations as keys and their Shapley values as values.
-        """
-        shapley_values = {}
-        traces = [Trace(list(t)) for t in log.log.keys()]  # Convert trace tuples to Trace instances
-        total_traces = len(traces)
-        
-        for trace in traces:
-            trace_contribution = 0
-            for subset_size in range(total_traces + 1):
-                for subset in combinations(traces, subset_size):
-                    weight = 1 / (total_traces * (total_traces - 1))  # Recalculate weight for each subset size
-                    subset_with_trace = list(subset) + [trace]
-                    subset_without_trace = list(subset)
-                    if trace not in subset:  # Trace not in this subset
-                        subset_with_trace = list(subset) + [trace]
-                        subset_without_trace = list(subset)
-                        log_with_trace = EventLog()
-                        log_without_trace = EventLog()
-                        for t in subset_with_trace:
-                            log_with_trace.add_trace(t, log.log[tuple(t.nodes)])
-                        for t in subset_without_trace:
-                            log_without_trace.add_trace(t, log.log[tuple(t.nodes)])
-
-                        con_wt = self.determine_conformance_rate(log_with_trace)
-                        con_wo = self.determine_conformance_rate(log_without_trace)
-                        marginal_contribution = con_wt - con_wo
-                        trace_contribution += weight * marginal_contribution
-            shapley_values[str(trace.nodes)] = trace_contribution
-            
-        return shapley_values
-
     def evaluate_similarity(self, trace):
+        """
+        Calculates the similarity between the adherent trace and the given trace using the Levenshtein distance.
+
+        :param trace: The trace to compare with the adherent trace.
+        :return: A normalized score indicating the similarity between the adherent trace and the given trace.
+        """
         length = len(self.adherent_trace)
         trace_len = len("".join(trace))
         lev_distance = levenshtein_distance(self.adherent_trace, "".join(trace))
@@ -394,6 +408,13 @@ class Explainer:
         return normalized_score
     
     def determine_conformance_rate(self, event_log, constraints = None):
+        """
+        Determines the conformance rate of the event log based on the given constraints.
+
+        :param event_log: The event log to analyze.
+        :param constraints: The constraints to check against the event log.
+        :return: The conformance rate as a float between 0 and 1, or a message if no constraints are provided.
+        """
         if not self.constraints and not constraints:
             return "The explainer have no constraints"
         len_log = len(event_log)
@@ -409,6 +430,25 @@ class Explainer:
                     break
         return (len_log - non_conformant) / len_log
     
+    def trace_contribution_to_conformance_loss(self, event_log, trace, constraints = None):
+        """
+        Calculates the contribution of a specific trace to the conformance loss of the event log.
+
+        :param event_log: The event log to analyze.
+        :param trace: The trace to calculate its contribution.
+        :param constraints: The constraints to check against the event log.
+        :return: The contribution of the trace to the conformance loss as a float between 0 and 1.
+        """
+        if not constraints:
+            constraints = self.constraints
+        total_traces = len(event_log)
+        contribution_of_trace = 0
+        for t, count in event_log.log.items():            
+            if not self.conformant(t, constraints):
+                if trace.nodes == list(t):
+                    contribution_of_trace = count
+
+        return contribution_of_trace / total_traces
     
 def determine_powerset(elements):
     """Determines the powerset of a list of elements
@@ -449,6 +489,13 @@ def get_iterative_subtrace(trace):
 def levenshtein_distance(seq1, seq2):
     """
     Calculates the Levenshtein distance between two sequences.
+    
+    Args:
+        seq1 (str): The first sequence.
+        seq2 (str): The second sequence.
+        
+    Returns:
+        int: The Levenshtein distance between the two sequences.
     """
     size_x = len(seq1) + 1
     size_y = len(seq2) + 1
@@ -469,25 +516,3 @@ def levenshtein_distance(seq1, seq2):
                     matrix[x-1][y-1] + 1  
                 )
     return matrix[size_x-1][size_y-1]
-
-#event_log = EventLog()
-exp = Explainer()
-exp.add_constraint('^A')
-exp.add_constraint('D$')
-trace0 = Trace(['A', 'B', 'C', 'D'])
-trace1 = Trace(['A', 'C', 'D', 'B'])
-trace2 = Trace(['C'])
-trace3 = Trace(['D'])
-eventlog = EventLog()
-eventlog.add_trace(trace0, 10)
-eventlog.add_trace(trace1, 10)
-eventlog.add_trace(trace2, 10)
-eventlog.add_trace(trace3, 20)
-print('Conformance rate: ' + str(exp.determine_conformance_rate(eventlog)))
-print('Contribution ^A:', exp.determine_shapley_value(eventlog, exp.constraints, 0))
-print('Contribution D$:',  exp.determine_shapley_value(eventlog, exp.constraints, 1))
-values = exp.determine_shapley_values_traces(eventlog)
-print(eventlog)
-print("^A, D$")
-for t, v in values.items():
-    print(t +" : " + str(round(v, 2)))

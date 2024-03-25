@@ -155,7 +155,7 @@ def test_trace_conformance_against_multiple_constraints():
     ), "Trace2 should be conformant as it satisfies all constraints."
 
 
-# Test 16: Conformant trace does not generate minimal explaination 
+# Test 16: Conformant trace does not generate minimal explaination
 def test_conformant_trace_handled_correctly():
     trace = Trace(["A", "B"])
     explainer = Explainer()
@@ -165,6 +165,7 @@ def test_conformant_trace_handled_correctly():
         explainer.minimal_expl(trace)
         == "The trace is already conformant, no changes needed."
     )
+
 
 # Test 17: Conformant trace
 def test_explainer_methods():
@@ -189,10 +190,10 @@ def test_explainer_methods():
 # Test 18: Some explaination test
 def test_explaination():
     explainer = Explainer()
-    
+
     conformant_trace = Trace(["A", "B", "C"])
     non_conformant_trace = Trace(["A", "C"])
-    
+
     explainer.add_constraint("A.*B.*C")
 
     assert explainer.conformant(non_conformant_trace) == False
@@ -212,6 +213,8 @@ def test_explaination():
 This part is not very complex as of now and is very much up for change, the complexity of counterfactuals 
 proved to be slightly larger than expected
 """
+
+
 def test_complex_counterfactual_explanation():
     explainer = Explainer()
 
@@ -220,7 +223,7 @@ def test_complex_counterfactual_explanation():
     non_conformant_trace = Trace(["A", "C", "E", "D"])
 
     counterfactual_explanation = explainer.counterfactual_expl(non_conformant_trace)
-    
+
     assert (
         counterfactual_explanation
         == "\nAddition (Added B at position 1): A->B->C->E->D"
@@ -256,4 +259,3 @@ def test_event_log():
         ("A", "B", "C"): 5,
         ("X", "Y", "Z"): 7,
     }  # There should be several traces in the log
-

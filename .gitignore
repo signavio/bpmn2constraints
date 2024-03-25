@@ -135,3 +135,7 @@ dmypy.json
 .idea/
 
 .vscode/
+
+# explainer Stuff
+explainer/test.py
+explainer/old_code.py

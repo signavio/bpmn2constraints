@@ -189,8 +189,7 @@ class Explainer:
         if init_match:
             return ("I", f"{init_match.group(1)}")
         return None
-        
-         
+
     def conformant(self, trace, constraints=None):
         """
         Checks if the trace is conformant according to all the constraints.
@@ -234,7 +233,7 @@ class Explainer:
         :param trace: A Trace instance.
         :return: Explanation of why the trace is non-conformant.
         """
-        
+
         # Because constraints that are not activated should not be considered we create a new explainer with the relevant constraints in this case
         activation = self.activation(trace)
         if any(value == 0 for value in activation):
@@ -243,11 +242,11 @@ class Explainer:
                 if value == 1:
                     new_explainer.add_constraint(self.constraints[idx])
             return new_explainer.minimal_expl(trace)
-        
+
         if self.conformant(trace):
             return "The trace is already conformant, no changes needed."
         explanations = None
-        
+
         for constraint in self.constraints:
             for subtrace in get_sublists(trace):
                 trace_str = "".join(subtrace)
@@ -343,9 +342,9 @@ class Explainer:
     def modify_subtrace(self, trace):
         """
         Modifies the given trace to meet constraints by adding nodes where the pattern fails.
-        
+
         Parameters:
-        - trace: A list of node identifiers 
+        - trace: A list of node identifiers
 
         Returns:
         - A list of potential subtraces each modified to meet constraints.
@@ -395,7 +394,7 @@ class Explainer:
             rate
         """
         if len(constraints) < index:
-            raise Exception ("Constraint not in constraint list.")
+            raise Exception("Constraint not in constraint list.")
         contributor = constraints[index]
         sub_ctrbs = []
         reduced_constraints = [c for c in constraints if not c == contributor]
@@ -454,7 +453,7 @@ class Explainer:
 
     def trace_contribution_to_conformance_loss(
         self, event_log, trace, constraints=None
-    ):        
+    ):
         """
         Calculates the contribution of a specific trace to the conformance loss of the event log.
 
@@ -474,6 +473,7 @@ class Explainer:
 
         return contribution_of_trace / total_traces
 
+
 def determine_powerset(elements):
     """Determines the powerset of a list of elements
     Args:
@@ -487,6 +487,7 @@ def determine_powerset(elements):
     )
     return [set(ps_element) for ps_element in ps_elements]
 
+
 def get_sublists(lst):
     """
     Generates all possible non-empty sublists of a list.
@@ -499,6 +500,7 @@ def get_sublists(lst):
         sublists.extend(combinations(lst, r))
     return sublists
 
+
 def get_iterative_subtrace(trace):
     """
     Generates all possible non-empty contiguous sublists of a list, maintaining order.
@@ -509,9 +511,10 @@ def get_iterative_subtrace(trace):
     """
     sublists = []
     for i in range(0, len(trace)):
-        sublists.append(trace.nodes[0:i+1])
-       
+        sublists.append(trace.nodes[0 : i + 1])
+
     return sublists
+
 
 def levenshtein_distance(seq1, seq2):
     """
@@ -540,4 +543,4 @@ def levenshtein_distance(seq1, seq2):
                 matrix[x][y] = min(
                     matrix[x - 1][y] + 1, matrix[x][y - 1] + 1, matrix[x - 1][y - 1] + 1
                 )
-    return matrix[size_x-1][size_y-1]
+    return matrix[size_x - 1][size_y - 1]

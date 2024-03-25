@@ -2,19 +2,22 @@ import math
 import re
 from itertools import combinations, product, chain
 
+
 class Trace:
     def __init__(self, nodes):
         """
         Initializes a Trace instance.
-        
+
         :param nodes: A list of nodes where each node is represented as a string label.
         """
         self.nodes = nodes
+
     def __len__(self):
         """
         Returns the number of nodes in the trace.
         """
         return len(self.nodes)
+    
     def __iter__(self):
         """
         Initializes the iteration over the nodes in the trace.
@@ -32,6 +35,7 @@ class Trace:
             return result
         else:
             raise StopIteration
+
     def __split__(self):
         """
         Splits the nodes of the trace into a list.
@@ -42,6 +46,7 @@ class Trace:
         for node in self.nodes:
             spl.append(node)
         return spl
+
 class EventLog:
     def __init__(self, trace=None):
         """
@@ -53,7 +58,7 @@ class EventLog:
         if trace:
             self.add_trace(trace)
 
-    def add_trace(self, trace, count = 1):
+    def add_trace(self, trace, count=1):
         """
         Adds a trace to the log or increments its count if it already exists.
 
@@ -65,7 +70,7 @@ class EventLog:
         else:
             self.log[trace_tuple] = count
 
-    def remove_trace(self, trace, count = 1):
+    def remove_trace(self, trace, count=1):
         """
         Removes a trace from the log or decrements its count if the count is greater than 1.
 
@@ -136,7 +141,7 @@ class Explainer:
                 if node not in remaining_nodes:
                     self.nodes.discard(node)
 
-    def activation(self, trace, constraints = None):
+    def activation(self, trace, constraints=None):
         """
         Checks if any of the nodes in the trace activates any constraint.
         
@@ -184,7 +189,7 @@ class Explainer:
         return None
         
          
-    def conformant(self, trace, constraints = None):
+    def conformant(self, trace, constraints=None):
         """
         Checks if the trace is conformant according to all the constraints.
         
@@ -275,7 +280,7 @@ class Explainer:
         return self.operate_on_trace(trace, score, '')
 
         
-    def counter_factual_helper(self, working_trace, explanation, depth = 0):
+    def counter_factual_helper(self, working_trace, explanation, depth=0):
         """
         Recursively explores counterfactual explanations for a working trace.
 
@@ -292,7 +297,7 @@ class Explainer:
         return self.operate_on_trace(working_trace, score, explanation, depth)
 
 
-    def operate_on_trace(self, trace, score, explanation_path, depth = 0):
+    def operate_on_trace(self, trace, score, explanation_path, depth=0):
         """
         Finds and applies modifications to the trace to make it conformant.
 
@@ -318,7 +323,7 @@ class Explainer:
         explanation_string = explanation_path + '\n' + str(explanation)
         return self.counter_factual_helper(best_subtrace, explanation_string, depth + 1)
 
-    def get_nodes_from_constraint(self, constraint = None):
+    def get_nodes_from_constraint(self, constraint=None):
         """
         Extracts unique nodes from a constraint pattern.
         
@@ -407,7 +412,7 @@ class Explainer:
         normalized_score = 1 - lev_distance / max_distance
         return normalized_score
     
-    def determine_conformance_rate(self, event_log, constraints = None):
+    def determine_conformance_rate(self, event_log, constraints=None):
         """
         Determines the conformance rate of the event log based on the given constraints.
 
@@ -430,7 +435,7 @@ class Explainer:
                     break
         return (len_log - non_conformant) / len_log
     
-    def trace_contribution_to_conformance_loss(self, event_log, trace, constraints = None):
+    def trace_contribution_to_conformance_loss(self, event_log, trace, constraints=None):
         """
         Calculates the contribution of a specific trace to the conformance loss of the event log.
 

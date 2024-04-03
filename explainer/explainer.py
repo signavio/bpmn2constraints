@@ -292,7 +292,7 @@ class Explainer:
         if self.minimal_solution:
             self.contradiction(
                 True, len(trace) + 1
-            ) # If the solution should be minimal, calculate all possible solutions
+            )  # If the solution should be minimal, calculate all possible solutions
         if self.conformant(trace):
             return "The trace is already conformant, no changes needed."
         score = self.evaluate_similarity(trace)

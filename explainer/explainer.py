@@ -114,7 +114,7 @@ class Explainer:
         self.adherent_trace = None
         self.adherent_traces = []
         self.minimal_solution = False 
-        
+
     def set_minimal_solution(self, minimal_solution):
         """
         Tells the explainer to generate minimal solutions
@@ -124,7 +124,7 @@ class Explainer:
             minimal_solution (bool): True to generate minimal solutions, False if it should be the first possible
         """
         self.minimal_solution = minimal_solution
-        
+
     def add_constraint(self, regex):
         """
         Adds a new constraint and updates the nodes list.
@@ -221,7 +221,7 @@ class Explainer:
             return all(re.search(constraint, trace_str) for constraint in constraints)
         return all(re.search(constraint, trace_str) for constraint in self.constraints)
 
-    def contradiction(self, check_multiple = False, max_length = 10):
+    def contradiction(self, check_multiple=False, max_length=10):
         """
         Checks if there is a contradiction among the constraints.
 
@@ -233,7 +233,7 @@ class Explainer:
             for combination in product(nodes, repeat=length):
                 test_str = "".join(combination)
                 if all(re.search(con, test_str) for con in self.constraints):
-                    if not check_multiple: # Standard, if solution is not minimal
+                    if not check_multiple:  # Standard, if solution is not minimal
                         self.adherent_trace = test_str
                         return False  # Found a match
                     else:
@@ -290,7 +290,10 @@ class Explainer:
                     new_explainer.add_constraint(self.constraints[idx])
             return new_explainer.counterfactual_expl(trace)
         if self.minimal_solution:
-            self.contradiction(True, len(trace) + 1) # If the solution should be minimal, calculate all possible solutions
+            self.contradiction(
+                True,
+                len(trace) + 1
+                ) # If the solution should be minimal, calculate all possible solutions
         if self.conformant(trace):
             return "The trace is already conformant, no changes needed."
         score = self.evaluate_similarity(trace)
@@ -436,15 +439,17 @@ class Explainer:
         :param trace: The trace to compare with the adherent trace.
         :return: A normalized score indicating the similarity between the adherent trace and the given trace.
         """
-        length = 0 
+        length = 0
         trace_len = len("".join(trace))
-        lev_distance = 0 
+        lev_distance = 0
         if self.minimal_solution:
-            lev_distance = len(max(self.adherent_traces)) + trace_len # The maximum possible levenshtein distance
+            lev_distance = (
+                len(max(self.adherent_traces)) + trace_len 
+                )# The maximum possible levenshtein distance
             length = len(max(self.adherent_traces))
             for t in self.adherent_traces:
                 tmp_dist = levenshtein_distance(t, "".join(trace))
-                if lev_distance > tmp_dist: # Closer to a possible solution
+                if lev_distance > tmp_dist:  # Closer to a possible solution
                     lev_distance = tmp_dist
         else:
             length = len(self.adherent_trace)

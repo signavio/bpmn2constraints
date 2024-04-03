@@ -113,7 +113,7 @@ class Explainer:
         self.constraints = []  # List to store constraints (regex patterns)
         self.adherent_trace = None
         self.adherent_traces = []
-        self.minimal_solution = False 
+        self.minimal_solution = False
 
     def set_minimal_solution(self, minimal_solution):
         """
@@ -291,9 +291,8 @@ class Explainer:
             return new_explainer.counterfactual_expl(trace)
         if self.minimal_solution:
             self.contradiction(
-                True,
-                len(trace) + 1
-                ) # If the solution should be minimal, calculate all possible solutions
+                True, len(trace) + 1
+            ) # If the solution should be minimal, calculate all possible solutions
         if self.conformant(trace):
             return "The trace is already conformant, no changes needed."
         score = self.evaluate_similarity(trace)
@@ -444,8 +443,8 @@ class Explainer:
         lev_distance = 0
         if self.minimal_solution:
             lev_distance = (
-                len(max(self.adherent_traces)) + trace_len 
-                )# The maximum possible levenshtein distance
+                len(max(self.adherent_traces)) + trace_len
+            )  # The maximum possible levenshtein distance
             length = len(max(self.adherent_traces))
             for t in self.adherent_traces:
                 tmp_dist = levenshtein_distance(t, "".join(trace))

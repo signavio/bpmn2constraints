@@ -139,3 +139,4 @@ dmypy.json
 # explainer Stuff
 explainer/test.py
 explainer/old_code.py
+explainer/conf.py

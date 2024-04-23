@@ -1,16 +1,16 @@
 from explainer.explainer import *
-
+from explainer.explainer_regex import ExplainerRegex
 
 # Test 1: Adding and checking constraints
 def test_add_constraint():
-    explainer = Explainer()
+    explainer = ExplainerRegex()
     explainer.add_constraint("A.*B.*C")
     assert "A.*B.*C" in explainer.constraints, "Constraint 'A.*B.*C' should be added."
 
 
 # Test 2: Removing constraints
 def test_remove_constraint():
-    explainer = Explainer()
+    explainer = ExplainerRegex()
     explainer.add_constraint("A.*B.*C")
     explainer.add_constraint("B.*C")
     explainer.remove_constraint(0)
@@ -22,7 +22,7 @@ def test_remove_constraint():
 # Test 3: Activation of constraints
 def test_activation():
     trace = Trace(["A", "B", "C"])
-    explainer = Explainer()
+    explainer = ExplainerRegex()
     explainer.add_constraint("A.*B.*C")
     assert explainer.activation(trace), "The trace should activate the constraint."
 
@@ -30,7 +30,7 @@ def test_activation():
 # Test 4: Checking conformance of traces
 def test_conformance():
     trace = Trace(["A", "B", "C"])
-    explainer = Explainer()
+    explainer = ExplainerRegex()
     explainer.add_constraint("A.*B.*C")
     assert explainer.conformant(trace), "The trace should be conformant."
 
@@ -38,7 +38,7 @@ def test_conformance():
 # Test 5: Non-conformance explanation
 def test_non_conformance_explanation():
     trace = Trace(["C", "A", "B"])
-    explainer = Explainer()
+    explainer = ExplainerRegex()
     explainer.add_constraint("A.*B.*C")
     explanation = explainer.minimal_expl(trace)
     assert "violated" in explanation, "The explanation should indicate a violation."
@@ -47,7 +47,7 @@ def test_non_conformance_explanation():
 # Test 6: Overlapping constraints
 def test_overlapping_constraints():
     trace = Trace(["A", "B", "A", "C"])
-    explainer = Explainer()
+    explainer = ExplainerRegex()
     explainer.add_constraint("A.*B.*C")
     explainer.add_constraint("A.*A.*C")
     assert explainer.conformant(
@@ -58,7 +58,7 @@ def test_overlapping_constraints():
 # Test 7: Partially meeting constraints
 def test_partial_conformance():
     trace = Trace(["A", "C", "B"])
-    explainer = Explainer()
+    explainer = ExplainerRegex()
     explainer.add_constraint("A.*B.*C")
     assert not explainer.conformant(trace), "The trace should not be fully conformant."
 
@@ -66,7 +66,7 @@ def test_partial_conformance():
 # Test 8: Constraints with repeated nodes
 def test_constraints_with_repeated_nodes():
     trace = Trace(["A", "A", "B", "A"])
-    explainer = Explainer()
+    explainer = ExplainerRegex()
     explainer.add_constraint("A.*A.*B.*A")
     assert explainer.conformant(
         trace
@@ -75,7 +75,7 @@ def test_constraints_with_repeated_nodes():
 
 # Test 9: Removing constraints and checking nodes list
 def test_remove_constraint_and_check_nodes():
-    explainer = Explainer()
+    explainer = ExplainerRegex()
     explainer.add_constraint("A.*B")
     explainer.add_constraint("B.*C")
     explainer.remove_constraint(0)
@@ -87,7 +87,7 @@ def test_remove_constraint_and_check_nodes():
 # Test 10: Complex regex constraint
 def test_complex_regex_constraint():
     trace = Trace(["A", "X", "B", "Y", "C"])
-    explainer = Explainer()
+    explainer = ExplainerRegex()
     explainer.add_constraint(
         "A.*X.*B.*Y.*C"
     )  # Specifically expects certain nodes in order
@@ -99,7 +99,7 @@ def test_complex_regex_constraint():
 # Test 11: Constraint not covered by any trace node
 def test_constraint_not_covered():
     trace = Trace(["A", "B", "C"])
-    explainer = Explainer()
+    explainer = ExplainerRegex()
     explainer.add_constraint("D*")  # This node "D" does not exist in the trace
     assert explainer.activation(trace) == [
         0
@@ -109,7 +109,7 @@ def test_constraint_not_covered():
 # Test 12: Empty trace and constraints
 def test_empty_trace_and_constraints():
     trace = Trace([])
-    explainer = Explainer()
+    explainer = ExplainerRegex()
     explainer.add_constraint("")  # Adding an empty constraint
     assert explainer.conformant(
         trace
@@ -118,7 +118,7 @@ def test_empty_trace_and_constraints():
 
 # Test 13: Removing non-existent constraint index
 def test_remove_nonexistent_constraint():
-    explainer = Explainer()
+    explainer = ExplainerRegex()
     explainer.add_constraint("A.*B")
     explainer.remove_constraint(10)  # Non-existent index
     assert (
@@ -129,7 +129,7 @@ def test_remove_nonexistent_constraint():
 # Test 14: Activation with no constraints
 def test_activation_with_no_constraints():
     trace = Trace(["A", "B", "C"])
-    explainer = Explainer()
+    explainer = ExplainerRegex()
     assert not explainer.activation(trace), "No constraints should mean no activation."
 
 
@@ -142,7 +142,7 @@ def test_trace_conformance_against_multiple_constraints():
         ["A", "B", "C", "D"]
     )  # This trace should be conformant as it matches both constraints
 
-    explainer = Explainer()
+    explainer = ExplainerRegex()
     explainer.add_constraint("A.*B.*C")  # Both traces attempt to conform to this
     explainer.add_constraint("B.*D")  # And to this
 
@@ -158,7 +158,7 @@ def test_trace_conformance_against_multiple_constraints():
 # Test 16: Conformant trace does not generate minimal explaination
 def test_conformant_trace_handled_correctly():
     trace = Trace(["A", "B"])
-    explainer = Explainer()
+    explainer = ExplainerRegex()
     explainer.add_constraint("AB")
 
     assert (
@@ -170,7 +170,7 @@ def test_conformant_trace_handled_correctly():
 # Test 17: Conformant trace
 def test_explainer_methods():
     trace = Trace(["A", "B", "C"])
-    explainer = Explainer()
+    explainer = ExplainerRegex()
     explainer.add_constraint("A.*B.*C")
     explainer.add_constraint("B.*C")
 
@@ -189,7 +189,7 @@ def test_explainer_methods():
 
 # Test 18: Some explaination test
 def test_explaination():
-    explainer = Explainer()
+    explainer = ExplainerRegex()
 
     conformant_trace = Trace(["A", "B", "C"])
     non_conformant_trace = Trace(["A", "C"])
@@ -216,7 +216,7 @@ proved to be slightly larger than expected
 
 
 def test_complex_counterfactual_explanation():
-    explainer = Explainer()
+    explainer = ExplainerRegex()
 
     explainer.add_constraint("ABB*C")
 

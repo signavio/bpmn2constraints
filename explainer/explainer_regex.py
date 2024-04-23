@@ -139,6 +139,8 @@ class ExplainerRegex(Explainer):
         :param length: The specific length of combinations to test.
         :return: Boolean indicating if there is a contradiction.
         """
+        if length <= 0:
+            return True
         nodes = self.get_nodes_from_constraint()
         nodes = nodes + nodes  # Assuming you need to double the nodes as in your previous snippet
 
@@ -203,12 +205,12 @@ class ExplainerRegex(Explainer):
         if self.minimal_solution:
             self.adherent_trace = None
             length_of_trace = len(trace)
+            print(length_of_trace)
             delta = 1  # Starting with an increment of 1
             while not self.adherent_trace:
                 self.contradiction_by_length(length_of_trace)
                 length_of_trace += delta
                 delta *= -1  # Alternate between adding 1 and subtracting 1
-            
         if self.conformant(trace):
             return "The trace is already conformant, no changes needed."
         score = self.evaluate_similarity(trace)

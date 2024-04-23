@@ -24,7 +24,10 @@ class ExplainerRegex(Explainer):
         :param regex: A regular expression representing the constraint.
         """
         self.constraints.append(regex)
-        if self.contradiction():
+        max_length = 0
+        for con in self.constraints:
+            max_length += len(con) 
+        if self.contradiction(len(regex) + max_length):
             self.constraints.remove(regex)
             print(f"Constraint {regex} contradicts the other constraints.")
 
@@ -113,7 +116,7 @@ class ExplainerRegex(Explainer):
             return all(re.search(constraint, trace_str) for constraint in constraints)
         return all(re.search(constraint, trace_str) for constraint in self.constraints)
 
-    def contradiction(self, check_multiple=False, max_length=10):
+    def contradiction(self, max_length):
         """
         Checks if there is a contradiction among the constraints.
 
@@ -125,12 +128,28 @@ class ExplainerRegex(Explainer):
             for combination in product(nodes, repeat=length):
                 test_str = "".join(combination)
                 if all(re.search(con, test_str) for con in self.constraints):
-                    if not check_multiple:  # Standard, if solution is not minimal
                         self.adherent_trace = test_str
                         return False  # Found a match
-                    else:
-                        self.adherent_traces.append(test_str)
-        return not check_multiple  # No combination satisfied all constraints
+        return True  # No combination satisfied all constraints
+    
+    def contradiction_by_length(self, length):
+        """
+        Checks if there is a contradiction among the constraints specifically for a given length.
+
+        :param length: The specific length of combinations to test.
+        :return: Boolean indicating if there is a contradiction.
+        """
+        nodes = self.get_nodes_from_constraint()
+        nodes = nodes + nodes  # Assuming you need to double the nodes as in your previous snippet
+
+        for combination in product(nodes, repeat=length):
+            test_str = "".join(combination)
+            if all(re.search(con, test_str) for con in self.constraints):
+                self.adherent_trace = test_str
+                return False  # Found a match that satisfies all constraints
+
+        return True  # No combination of this specific length satisfied all constraints
+
 
     def minimal_expl(self, trace):
         """
@@ -182,9 +201,14 @@ class ExplainerRegex(Explainer):
                     new_explainer.add_constraint(self.constraints[idx])
             return new_explainer.counterfactual_expl(trace)
         if self.minimal_solution:
-            self.contradiction(
-                True, len(trace) + 1
-            )  # If the solution should be minimal, calculate all possible solutions
+            self.adherent_trace = None
+            length_of_trace = len(trace)
+            delta = 1  # Starting with an increment of 1
+            while not self.adherent_trace:
+                self.contradiction_by_length(length_of_trace)
+                length_of_trace += delta
+                delta *= -1  # Alternate between adding 1 and subtracting 1
+            
         if self.conformant(trace):
             return "The trace is already conformant, no changes needed."
         score = self.evaluate_similarity(trace)
@@ -297,21 +321,9 @@ class ExplainerRegex(Explainer):
         :param trace: The trace to compare with the adherent trace.
         :return: A normalized score indicating the similarity between the adherent trace and the given trace.
         """
-        length = 0
         trace_len = len("".join(trace))
-        lev_distance = 0
-        if self.minimal_solution:
-            lev_distance = (
-                len(max(self.adherent_traces)) + trace_len
-            )  # The maximum possible levenshtein distance
-            length = len(max(self.adherent_traces))
-            for t in self.adherent_traces:
-                tmp_dist = levenshtein_distance(t, "".join(trace))
-                if lev_distance > tmp_dist:  # Closer to a possible solution
-                    lev_distance = tmp_dist
-        else:
-            length = len(self.adherent_trace)
-            lev_distance = levenshtein_distance(self.adherent_trace, "".join(trace))
+        length = len(self.adherent_trace)
+        lev_distance = levenshtein_distance(self.adherent_trace, "".join(trace))
         max_distance = max(length, trace_len)
         normalized_score = 1 - lev_distance / max_distance
         return normalized_score

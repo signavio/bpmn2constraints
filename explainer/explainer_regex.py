@@ -289,7 +289,7 @@ class ExplainerRegex(Explainer):
         for i, s_trace in enumerate(get_iterative_subtrace(trace)):
             for con in self.constraints:
                 new_trace_str = "".join(s_trace)
-                match = re.match(new_trace_str, con)
+                match = re.search(con, new_trace_str)
                 if not match:
                     for add in possible_additions:
                         potential_subtraces.append(

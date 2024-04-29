@@ -358,6 +358,8 @@ class ExplainerRegex(Explainer):
                     return "The explainer have no constraints"
         if constraints == None:
             constraints = self.constraints
+        if len(constraints) == 0:
+            print("hej")
         conformant = 0
         for con in constraints:
             for trace, count in event_log.log.items():
@@ -523,3 +525,23 @@ def levenshtein_distance(seq1, seq2):
                     matrix[x - 1][y] + 1, matrix[x][y - 1] + 1, matrix[x - 1][y - 1] + 1
                 )
     return matrix[size_x - 1][size_y - 1]
+
+exp = ExplainerRegex()
+
+traces = [
+    Trace(['A', 'B','C']),
+    Trace(['A', 'B']),
+    Trace(['B']),
+    Trace(['B','C'])
+]
+event_log = EventLog()
+event_log.add_trace(traces[0], 10) # The second parameter is how many variants you'd like to add, leave blank for 1
+event_log.add_trace(traces[1], 10)
+event_log.add_trace(traces[2], 10)
+event_log.add_trace(traces[3], 20)
+exp.add_constraint('^A')
+exp.add_constraint('C$')
+
+print(exp.determine_conformance_rate(event_log))
+print(exp.determine_fitness_rate(event_log))
+print(exp.constraint_ctrb_to_conformance(event_log, exp.constraints,0))

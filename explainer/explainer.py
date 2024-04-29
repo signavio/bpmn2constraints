@@ -194,6 +194,20 @@ class EventLog:
         trace_tuple = tuple(trace.nodes)
         return self.log.get(trace_tuple, 0)
     
+    def get_most_frequent_variant(self):
+        """
+        Returns the trace variant with the highest occurrence along with its count.
+
+        :return: A tuple containing the most frequent trace as a Trace instance and its count.
+        """
+        if not self.log:
+            return None, 0  # Return None and 0 if the log is empty
+        
+        # Find the trace with the maximum count
+        max_trace_tuple = max(self.log, key=self.log.get)
+        max_count = self.log[max_trace_tuple]
+        return Trace(list(max_trace_tuple)), max_count
+    
     def __str__(self):
         """
         Returns a string representation of the event log.
@@ -208,9 +222,9 @@ class EventLog:
 
     def __iter__(self):
         """
-        Allows iteration over each trace occurrence in the log.
+        Allows iteration over each trace occurrence in the log, sorted by count in descending order.
         """
-        for trace_tuple, count in self.log.items():
+        sorted_log = sorted(self.log.items(), key=lambda item: item[1], reverse=True)
+        for trace_tuple, count in sorted_log:
             for _ in range(count):
                 yield Trace(list(trace_tuple))
-

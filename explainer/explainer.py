@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-
+from itertools import combinations
 class Explainer(ABC):
     def __init__(self):
         """
@@ -73,7 +73,7 @@ class Explainer(ABC):
         pass
     
     @abstractmethod
-    def evaluate_similarity(self, trace):
+    def evaluate_similarity(self, trace, cmp_trace=None):
         # Implementation remains the same
         pass
     
@@ -205,9 +205,17 @@ class EventLog:
         
         # Find the trace with the maximum count
         max_trace_tuple = max(self.log, key=self.log.get)
-        max_count = self.log[max_trace_tuple]
-        return Trace(list(max_trace_tuple)), max_count
+        return Trace(list(max_trace_tuple))
     
+    def get_traces(self):
+        """
+        Extracts and returns a list of all unique trace variants in the event log.
+
+        :return: A list of Trace instances, each representing a unique trace.
+        """
+        # Generate a Trace instance for each unique trace tuple in the log
+        return [Trace(list(trace_tuple)) for trace_tuple in self.log.keys()]
+
     def __str__(self):
         """
         Returns a string representation of the event log.
@@ -228,3 +236,44 @@ class EventLog:
         for trace_tuple, count in sorted_log:
             for _ in range(count):
                 yield Trace(list(trace_tuple))
+                
+def get_sublists(lst):
+    """
+    Generates all possible non-empty sublists of a list.
+
+    :param lst: The input list.
+    :return: A list of all non-empty sublists.
+    """
+    sublists = []
+    for r in range(2, len(lst) + 1):  # Generate combinations of length 2 to n
+        sublists.extend(combinations(lst, r))
+    return sublists
+
+def levenshtein_distance(seq1, seq2):
+    """
+    Calculates the Levenshtein distance between two sequences.
+
+    Args:
+        seq1 (str): The first sequence.
+        seq2 (str): The second sequence.
+
+    Returns:
+        int: The Levenshtein distance between the two sequences.
+    """
+    size_x = len(seq1) + 1
+    size_y = len(seq2) + 1
+    matrix = [[0] * size_y for _ in range(size_x)]
+    for x in range(size_x):
+        matrix[x][0] = x
+    for y in range(size_y):
+        matrix[0][y] = y
+
+    for x in range(1, size_x):
+        for y in range(1, size_y):
+            if seq1[x - 1] == seq2[y - 1]:
+                matrix[x][y] = matrix[x - 1][y - 1]
+            else:
+                matrix[x][y] = min(
+                    matrix[x - 1][y] + 1, matrix[x][y - 1] + 1, matrix[x - 1][y - 1] + 1
+                )
+    return matrix[size_x - 1][size_y - 1]

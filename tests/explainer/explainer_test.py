@@ -1,5 +1,7 @@
+import sys
+sys.path.append('../../')
 from explainer.explainer import *
-from explainer.explainer_regex import ExplainerRegex
+from explainer import ExplainerRegex
 
 # Test 1: Adding and checking constraints
 def test_add_constraint():

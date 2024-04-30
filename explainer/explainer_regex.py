@@ -1,7 +1,7 @@
 import math
 import re
 from itertools import combinations, product, chain
-from explainer import Explainer, Trace, EventLog
+from explainer import Explainer, Trace, EventLog, get_sublists, levenshtein_distance
 
 class ExplainerRegex(Explainer):
     def __init__(self):
@@ -397,7 +397,7 @@ class ExplainerRegex(Explainer):
         :return: The contribution of the trace to the conformance loss as a float between 0 and 1.
         """
         if not self.constraints and not constraints:
-                    return "The explainer have no constraints"
+            return "The explainer have no constraints"
         if not constraints:
             constraints = self.constraints
         total_traces = len(event_log)
@@ -469,19 +469,6 @@ def determine_powerset(elements):
     return [set(ps_element) for ps_element in ps_elements]
 
 
-def get_sublists(lst):
-    """
-    Generates all possible non-empty sublists of a list.
-
-    :param lst: The input list.
-    :return: A list of all non-empty sublists.
-    """
-    sublists = []
-    for r in range(2, len(lst) + 1):  # Generate combinations of length 2 to n
-        sublists.extend(combinations(lst, r))
-    return sublists
-
-
 def get_iterative_subtrace(trace):
     """
     Generates all possible non-empty contiguous sublists of a list, maintaining order.
@@ -495,36 +482,6 @@ def get_iterative_subtrace(trace):
         sublists.append(trace.nodes[0 : i + 1])
 
     return sublists
-
-
-def levenshtein_distance(seq1, seq2):
-    """
-    Calculates the Levenshtein distance between two sequences.
-
-    Args:
-        seq1 (str): The first sequence.
-        seq2 (str): The second sequence.
-
-    Returns:
-        int: The Levenshtein distance between the two sequences.
-    """
-    size_x = len(seq1) + 1
-    size_y = len(seq2) + 1
-    matrix = [[0] * size_y for _ in range(size_x)]
-    for x in range(size_x):
-        matrix[x][0] = x
-    for y in range(size_y):
-        matrix[0][y] = y
-
-    for x in range(1, size_x):
-        for y in range(1, size_y):
-            if seq1[x - 1] == seq2[y - 1]:
-                matrix[x][y] = matrix[x - 1][y - 1]
-            else:
-                matrix[x][y] = min(
-                    matrix[x - 1][y] + 1, matrix[x][y - 1] + 1, matrix[x - 1][y - 1] + 1
-                )
-    return matrix[size_x - 1][size_y - 1]
 
 exp = ExplainerRegex()
 

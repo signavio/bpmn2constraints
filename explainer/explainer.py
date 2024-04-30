@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 from itertools import combinations
+
+
 class Explainer(ABC):
     def __init__(self):
         """
@@ -51,55 +53,56 @@ class Explainer(ABC):
         :return: Boolean indicating if any constraint is activated.
         """
         pass
-    
+
     @abstractmethod
     def conformant(self, trace, constraints=None):
         # Implementation remains the same
         pass
-    
+
     @abstractmethod
     def minimal_expl(self, trace):
         # Implementation remains the same
         pass
-    
+
     @abstractmethod
     def counterfactual_expl(self, trace):
         # Implementation remains the same
         pass
-    
+
     @abstractmethod
     def evaluate_similarity(self, trace, cmp_trace=None):
         # Implementation remains the same
         pass
-    
+
     @abstractmethod
     def determine_conformance_rate(self, event_log, constraints=None):
         # Implementation remains the same
         pass
-    
+
     @abstractmethod
     def determine_fitness_rate(self, event_log, constraints = None):
         pass
-    
+
     @abstractmethod
     def variant_ctrb_to_conformance_loss(self, event_log, trace, constraints=None):
         # Implementation remains the same
         pass
-    
+
     @abstractmethod
     def variant_ctrb_to_fitness(self, event_log, trace, constraints=None):
         # Implementation remains the same
         pass
-    
+
     @abstractmethod
     def constraint_ctrb_to_conformance(self, log, constraints, index):
         pass
-    
+
     @abstractmethod
     def constraint_ctrb_to_fitness(self, log, constraints, index):
         # Implementation remains the same
         pass
-    
+
+
 class Trace:
     def __init__(self, nodes):
         """
@@ -143,7 +146,8 @@ class Trace:
         for node in self.nodes:
             spl.append(node)
         return spl
-    
+
+
 class EventLog:
     def __init__(self, trace=None):
         """
@@ -179,7 +183,7 @@ class EventLog:
                 self.log[trace_tuple] -= count
             else:
                 del self.log[trace_tuple]
-                
+
     def get_variant_count(self, trace):
         """
         Returns the count of the specified trace in the log.
@@ -188,7 +192,7 @@ class EventLog:
         """
         trace_tuple = tuple(trace.nodes)
         return self.log.get(trace_tuple, 0)
-    
+
     def get_most_frequent_variant(self):
         """
         Returns the trace variant with the highest occurrence along with its count.
@@ -201,7 +205,7 @@ class EventLog:
         # Find the trace with the maximum count
         max_trace_tuple = max(self.log, key=self.log.get)
         return Trace(list(max_trace_tuple))
-    
+
     def get_traces(self):
         """
         Extracts and returns a list of all unique trace variants in the event log.
@@ -231,7 +235,8 @@ class EventLog:
         for trace_tuple, count in sorted_log:
             for _ in range(count):
                 yield Trace(list(trace_tuple))
-                
+
+
 def get_sublists(lst):
     """
     Generates all possible non-empty sublists of a list.
@@ -243,6 +248,7 @@ def get_sublists(lst):
     for r in range(2, len(lst) + 1):  # Generate combinations of length 2 to n
         sublists.extend(combinations(lst, r))
     return sublists
+
 
 def levenshtein_distance(seq1, seq2):
     """

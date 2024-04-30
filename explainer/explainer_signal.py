@@ -7,6 +7,7 @@ import json
 from itertools import combinations, chain
 import requests
 from conf import system_instance, workspace_id, user_name, pw
+
 KEYWORDS = [
     "ABS",
     "ALL",
@@ -166,18 +167,18 @@ class ExplainerSignal(Explainer):
         )
         self.auth_data = self.authenticator.authenticate()
         self.cookies = {
-            'JSESSIONID': self.auth_data['jsesssion_ID'],
-            'LBROUTEID': self.auth_data['lb_route_ID']
+            "JSESSIONID": self.auth_data["jsesssion_ID"],
+            "LBROUTEID": self.auth_data["lb_route_ID"]
         }
         self.headers = {
-            'Accept': 'application/json',
-            'x-signavio-id':  self.auth_data['auth_token']
+            "Accept": "application/json",
+            "x-signavio-id":  self.auth_data["auth_token"]
         }
         self.event_log = EventLog()
         self.signal_endpoint = None
         self.cache = {}
 
-    def set_endpoint(self, endpoint= "/g/api/pi-graphql/signal"):
+    def set_endpoint(self, endpoint="/g/api/pi-graphql/signal"):
         self.signal_endpoint = system_instance + endpoint
         self.load_variants()
 
@@ -231,9 +232,9 @@ class ExplainerSignal(Explainer):
             self.signal_endpoint,
             cookies=self.cookies,
             headers=self.headers,
-            json={'query': query},
+            json={"query": query},
         )
-        result = query_request.json()['data']
+        result = query_request.json()["data"]
         self.cache[cache_key] = result  # Store the result in cache
 
         for res in result:
@@ -277,9 +278,9 @@ class ExplainerSignal(Explainer):
             self.signal_endpoint,
             cookies=self.cookies,
             headers=self.headers,
-            json={'query': query},
+            json={"query": query},
         )
-        result = query_request.json()['data']
+        result = query_request.json()["data"]
 
         best_score = -float("inf")
         for res in result:
@@ -507,8 +508,8 @@ class ExplainerSignal(Explainer):
             self.signal_endpoint,
             cookies=self.cookies,
             headers=self.headers,
-            json={'query': query}),
-        result = query_request.json()['data'][0][0]
+            json={"query": query}),
+        result = query_request.json()["data"][0][0]
         self.cache[cache_key] = result
         return result
 
@@ -526,9 +527,9 @@ class ExplainerSignal(Explainer):
             self.signal_endpoint,
             cookies=self.cookies,
             headers=self.headers,
-            json={'query': query},
+            json={"query": query},
         )
-        result = query_request.json()['data'][0][0]
+        result = query_request.json()["data"][0][0]
         self.cache[cache_key] = result
         return result
 
@@ -541,9 +542,9 @@ class ExplainerSignal(Explainer):
             self.signal_endpoint,
             cookies=self.cookies,
             headers=self.headers,
-            json={'query': query},
+            json={"query": query},
         )
-        case_count = count_request.json()['data'][0][0]
+        case_count = count_request.json()["data"][0][0]
         self.cache[cache_key] = case_count
         return case_count
 
@@ -554,9 +555,9 @@ class ExplainerSignal(Explainer):
             self.signal_endpoint,
             cookies=self.cookies,
             headers=self.headers,
-            json={'query': query},
+            json={"query": query},
         )
-        data = query_request.json()['data']
+        data = query_request.json()["data"]
         for activity in data:
             self.event_log.add_trace(Trace(activity[0]))
 

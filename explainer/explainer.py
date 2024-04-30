@@ -58,11 +58,6 @@ class Explainer(ABC):
         pass
     
     @abstractmethod
-    def contradiction(self, check_multiple=False, max_length=10):
-        # Implementation remains the same
-        pass
-    
-    @abstractmethod
     def minimal_expl(self, trace):
         # Implementation remains the same
         pass

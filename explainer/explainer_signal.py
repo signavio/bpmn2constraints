@@ -7,42 +7,180 @@ import json
 from itertools import combinations, chain
 import requests
 from conf import system_instance, workspace_id, user_name, pw
-
 KEYWORDS = [
-    "ABS", "ALL", "ANALYZE", "AND", "ANY", "AS", "ASC", "AVG", "BARRIER", "BEHAVIOUR", "BETWEEN", "BOOL_AND", 
-    "BOOL_OR", "BUCKET", "BY", "CASE", "CASE_ID", "CATEGORY", "CEIL", "CHAR_INDEX", "CHAR_LENGTH", "COALESCE", 
-    "CONCAT", "COUNT", "CREATE", "CURRENT", "DATE_ADD", "DATE_DIFF", "DATE_PART", "DATE_TRUNC", "DEFAULT", 
-    "DENSE_RANK", "DESC", "DESCRIBE", "DISTINCT", "DROP", "DURATION", "DURATION_BETWEEN", "DURATION_FROM_DAYS", 
-    "DURATION_FROM_MILLISECONDS", "DURATION_TO_DAYS", "DURATION_TO_MILLISECONDS", "ELSE", "END", "END_TIME", 
-    "EVENT_ID", "EVENT_NAME", "EVENTS", "EXACT", "EXPLAIN", "EXTERNAL", "FALSE", "FILL", "FILTER", "FIRST", 
-    "FLATTEN", "FLOOR", "FOLLOWING", "FORMAT", "FROM", "GRANT", "GROUP", "HAVING", "IF", "ILIKE", "IN", "INVOKER", 
-    "IS", "JOIN", "JSON", "LAG", "LAST", "LEAD", "LEFT", "LIKE", "LIMIT", "LOCATION", "LOG", "MATCHES", "MAX", 
-    "MEDIAN", "MIN", "NOT", "NOW", "NULL", "NULLS", "OCCURRENCE", "ODATA", "OFFSET", "ON", "ONLY", "OR", "ORDER", 
-    "OUTER", "OVER", "PARQUET", "PARTITION", "PERCENT", "PERCENTILE_CONT", "PERCENTILE_DESC", "PERMISSIONS", "POW", 
-    "PRECEDING", "PRIVATE", "PUBLIC", "RANGE", "RANK", "REGR_INTERCEPT", "REGR_SLOPE", "REPEATABLE", "REPLACE", 
-    "RIGHT", "ROUND", "ROW", "ROW_NUMBER", "ROWS", "SECURITY", "SELECT", "SIGN", "SQRT", "START_TIME", "STDDEV", 
-    "SUBSTRING", "SUBSTRING_AFTER", "SUBSTRING_BEFORE", "SUM", "TABLE", "TABULAR", "TEXT", "THEN", "TIMESERIES", 
-    "TIMESTAMP", "TO", "TO_NUMBER", "TO_STRING", "TO_TIMESTAMP", "TRUE", "TRUNC", "UNBOUNDED", "UNION", "USING", 
-    "VIEW", "WHEN", "WHERE", "WITH", "WITHIN", ""
+    "ABS",
+    "ALL",
+    "ANALYZE",
+    "AND",
+    "ANY",
+    "AS",
+    "ASC",
+    "AVG",
+    "BARRIER",
+    "BEHAVIOUR",
+    "BETWEEN",
+    "BOOL_AND",
+    "BOOL_OR",
+    "BUCKET",
+    "BY",
+    "CASE",
+    "CASE_ID",
+    "CATEGORY",
+    "CEIL",
+    "CHAR_INDEX",
+    "CHAR_LENGTH",
+    "COALESCE",
+    "CONCAT",
+    "COUNT",
+    "CREATE",
+    "CURRENT",
+    "DATE_ADD",
+    "DATE_DIFF",
+    "DATE_PART",
+    "DATE_TRUNC",
+    "DEFAULT",
+    "DENSE_RANK",
+    "DESC",
+    "DESCRIBE",
+    "DISTINCT",
+    "DROP",
+    "DURATION",
+    "DURATION_BETWEEN",
+    "DURATION_FROM_DAYS",
+    "DURATION_FROM_MILLISECONDS",
+    "DURATION_TO_DAYS",
+    "DURATION_TO_MILLISECONDS",
+    "ELSE",
+    "END",
+    "END_TIME",
+    "EVENT_ID",
+    "EVENT_NAME",
+    "EVENTS",
+    "EXACT",
+    "EXPLAIN",
+    "EXTERNAL",
+    "FALSE",
+    "FILL",
+    "FILTER",
+    "FIRST",
+    "FLATTEN",
+    "FLOOR",
+    "FOLLOWING",
+    "FORMAT",
+    "FROM",
+    "GRANT",
+    "GROUP",
+    "HAVING",
+    "IF",
+    "ILIKE",
+    "IN",
+    "INVOKER",
+    "IS",
+    "JOIN",
+    "JSON",
+    "LAG",
+    "LAST",
+    "LEAD",
+    "LEFT",
+    "LIKE",
+    "LIMIT",
+    "LOCATION",
+    "LOG",
+    "MATCHES",
+    "MAX",
+    "MEDIAN",
+    "MIN",
+    "NOT",
+    "NOW",
+    "NULL",
+    "NULLS",
+    "OCCURRENCE",
+    "ODATA",
+    "OFFSET",
+    "ON",
+    "ONLY",
+    "OR",
+    "ORDER",
+    "OUTER",
+    "OVER",
+    "PARQUET",
+    "PARTITION",
+    "PERCENT",
+    "PERCENTILE_CONT",
+    "PERCENTILE_DESC",
+    "PERMISSIONS",
+    "POW",
+    "PRECEDING",
+    "PRIVATE",
+    "PUBLIC",
+    "RANGE",
+    "RANK",
+    "REGR_INTERCEPT",
+    "REGR_SLOPE",
+    "REPEATABLE",
+    "REPLACE",
+    "RIGHT",
+    "ROUND",
+    "ROW",
+    "ROW_NUMBER",
+    "ROWS",
+    "SECURITY",
+    "SELECT",
+    "SIGN",
+    "SQRT",
+    "START_TIME",
+    "STDDEV",
+    "SUBSTRING",
+    "SUBSTRING_AFTER",
+    "SUBSTRING_BEFORE",
+    "SUM",
+    "TABLE",
+    "TABULAR",
+    "TEXT",
+    "THEN",
+    "TIMESERIES",
+    "TIMESTAMP",
+    "TO",
+    "TO_NUMBER",
+    "TO_STRING",
+    "TO_TIMESTAMP",
+    "TRUE",
+    "TRUNC",
+    "UNBOUNDED",
+    "UNION",
+    "USING",
+    "VIEW",
+    "WHEN",
+    "WHERE",
+    "WITH",
+    "WITHIN",
+    "",
 ]
 
 
 class ExplainerSignal(Explainer):
     def __init__(self):
         super().__init__()
-        self.authenticator = SignavioAuthenticator.SignavioAuthenticator(system_instance, workspace_id, user_name, pw)
+        self.authenticator = SignavioAuthenticator.SignavioAuthenticator(
+            system_instance, workspace_id, user_name, pw
+        )
         self.auth_data = self.authenticator.authenticate()
-        self.cookies = {'JSESSIONID': self.auth_data['jsesssion_ID'], 'LBROUTEID': self.auth_data['lb_route_ID']}
-        self.headers = {'Accept': 'application/json', 'x-signavio-id':  self.auth_data['auth_token']}
+        self.cookies = {
+            'JSESSIONID': self.auth_data['jsesssion_ID'],
+            'LBROUTEID': self.auth_data['lb_route_ID']
+        }
+        self.headers = {
+            'Accept': 'application/json',
+            'x-signavio-id':  self.auth_data['auth_token']
+        }
         self.event_log = EventLog()
         self.signal_endpoint = None
-        self.cache = {}  
+        self.cache = {}
 
-
-    def set_endpoint(self, endpoint= '/g/api/pi-graphql/signal'):
+    def set_endpoint(self, endpoint= "/g/api/pi-graphql/signal"):
         self.signal_endpoint = system_instance + endpoint
         self.load_variants()
-        
+
     def remove_constraint(self, idx):
         """
         Removes a constraint by index and updates the nodes list if necessary.
@@ -72,10 +210,14 @@ class ExplainerSignal(Explainer):
         if not constraints:
             constraints = self.constraints
         if len(constraints) > 1:
-            constraints = " AND ".join([f"event_name MATCHES {constraint}" for constraint in constraints])
+            constraints = " AND ".join(
+                [f"event_name MATCHES {constraint}" for constraint in constraints]
+            )
         else:
             constraints = "".join(f"event_name MATCHES {constraints[0]}")
-        query = f'SELECT ACTIVITY, COUNT(CASE_ID) FROM "defaultview-4" WHERE {constraints}'
+        query = (
+            f'SELECT ACTIVITY, COUNT(CASE_ID) FROM "defaultview-4" WHERE {constraints}'
+        )
         conformant = False
         cache_key = hash(query)
         if cache_key in self.cache:
@@ -84,12 +226,12 @@ class ExplainerSignal(Explainer):
                     conformant = True
                     break
             return conformant
-        
+
         query_request = requests.post(
             self.signal_endpoint,
             cookies=self.cookies,
             headers=self.headers,
-            json={'query': query}
+            json={'query': query},
         )
         result = query_request.json()['data']
         self.cache[cache_key] = result  # Store the result in cache
@@ -99,10 +241,7 @@ class ExplainerSignal(Explainer):
                 conformant = True
                 break
         return conformant
-        
-    def contradiction(self, check_multiple=False, max_length=10):
-        pass
-    
+
     def minimal_expl(self, trace):
 
         if self.conformant(trace):
@@ -122,19 +261,23 @@ class ExplainerSignal(Explainer):
             return "Non-conformance due to: " + explanations
         else:
             return "Trace is non-conformant, but the specific constraint violation could not be determined."
-        
+
     def counterfactual_expl(self, trace):
         constraints = self.constraints
         if len(constraints) > 1:
-            constraints = " AND ".join([f"event_name MATCHES {constraint}" for constraint in constraints])
+            constraints = " AND ".join(
+                [f"event_name MATCHES {constraint}" for constraint in constraints]
+            )
         else:
             constraints = "".join(f"event_name MATCHES {constraints[0]}")
-        query = f'SELECT ACTIVITY, COUNT(CASE_ID) FROM "defaultview-4" WHERE {constraints}'
+        query = (
+            f'SELECT ACTIVITY, COUNT(CASE_ID) FROM "defaultview-4" WHERE {constraints}'
+        )
         query_request = requests.post(
             self.signal_endpoint,
             cookies=self.cookies,
             headers=self.headers,
-            json={'query': query}
+            json={'query': query},
         )
         result = query_request.json()['data']
 
@@ -171,7 +314,6 @@ class ExplainerSignal(Explainer):
         explanation_string = explanation_path + "\n" + str(explanation)
         return self.counter_factual_helper(best_subtrace, explanation_string, depth + 1)
 
-                
     def modify_subtrace(self, trace):
         """
         Modifies the given trace to meet constraints by adding nodes where the pattern fails.
@@ -213,6 +355,7 @@ class ExplainerSignal(Explainer):
                         ]
                     )
         return potential_subtraces
+
     def get_nodes_from_constraint(self, constraint=None):
         """
         Extracts unique nodes from a constraint pattern.
@@ -227,15 +370,17 @@ class ExplainerSignal(Explainer):
             return list(set(all_nodes))
         else:
             return list(set(self.filter_keywords(constraint)))
-    
+
     def filter_keywords(self, text):
         text = re.sub(r'\s+', '_', text.strip())
         words = re.findall(r"\b[A-Z_a-z]+\b", text)
         modified_words = [word.replace("_", " ") for word in words]
-        filtered_words = [word for word in modified_words if word.strip() not in KEYWORDS]
-        
+        filtered_words = [
+            word for word in modified_words if word.strip() not in KEYWORDS
+        ]
+
         return filtered_words
-    
+
     def evaluate_similarity(self, trace, cmp_trace=None):
         """
         Calculates the similarity between the adherent trace and the given trace using the Levenshtein distance.
@@ -251,7 +396,7 @@ class ExplainerSignal(Explainer):
         max_distance = max(length, trace_len)
         normalized_score = 1 - lev_distance / max_distance
         return normalized_score
-    
+
     def determine_conformance_rate(self, event_log = None, constraints=None):
         if constraints == None:
             constraints = self.constraints
@@ -261,20 +406,18 @@ class ExplainerSignal(Explainer):
         non_conformant = self.check_violations(constraints)
 
         len_log = self.get_total_cases()
-        
+
         return (len_log - non_conformant) / len_log
         
     
-    def determine_fitness_rate(self, event_log = None, constraints = None):
+    def determine_fitness_rate(self, event_log=None, constraints=None):
         if not constraints:
             constraints = self.constraints
         len_log = self.get_total_cases()
         total_conformance = 0
         for con in constraints:
             total_conformance += self.check_conformance(con)
-        
         return total_conformance / (len_log * len(constraints))
-        
         
     def variant_ctrb_to_conformance_loss(self, event_log, trace, constraints=None):
         if not self.constraints and not constraints:
@@ -287,7 +430,7 @@ class ExplainerSignal(Explainer):
             contribution_of_trace = event_log.get_variant_count(trace)
 
         return contribution_of_trace / total_traces
-    
+
     def variant_ctrb_to_fitness(self, event_log, trace, constraints=None):
         if not self.constraints and not constraints:
             return "The explainer have no constraints"
@@ -302,8 +445,7 @@ class ExplainerSignal(Explainer):
         contribution_of_trace = contribution_of_trace / len(constraints)
         contribution_of_trace = nr * contribution_of_trace
         return contribution_of_trace / total_traces
-        
-    
+
     def constraint_ctrb_to_conformance(self, log = None, constraints = None, index = -1):
         """Determines the Shapley value-based contribution of a constraint to a the
         overall conformance rate.
@@ -340,7 +482,7 @@ class ExplainerSignal(Explainer):
             )
             sub_ctrbs.append(sub_ctrb)
         return sum(sub_ctrbs)
-    
+
     def constraint_ctrb_to_fitness(self, log = None, constraints = None, index = -1):
         # Implementation remains the same
         if len(constraints) < index:
@@ -355,7 +497,9 @@ class ExplainerSignal(Explainer):
         return ctrb_count / (len_log * len(constraints))
 
     def check_conformance(self, constraint):
-        query = f'SELECT COUNT(CASE_ID) FROM "defaultview-4" WHERE event_name MATCHES{constraint}'
+        query = (
+            f'SELECT COUNT(CASE_ID) FROM "defaultview-4" WHERE event_name MATCHES{constraint}'
+        )
         cache_key = hash(query)
         if cache_key in self.cache:
             return self.cache[cache_key]
@@ -363,14 +507,18 @@ class ExplainerSignal(Explainer):
             self.signal_endpoint,
             cookies=self.cookies,
             headers=self.headers,
-            json={'query': query})
+            json={'query': query}),
         result = query_request.json()['data'][0][0]
         self.cache[cache_key] = result
         return result
-    
+
     def check_violations(self, constraints):
-        combined_constraints = " OR ".join([f"NOT event_name MATCHES {constraint}" for constraint in constraints])
-        query = f'SELECT COUNT(CASE_ID) FROM "defaultview-4" WHERE {combined_constraints}'
+        combined_constraints = " OR ".join(
+            [f"NOT event_name MATCHES {constraint}" for constraint in constraints]
+        )
+        query = (
+            f'SELECT COUNT(CASE_ID) FROM "defaultview-4" WHERE {combined_constraints}'
+        )
         cache_key = hash(query)
         if cache_key in self.cache:
             return self.cache[cache_key]
@@ -378,7 +526,7 @@ class ExplainerSignal(Explainer):
             self.signal_endpoint,
             cookies=self.cookies,
             headers=self.headers,
-            json={'query': query}
+            json={'query': query},
         )
         result = query_request.json()['data'][0][0]
         self.cache[cache_key] = result
@@ -393,11 +541,12 @@ class ExplainerSignal(Explainer):
             self.signal_endpoint,
             cookies=self.cookies,
             headers=self.headers,
-            json={'query': query})
+            json={'query': query},
+        )
         case_count = count_request.json()['data'][0][0]
         self.cache[cache_key] = case_count
         return case_count
-    
+
     def load_variants(self):
         query = 'SELECT Activity From "defaultview-4"'
 
@@ -405,13 +554,12 @@ class ExplainerSignal(Explainer):
             self.signal_endpoint,
             cookies=self.cookies,
             headers=self.headers,
-            json={'query': query}
+            json={'query': query},
         )
         data = query_request.json()['data']
         for activity in data:
             self.event_log.add_trace(Trace(activity[0]))
 
-    
 def get_event_log():
     return f'Select * FROM "defaultview-4"'
 
@@ -439,58 +587,4 @@ def get_iterative_subtrace(trace):
     sublists = []
     for i in range(0, len(trace)):
         sublists.append(trace.nodes[0 : i + 1])
-
     return sublists
-"""
-exp = ExplainerSignal()
-exp.set_endpoint()
-exp.add_constraint("(^NOT('review request'|'prepare contract')*('review request'~>'prepare contract')*NOT('review request'|'prepare contract')*$)")
-exp.add_constraint("(^NOT('prepare contract')* ('prepare contract' ANY*'send quote')* NOT('prepare contract')*$)")
-exp.add_constraint("(^NOT('assess risks')* ('assess risks' ANY*'send quote')* NOT('assess risks')*$)")
-trace = Trace(['credit requested', 'review request', 'prepare special terms', 'assess risks', 'prepare special terms', 'prepare contract', 'assess risks', 'prepare contract', 'send quote', 'send quote', 'quote sent'])
-
-#print(exp.minimal_expl(trace))
-#print(exp.counterfactual_expl(trace))
-
-print("Conf rate: " + str(exp.determine_conformance_rate()))
-print("Fitness rate: " + str(exp.determine_fitness_rate()))
-
-total_distribution = 0
-for trace in exp.event_log.get_traces():
-    ctrb = exp.variant_ctrb_to_fitness(
-        event_log=exp.event_log,
-        trace=trace,
-    )
-    total_distribution += ctrb
-print(f"Total distribution to the fitness rate is {total_distribution}")
-
-
-total_distribution = 0
-for trace in exp.event_log.get_traces():
-    ctrb = exp.variant_ctrb_to_conformance_loss(
-        event_log=exp.event_log,
-        trace=trace,
-    )
-    total_distribution += ctrb
-
-print(f"Total distribution to the conformance loss is {total_distribution}")
-event_log = EventLog()
-
-first_ctrb = exp.constraint_ctrb_to_fitness(constraints=exp.constraints, index = 0)
-snd_ctrb = exp.constraint_ctrb_to_fitness(constraints=exp.constraints, index = 1)
-thr_ctrb = exp.constraint_ctrb_to_fitness(constraints=exp.constraints, index = 2)
-print(f"First constraint contribution to fitness: {first_ctrb}")
-print(f"Second constraint contribution to fitness: {snd_ctrb}")
-print(f"third constraint contribution to fitness: {thr_ctrb}")
-print(f"total distributon to fitness: {first_ctrb + snd_ctrb + thr_ctrb}")
-first_ctrb = exp.constraint_ctrb_to_conformance(index = 0)
-snd_ctrb = exp.constraint_ctrb_to_conformance(index = 1)
-thr_ctrb = exp.constraint_ctrb_to_conformance(index = 2)
-
-
-print(f"First constraint contribution to conf: {first_ctrb}")
-print(f"Second constraint contribution to conf: {snd_ctrb}")
-print(f"Third constraint contribution to conf: {thr_ctrb}")
-
-print(f"total distributon to conf loss: {first_ctrb + snd_ctrb + thr_ctrb}")
-"""

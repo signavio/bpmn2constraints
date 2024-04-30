@@ -168,11 +168,11 @@ class ExplainerSignal(Explainer):
         self.auth_data = self.authenticator.authenticate()
         self.cookies = {
             "JSESSIONID": self.auth_data["jsesssion_ID"],
-            "LBROUTEID": self.auth_data["lb_route_ID"]
+            "LBROUTEID": self.auth_data["lb_route_ID"],
         }
         self.headers = {
             "Accept": "application/json",
-            "x-signavio-id":  self.auth_data["auth_token"]
+            "x-signavio-id":  self.auth_data["auth_token"],
         }
         self.event_log = EventLog()
         self.signal_endpoint = None
@@ -373,7 +373,7 @@ class ExplainerSignal(Explainer):
             return list(set(self.filter_keywords(constraint)))
 
     def filter_keywords(self, text):
-        text = re.sub(r'\s+', '_', text.strip())
+        text = re.sub(r"\s+", "_", text.strip())
         words = re.findall(r"\b[A-Z_a-z]+\b", text)
         modified_words = [word.replace("_", " ") for word in words]
         filtered_words = [
@@ -398,7 +398,7 @@ class ExplainerSignal(Explainer):
         normalized_score = 1 - lev_distance / max_distance
         return normalized_score
 
-    def determine_conformance_rate(self, event_log = None, constraints=None):
+    def determine_conformance_rate(self, event_log=None, constraints=None):
         if constraints == None:
             constraints = self.constraints
         if constraints == []:
@@ -409,8 +409,7 @@ class ExplainerSignal(Explainer):
         len_log = self.get_total_cases()
 
         return (len_log - non_conformant) / len_log
-        
-    
+
     def determine_fitness_rate(self, event_log=None, constraints=None):
         if not constraints:
             constraints = self.constraints
@@ -419,7 +418,7 @@ class ExplainerSignal(Explainer):
         for con in constraints:
             total_conformance += self.check_conformance(con)
         return total_conformance / (len_log * len(constraints))
-        
+
     def variant_ctrb_to_conformance_loss(self, event_log, trace, constraints=None):
         if not self.constraints and not constraints:
             return "The explainer have no constraints"
@@ -427,7 +426,7 @@ class ExplainerSignal(Explainer):
             constraints = self.constraints
         total_traces = len(event_log)
         contribution_of_trace = 0
-        if not self.conformant(trace, constraints= constraints):
+        if not self.conformant(trace, constraints=constraints):
             contribution_of_trace = event_log.get_variant_count(trace)
 
         return contribution_of_trace / total_traces
@@ -447,7 +446,7 @@ class ExplainerSignal(Explainer):
         contribution_of_trace = nr * contribution_of_trace
         return contribution_of_trace / total_traces
 
-    def constraint_ctrb_to_conformance(self, log = None, constraints = None, index = -1):
+    def constraint_ctrb_to_conformance(self, log = None, constraints=None, index=-1):
         """Determines the Shapley value-based contribution of a constraint to a the
         overall conformance rate.
         Args:
@@ -484,7 +483,7 @@ class ExplainerSignal(Explainer):
             sub_ctrbs.append(sub_ctrb)
         return sum(sub_ctrbs)
 
-    def constraint_ctrb_to_fitness(self, log = None, constraints = None, index = -1):
+    def constraint_ctrb_to_fitness(self, log = None, constraints=None, index=-1):
         # Implementation remains the same
         if len(constraints) < index:
             raise Exception("Constraint not in constraint list.")
@@ -498,9 +497,7 @@ class ExplainerSignal(Explainer):
         return ctrb_count / (len_log * len(constraints))
 
     def check_conformance(self, constraint):
-        query = (
-            f'SELECT COUNT(CASE_ID) FROM "defaultview-4" WHERE event_name MATCHES{constraint}'
-        )
+        query = f'SELECT COUNT(CASE_ID) FROM "defaultview-4" WHERE event_name MATCHES{constraint}'
         cache_key = hash(query)
         if cache_key in self.cache:
             return self.cache[cache_key]
@@ -508,7 +505,8 @@ class ExplainerSignal(Explainer):
             self.signal_endpoint,
             cookies=self.cookies,
             headers=self.headers,
-            json={"query": query}),
+            json={"query": query},
+        )
         result = query_request.json()["data"][0][0]
         self.cache[cache_key] = result
         return result
@@ -561,8 +559,10 @@ class ExplainerSignal(Explainer):
         for activity in data:
             self.event_log.add_trace(Trace(activity[0]))
 
+
 def get_event_log():
     return f'Select * FROM "defaultview-4"'
+
 
 def determine_powerset(elements):
     """Determines the powerset of a list of elements
@@ -576,6 +576,7 @@ def determine_powerset(elements):
         combinations(lset, option) for option in range(len(lset) + 1)
     )
     return [set(ps_element) for ps_element in ps_elements]
+
 
 def get_iterative_subtrace(trace):
     """

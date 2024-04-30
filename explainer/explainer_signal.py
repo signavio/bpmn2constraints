@@ -172,7 +172,7 @@ class ExplainerSignal(Explainer):
         }
         self.headers = {
             "Accept": "application/json",
-            "x-signavio-id":  self.auth_data["auth_token"],
+            "x-signavio-id": self.auth_data["auth_token"],
         }
         self.event_log = EventLog()
         self.signal_endpoint = None
@@ -446,7 +446,7 @@ class ExplainerSignal(Explainer):
         contribution_of_trace = nr * contribution_of_trace
         return contribution_of_trace / total_traces
 
-    def constraint_ctrb_to_conformance(self, log = None, constraints=None, index=-1):
+    def constraint_ctrb_to_conformance(self, log=None, constraints=None, index=-1):
         """Determines the Shapley value-based contribution of a constraint to a the
         overall conformance rate.
         Args:
@@ -483,7 +483,7 @@ class ExplainerSignal(Explainer):
             sub_ctrbs.append(sub_ctrb)
         return sum(sub_ctrbs)
 
-    def constraint_ctrb_to_fitness(self, log = None, constraints=None, index=-1):
+    def constraint_ctrb_to_fitness(self, log=None, constraints=None, index=-1):
         # Implementation remains the same
         if len(constraints) < index:
             raise Exception("Constraint not in constraint list.")

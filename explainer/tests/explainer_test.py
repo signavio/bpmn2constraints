@@ -1,6 +1,7 @@
 from explainer.explainer import *
 from explainer.explainer_regex import ExplainerRegex
 
+
 # Test 1: Adding and checking constraints
 def test_add_constraint():
     explainer = ExplainerRegex()
@@ -14,7 +15,9 @@ def test_remove_constraint():
     explainer.add_constraint("A.*B.*C")
     explainer.add_constraint("B.*C")
     explainer.remove_constraint(0)
-    assert "A.*B.*C" not in explainer.constraints, "Constraint 'A.*B.*C' should be removed."
+    assert (
+        "A.*B.*C" not in explainer.constraints
+    ), "Constraint 'A.*B.*C' should be removed."
 
 
 # Test 3: Activation of constraints

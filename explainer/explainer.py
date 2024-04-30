@@ -80,7 +80,7 @@ class Explainer(ABC):
         pass
 
     @abstractmethod
-    def determine_fitness_rate(self, event_log, constraints = None):
+    def determine_fitness_rate(self, event_log, constraints=None):
         pass
 
     @abstractmethod
@@ -201,7 +201,7 @@ class EventLog:
         """
         if not self.log:
             return None, 0  # Return None and 0 if the log is empty
-        
+
         # Find the trace with the maximum count
         max_trace_tuple = max(self.log, key=self.log.get)
         return Trace(list(max_trace_tuple))

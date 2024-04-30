@@ -145,7 +145,7 @@ class ExplainerRegex(Explainer):
         nodes = self.get_nodes_from_constraint()
         nodes = (
             nodes + nodes
-        ) # Assuming you need to double the nodes as in your previous snippet
+        )  # Assuming you need to double the nodes as in your previous snippet
 
         for combination in product(nodes, repeat=length):
             test_str = "".join(combination)
@@ -354,10 +354,10 @@ class ExplainerRegex(Explainer):
                     non_conformant += count
                     break
         return (len_log - non_conformant) / len_log
-    
+
     def determine_fitness_rate(self, event_log, constraints=None):
         if not self.constraints and not constraints:
-                    return "The explainer have no constraints"
+            return "The explainer have no constraints"
         if constraints == None:
             constraints = self.constraints
         if len(constraints) == 0:
@@ -371,7 +371,7 @@ class ExplainerRegex(Explainer):
 
     def variant_ctrb_to_fitness(self, event_log, trace, constraints=None):
         if not self.constraints and not constraints:
-                    return "The explainer have no constraints"
+            return "The explainer have no constraints"
         if not constraints:
             constraints = self.constraints
         total_traces = len(event_log)
@@ -399,8 +399,8 @@ class ExplainerRegex(Explainer):
             constraints = self.constraints
         total_traces = len(event_log)
         contribution_of_trace = 0
-        
-        if not self.conformant(trace, constraints= constraints):
+
+        if not self.conformant(trace, constraints=constraints):
             contribution_of_trace = event_log.get_variant_count(trace)
         return contribution_of_trace / total_traces
 

@@ -3,6 +3,7 @@ import re
 from itertools import combinations, product, chain
 from explainer import Explainer, Trace, EventLog, get_sublists, levenshtein_distance
 
+
 class ExplainerRegex(Explainer):
     def __init__(self):
         super().__init__()
@@ -26,7 +27,7 @@ class ExplainerRegex(Explainer):
         self.constraints.append(regex)
         max_length = 0
         for con in self.constraints:
-            max_length += len(con) 
+            max_length += len(con)
         if self.contradiction(len(regex) + max_length):
             self.constraints.remove(regex)
             print(f"Constraint {regex} contradicts the other constraints.")
@@ -128,10 +129,10 @@ class ExplainerRegex(Explainer):
             for combination in product(nodes, repeat=length):
                 test_str = "".join(combination)
                 if all(re.search(con, test_str) for con in self.constraints):
-                        self.adherent_trace = test_str
-                        return False  # Found a match
+                    self.adherent_trace = test_str
+                    return False  # Found a match
         return True  # No combination satisfied all constraints
-    
+
     def contradiction_by_length(self, length):
         """
         Checks if there is a contradiction among the constraints specifically for a given length.
@@ -142,7 +143,9 @@ class ExplainerRegex(Explainer):
         if length <= 0:
             return True
         nodes = self.get_nodes_from_constraint()
-        nodes = nodes + nodes  # Assuming you need to double the nodes as in your previous snippet
+        nodes = (
+            nodes + nodes
+        ) # Assuming you need to double the nodes as in your previous snippet
 
         for combination in product(nodes, repeat=length):
             test_str = "".join(combination)
@@ -151,7 +154,6 @@ class ExplainerRegex(Explainer):
                 return False  # Found a match that satisfies all constraints
 
         return True  # No combination of this specific length satisfied all constraints
-
 
     def minimal_expl(self, trace):
         """
@@ -353,7 +355,7 @@ class ExplainerRegex(Explainer):
                     break
         return (len_log - non_conformant) / len_log
     
-    def determine_fitness_rate(self, event_log, constraints = None):
+    def determine_fitness_rate(self, event_log, constraints=None):
         if not self.constraints and not constraints:
                     return "The explainer have no constraints"
         if constraints == None:
@@ -367,9 +369,7 @@ class ExplainerRegex(Explainer):
                     conformant += count
         return conformant / (len(event_log) * len(constraints))
 
-    def variant_ctrb_to_fitness(
-        self, event_log, trace, constraints=None
-    ):
+    def variant_ctrb_to_fitness(self, event_log, trace, constraints=None):
         if not self.constraints and not constraints:
                     return "The explainer have no constraints"
         if not constraints:
@@ -383,11 +383,8 @@ class ExplainerRegex(Explainer):
         contribution_of_trace = contribution_of_trace / len(constraints)
         contribution_of_trace = nr * contribution_of_trace
         return contribution_of_trace / total_traces
-        
-  
-    def variant_ctrb_to_conformance_loss(
-        self, event_log, trace, constraints=None
-    ):
+
+    def variant_ctrb_to_conformance_loss(self, event_log, trace, constraints=None):
         """
         Calculates the contribution of a specific trace to the conformance loss of the event log.
 
@@ -405,9 +402,8 @@ class ExplainerRegex(Explainer):
         
         if not self.conformant(trace, constraints= constraints):
             contribution_of_trace = event_log.get_variant_count(trace)
-
         return contribution_of_trace / total_traces
-    
+
     def constraint_ctrb_to_conformance(self, log, constraints, index):
         """Determines the Shapley value-based contribution of a constraint to a the
         overall conformance rate.
@@ -440,12 +436,12 @@ class ExplainerRegex(Explainer):
             )
             sub_ctrbs.append(sub_ctrb)
         return sum(sub_ctrbs)
-    
+
     def constraint_ctrb_to_fitness(self, log, constraints, index):
         if len(constraints) < index:
             raise Exception("Constraint not in constraint list.")
         if not self.constraints and not constraints:
-                    return "The explainer have no constraints"
+            return "The explainer have no constraints"
         if not constraints:
             constraints = self.constraints
         contributor = constraints[index]
@@ -454,7 +450,8 @@ class ExplainerRegex(Explainer):
             if re.search(contributor, "".join(trace)):
                 ctrb_count += count
         return ctrb_count / (len(log) * len(constraints))
-    
+
+
 def determine_powerset(elements):
     """Determines the powerset of a list of elements
     Args:
@@ -480,25 +477,4 @@ def get_iterative_subtrace(trace):
     sublists = []
     for i in range(0, len(trace)):
         sublists.append(trace.nodes[0 : i + 1])
-
     return sublists
-
-exp = ExplainerRegex()
-
-traces = [
-    Trace(['A', 'B','C']),
-    Trace(['A', 'B']),
-    Trace(['B']),
-    Trace(['B','C'])
-]
-event_log = EventLog()
-event_log.add_trace(traces[0], 10) # The second parameter is how many variants you'd like to add, leave blank for 1
-event_log.add_trace(traces[1], 10)
-event_log.add_trace(traces[2], 10)
-event_log.add_trace(traces[3], 20)
-exp.add_constraint('^A')
-exp.add_constraint('C$')
-
-print(exp.determine_conformance_rate(event_log))
-print(exp.determine_fitness_rate(event_log))
-print(exp.constraint_ctrb_to_conformance(event_log, exp.constraints,0))

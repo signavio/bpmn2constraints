@@ -1,47 +1,15 @@
 # Symbolic Explanations of Process Conformance Violations
-## Introduction
+This module is made by Marcus Rost, for his thesis subject, **Symbolic Explanations for Control-Flow Objects**. 
 
+The code should work properly, with some hard-coded parts that requires the data set for the signal code to function. This module is more seen as a proof of concept, where some core functions from explainability theory is utilized.
 
-# Regex usage for the first iteration of the software
+## Overview
+The module mainly consists of 2 classes, ExplainerRegex and ExplainerSignal.
 
-## 1. Sequence Constraint
-Pattern: `'A.*B.*C'`
+**ExplainerRegex** is meant to simulate a real event log and system, with traces and constraints, using regex patterns.
 
-Explanation: This regex specifies that for a trace to be conformant, it must contain the nodes 'A', 'B', and 'C' in that order, though not necessarily consecutively. The .* allows for any number of intervening nodes between the specified nodes.
+**ExplainerSignal** uses real event logs to calculate the explanations. This uses SAP Signavio's API to do so, but should in reality have it's own interpreter for the Signal queries, instead of having to make API calls. 
 
-> Example: A trace ['A', 'X', 'B', 'Y', 'C'] would be conformant, while ['A', 'C', 'B'] would not.
+Currently, the Signal code is sort of bad and specialized for the specific data set used. Hopefully, someone can see the value of what it done, and generalize it further.
 
-## 2. Immediate Succession
-Pattern: `'AB'`
-
-Explanation: This regex specifies that node 'A' must be immediately followed by node 'B' with no intervening nodes.
-
-> Example: A trace ['A', 'B', 'C'] would be conformant, while ['A', 'X', 'B'] would not.
-
-## 3. Optional Node
-Pattern: `'A(B)?C'`
-
-Explanation: This regex specifies that the node 'B' is optional between 'A' and 'C'. The node 'C' must follow 'A', but 'B' can either be present or absent.
-
-> Example: Both traces ['A', 'B', 'C'] and ['A', 'C'] would be conformant.
-
-## 4. Excluding Specific Nodes
-Pattern: `'A[^D]*B'`
-
-Explanation: This regex specifies that 'A' must be followed by 'B' without the occurrence of 'D' in between them. The [^D] part matches any character except 'D'.
-
-> Example: A trace ['A', 'C', 'B'] would be conformant, while ['A', 'D', 'B'] would not.
-
-## 5. Repetition of Nodes
-Pattern: `'A(B{2,3})C'`
-
-Explanation: This regex specifies that 'A' must be followed by 'B' repeated 2 to 3 times and then followed by 'C'.
-
-> Example: Traces ['A', 'B', 'B', 'C'] and ['A', 'B', 'B', 'B', 'C'] would be conformant, while ['A', 'B', 'C'] or ['A', 'B', 'B', 'B', 'B', 'C'] would not.
-
-## 6. Alternative Paths
-Pattern: `'A(B|D)C'`
-
-Explanation: This regex specifies that after 'A', there must be either a 'B' or a 'D', followed by a 'C'.
-
-> Example: Both traces ['A', 'B', 'C'] and ['A', 'D', 'C'] would be conformant.
+There is also 2 Notebook's located in `explainer/tutorial`, but I recommend doing `bpmn2constraints/tutorial/tutorial.ipynb` first, to see how to do the configuration for the API works.

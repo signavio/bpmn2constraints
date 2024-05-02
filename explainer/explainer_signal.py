@@ -206,6 +206,15 @@ class ExplainerSignal(Explainer):
                 if re.search(constraint, node):
                     return True
         return False
+    
+    def add_constraint(self, constr):
+        """
+        Adds a new constraint and updates the nodes list.
+
+        :param constr: A regular expression or Signal constrain representing the constraint.
+        """
+        self.constraints.append(constr)
+        
 
     def conformant(self, trace, constraints=None):
         if not constraints:
@@ -304,7 +313,7 @@ class ExplainerSignal(Explainer):
         best_subtrace = None
         best_score = -float("inf")
         for subtrace in counter_factuals:
-            current_score = self.evaluate_similarity(subtrace[0].nodes)
+            current_score = self.evaluate_similarity(subtrace[0])
             if current_score > best_score:
                 best_score = current_score
                 best_subtrace = subtrace[0]
@@ -390,7 +399,7 @@ class ExplainerSignal(Explainer):
         :return: A normalized score indicating the similarity between the adherent trace and the given trace.
         """
         if cmp_trace == None:
-            cmp_trace = self.adherent_trace.nodes
+            cmp_trace = "".join(self.adherent_trace)
         trace_len = len("".join(trace))
         length = len(cmp_trace)
         lev_distance = levenshtein_distance(cmp_trace, "".join(trace))

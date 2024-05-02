@@ -22,17 +22,15 @@ class Explainer(ABC):
         """
         self.minimal_solution = minimal_solution
 
+    @abstractmethod
     def add_constraint(self, constr):
         """
         Adds a new constraint and updates the nodes list.
 
         :param constr: A regular expression or Signal constrain representing the constraint.
         """
-        self.constraints.append(constr)
-        if self.contradiction():
-            self.constraints.remove(constr)
-            print(f"Constraint {constr} contradicts the other constraints.")
-
+        pass
+    
     # Marking remove_constraint as abstract as an example
     @abstractmethod
     def remove_constraint(self, idx):
@@ -66,11 +64,6 @@ class Explainer(ABC):
 
     @abstractmethod
     def counterfactual_expl(self, trace):
-        # Implementation remains the same
-        pass
-
-    @abstractmethod
-    def evaluate_similarity(self, trace, cmp_trace=None):
         # Implementation remains the same
         pass
 

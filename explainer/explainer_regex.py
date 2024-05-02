@@ -1,7 +1,7 @@
 import math
 import re
 from itertools import combinations, product, chain
-from explainer import Explainer, Trace, EventLog, get_sublists, levenshtein_distance
+from explainer.explainer import Explainer, Trace, EventLog, get_sublists, levenshtein_distance
 
 
 class ExplainerRegex(Explainer):

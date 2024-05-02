@@ -30,7 +30,7 @@ class Explainer(ABC):
         :param constr: A regular expression or Signal constrain representing the constraint.
         """
         pass
-    
+
     # Marking remove_constraint as abstract as an example
     @abstractmethod
     def remove_constraint(self, idx):

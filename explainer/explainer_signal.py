@@ -206,7 +206,7 @@ class ExplainerSignal(Explainer):
                 if re.search(constraint, node):
                     return True
         return False
-    
+
     def add_constraint(self, constr):
         """
         Adds a new constraint and updates the nodes list.
@@ -214,7 +214,6 @@ class ExplainerSignal(Explainer):
         :param constr: A regular expression or Signal constrain representing the constraint.
         """
         self.constraints.append(constr)
-        
 
     def conformant(self, trace, constraints=None):
         if not constraints:

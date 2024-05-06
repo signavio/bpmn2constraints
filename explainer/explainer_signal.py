@@ -157,7 +157,7 @@ KEYWORDS = [
 ]
 
 
-class ExplainerSignal():
+class ExplainerSignal:
     def __init__(self):
         self.constraints = []  # List to store constraints (constraint patterns)
         self.adherent_trace = None

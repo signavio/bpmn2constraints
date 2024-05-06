@@ -1,5 +1,6 @@
 from itertools import combinations
 
+
 class Trace:
     def __init__(self, nodes):
         """

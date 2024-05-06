@@ -1,5 +1,5 @@
 from explainer.explainer_regex import ExplainerRegex
-from explainer.explainer import Trace, EventLog
+from explainer.explainer_util import Trace, EventLog
 
 
 # Test 1: Adding and checking constraints

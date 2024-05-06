@@ -1,9 +1,7 @@
-from abc import ABC, abstractmethod
-from explainer import Explainer, Trace, EventLog, get_sublists, levenshtein_distance
+from explainer_util import *
 import re
 import math
 import SignavioAuthenticator
-import json
 from itertools import combinations, chain
 import requests
 from conf import system_instance, workspace_id, user_name, pw
@@ -159,9 +157,12 @@ KEYWORDS = [
 ]
 
 
-class ExplainerSignal(Explainer):
+class ExplainerSignal():
     def __init__(self):
-        super().__init__()
+        self.constraints = []  # List to store constraints (constraint patterns)
+        self.adherent_trace = None
+        self.adherent_traces = []
+        self.minimal_solution = False
         self.authenticator = SignavioAuthenticator.SignavioAuthenticator(
             system_instance, workspace_id, user_name, pw
         )
@@ -216,40 +217,7 @@ class ExplainerSignal(Explainer):
         self.constraints.append(constr)
 
     def conformant(self, trace, constraints=None):
-        if not constraints:
-            constraints = self.constraints
-        if len(constraints) > 1:
-            constraints = " AND ".join(
-                [f"event_name MATCHES {constraint}" for constraint in constraints]
-            )
-        else:
-            constraints = "".join(f"event_name MATCHES {constraints[0]}")
-        query = (
-            f'SELECT ACTIVITY, COUNT(CASE_ID) FROM "defaultview-4" WHERE {constraints}'
-        )
-        conformant = False
-        cache_key = hash(query)
-        if cache_key in self.cache:
-            for res in self.cache[cache_key]:
-                if trace.nodes == res[0]:
-                    conformant = True
-                    break
-            return conformant
-
-        query_request = requests.post(
-            self.signal_endpoint,
-            cookies=self.cookies,
-            headers=self.headers,
-            json={"query": query},
-        )
-        result = query_request.json()["data"]
-        self.cache[cache_key] = result  # Store the result in cache
-
-        for res in result:
-            if trace.nodes == res[0]:
-                conformant = True
-                break
-        return conformant
+        return self.post_query_trace_in_dataset(trace, constraints)
 
     def minimal_expl(self, trace):
 
@@ -272,24 +240,7 @@ class ExplainerSignal(Explainer):
             return "Trace is non-conformant, but the specific constraint violation could not be determined."
 
     def counterfactual_expl(self, trace):
-        constraints = self.constraints
-        if len(constraints) > 1:
-            constraints = " AND ".join(
-                [f"event_name MATCHES {constraint}" for constraint in constraints]
-            )
-        else:
-            constraints = "".join(f"event_name MATCHES {constraints[0]}")
-        query = (
-            f'SELECT ACTIVITY, COUNT(CASE_ID) FROM "defaultview-4" WHERE {constraints}'
-        )
-        query_request = requests.post(
-            self.signal_endpoint,
-            cookies=self.cookies,
-            headers=self.headers,
-            json={"query": query},
-        )
-        result = query_request.json()["data"]
-
+        result = self.get_all_conformant_traces()
         best_score = -float("inf")
         for res in result:
             current_score = self.evaluate_similarity(trace, "".join(res[0]))
@@ -492,7 +443,6 @@ class ExplainerSignal(Explainer):
         return sum(sub_ctrbs)
 
     def constraint_ctrb_to_fitness(self, log=None, constraints=None, index=-1):
-        # Implementation remains the same
         if len(constraints) < index:
             raise Exception("Constraint not in constraint list.")
         if not constraints:
@@ -506,18 +456,7 @@ class ExplainerSignal(Explainer):
 
     def check_conformance(self, constraint):
         query = f'SELECT COUNT(CASE_ID) FROM "defaultview-4" WHERE event_name MATCHES{constraint}'
-        cache_key = hash(query)
-        if cache_key in self.cache:
-            return self.cache[cache_key]
-        query_request = requests.post(
-            self.signal_endpoint,
-            cookies=self.cookies,
-            headers=self.headers,
-            json={"query": query},
-        )
-        result = query_request.json()["data"][0][0]
-        self.cache[cache_key] = result
-        return result
+        return self.post_query(query)
 
     def check_violations(self, constraints):
         combined_constraints = " OR ".join(
@@ -526,33 +465,80 @@ class ExplainerSignal(Explainer):
         query = (
             f'SELECT COUNT(CASE_ID) FROM "defaultview-4" WHERE {combined_constraints}'
         )
+        return self.post_query(query)
+
+    def get_total_cases(self):
+        query = 'SELECT COUNT(CASE_ID) FROM "defaultview-4"'
+        return self.post_query(query)
+
+    def post_query(self, query):
         cache_key = hash(query)
         if cache_key in self.cache:
             return self.cache[cache_key]
+        request = requests.post(
+            self.signal_endpoint,
+            cookies=self.cookies,
+            headers=self.headers,
+            json={"query": query},
+        )
+        result = request.json()["data"][0][0]
+        self.cache[cache_key] = result
+        return result
+
+    def post_query_trace_in_dataset(self, trace, constraints):
+        if not constraints:
+            constraints = self.constraints
+        if len(constraints) > 1:
+            constraints = " AND ".join(
+                [f"event_name MATCHES {constraint}" for constraint in constraints]
+            )
+        else:
+            constraints = "".join(f"event_name MATCHES {constraints[0]}")
+        query = (
+            f'SELECT ACTIVITY, COUNT(CASE_ID) FROM "defaultview-4" WHERE {constraints}'
+        )
+        conformant = False
+        cache_key = hash(query)
+        if cache_key in self.cache:
+            for res in self.cache[cache_key]:
+                if trace.nodes == res[0]:
+                    conformant = True
+                    break
+            return conformant
+
         query_request = requests.post(
             self.signal_endpoint,
             cookies=self.cookies,
             headers=self.headers,
             json={"query": query},
         )
-        result = query_request.json()["data"][0][0]
-        self.cache[cache_key] = result
-        return result
+        result = query_request.json()["data"]
+        self.cache[cache_key] = result  # Store the result in cache
 
-    def get_total_cases(self):
-        query = 'SELECT COUNT(CASE_ID) FROM "defaultview-4"'
-        cache_key = hash(query)
-        if cache_key in self.cache:
-            return self.cache[cache_key]
-        count_request = requests.post(
+        for res in result:
+            if trace.nodes == res[0]:
+                conformant = True
+                break
+        return conformant
+
+    def get_all_conformant_traces(self):
+        constraints = self.constraints
+        if len(constraints) > 1:
+            constraints = " AND ".join(
+                [f"event_name MATCHES {constraint}" for constraint in constraints]
+            )
+        else:
+            constraints = "".join(f"event_name MATCHES {constraints[0]}")
+        query = (
+            f'SELECT ACTIVITY, COUNT(CASE_ID) FROM "defaultview-4" WHERE {constraints}'
+        )
+        query_request = requests.post(
             self.signal_endpoint,
             cookies=self.cookies,
             headers=self.headers,
             json={"query": query},
         )
-        case_count = count_request.json()["data"][0][0]
-        self.cache[cache_key] = case_count
-        return case_count
+        return query_request.json()["data"]
 
     def load_variants(self):
         query = 'SELECT Activity From "defaultview-4"'
@@ -566,10 +552,6 @@ class ExplainerSignal(Explainer):
         data = query_request.json()["data"]
         for activity in data:
             self.event_log.add_trace(Trace(activity[0]))
-
-
-def get_event_log():
-    return f'Select * FROM "defaultview-4"'
 
 
 def determine_powerset(elements):

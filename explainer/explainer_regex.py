@@ -1,17 +1,19 @@
 import math
 import re
 from itertools import combinations, product, chain
-from explainer.explainer import (
-    Explainer,
+from explainer_util import (
     Trace,
     get_sublists,
     levenshtein_distance,
 )
 
 
-class ExplainerRegex(Explainer):
+class ExplainerRegex():
     def __init__(self):
-        super().__init__()
+        self.constraints = []  # List to store constraints (constraint patterns)
+        self.adherent_trace = None
+        self.adherent_traces = []
+        self.minimal_solution = False
 
     def set_minimal_solution(self, minimal_solution):
         """

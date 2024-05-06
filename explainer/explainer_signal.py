@@ -1,10 +1,10 @@
-from explainer_util import *
+from explainer.explainer_util import *
 import re
 import math
-import SignavioAuthenticator
+from tutorial.SignavioAuthenticator import SignavioAuthenticator
 from itertools import combinations, chain
 import requests
-from conf import system_instance, workspace_id, user_name, pw
+from tutorial.conf import system_instance, workspace_id, user_name, pw
 
 KEYWORDS = [
     "ABS",
@@ -163,7 +163,7 @@ class ExplainerSignal:
         self.adherent_trace = None
         self.adherent_traces = []
         self.minimal_solution = False
-        self.authenticator = SignavioAuthenticator.SignavioAuthenticator(
+        self.authenticator = SignavioAuthenticator(
             system_instance, workspace_id, user_name, pw
         )
         self.auth_data = self.authenticator.authenticate()

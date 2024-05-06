@@ -1,7 +1,7 @@
 import math
 import re
 from itertools import combinations, product, chain
-from explainer_util import (
+from explainer.explainer_util import (
     Trace,
     get_sublists,
     levenshtein_distance,

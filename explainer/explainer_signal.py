@@ -390,7 +390,7 @@ class ExplainerSignal:
         if index == -1:
             return f"Add an index for the constraint:\n {constraints}"
         contributor = constraints[index]
-        ctrb_count = self.check_conformance(contributor, negative = False)
+        ctrb_count = self.check_conformance(contributor, negative=False)
         len_log = self.get_total_cases()
         return ctrb_count / (len_log * len(constraints))
 
@@ -478,9 +478,11 @@ class ExplainerSignal:
             constraints = "".join(f"event_name MATCHES {constraints[0]}")
 
         # Formulate the query
-        query = f'SELECT ACTIVITY, COUNT(CASE_ID) FROM "defaultview-4" WHERE {constraints}'
-        cache_key = hash(query)  # Generate a cache key for the query
+        query = (
+            f'SELECT ACTIVITY, COUNT(CASE_ID) FROM "defaultview-4" WHERE {constraints}'
+        )
 
+        cache_key = hash(query)  # Generate a cache key for the query
         if cache_key in self.cache:  # Check if the result is already in the cache
             result = self.cache[cache_key]
         else:
@@ -505,7 +507,7 @@ class ExplainerSignal:
             )
         else:
             constraints = "".join(f"event_name MATCHES {constraints[0]}")
-        
+
         # Formulate the query
         query = (
             f'SELECT ACTIVITY, COUNT(CASE_ID) FROM "defaultview-4" WHERE {constraints}'

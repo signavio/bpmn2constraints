@@ -6,6 +6,7 @@ from itertools import combinations, chain
 import requests
 from tutorial.conf import system_instance, workspace_id, user_name, pw
 
+
 class ExplainerSignal:
     def __init__(self):
         self.constraints = []  # List to store constraints (constraint patterns)
@@ -80,7 +81,7 @@ class ExplainerSignal:
         :return: Boolean indicating if the trace is conformant with all constraints.
         """
         if constraints == None:
-            return self.post_query_trace_in_dataset(trace, self.constraints) 
+            return self.post_query_trace_in_dataset(trace, self.constraints)
         return self.post_query_trace_in_dataset(trace, constraints)
 
     def minimal_expl(self, trace):
@@ -224,13 +225,14 @@ class ExplainerSignal:
             return list(set(self.filter_keywords(constraint)))
 
     def filter_keywords(self, text):
-        """ Extracts the events from a SIGNAL constraint
+        """
+        Extracts the events from a SIGNAL constraint
 
         Args:
             text (String): The SIGNAL constraint
 
         Returns:
-            [String]: A list of the filtered events from the SIGNAL constraint 
+            [String]: A list of the filtered events from the SIGNAL constraint
         """
         text = re.sub(r"\s+", "_", text.strip())
         words = re.findall(r"\b[A-Z_a-z]+\b", text)
@@ -392,7 +394,7 @@ class ExplainerSignal:
         len_log = self.get_total_cases()
         return ctrb_count / (len_log * len(constraints))
 
-    def check_conformance(self, constraint, negative = True):
+    def check_conformance(self, constraint, negative=True):
         """
         Checks the conformance of the event log against a specific constraint.
 
@@ -419,7 +421,9 @@ class ExplainerSignal:
         combined_constraints = " OR ".join(
             [f"NOT event_name MATCHES {constraint}" for constraint in constraints]
         )
-        query = f'SELECT COUNT(CASE_ID) FROM "defaultview-4" WHERE {combined_constraints}'
+        query = (
+            f'SELECT COUNT(CASE_ID) FROM "defaultview-4" WHERE {combined_constraints}'
+        )
         return self.post_query(query)  # Execute the query and return the result
 
     def get_total_cases(self):
@@ -442,7 +446,7 @@ class ExplainerSignal:
         cache_key = hash(query)  # Generate a cache key for the query
         if cache_key in self.cache:  # Check if the result is already in the cache
             return self.cache[cache_key]  # Return cached result if available
-        
+
         # Send the query to the server
         request = requests.post(
             self.signal_endpoint,
@@ -464,7 +468,7 @@ class ExplainerSignal:
         """
         if not constraints:
             constraints = self.constraints  # Use self.constraints if none are provided
-        
+
         # Combine constraints with AND if there are multiple, otherwise use the single constraint
         if len(constraints) > 1:
             constraints = " AND ".join(
@@ -472,7 +476,7 @@ class ExplainerSignal:
             )
         else:
             constraints = "".join(f"event_name MATCHES {constraints[0]}")
-        
+
         # Formulate the query
         query = f'SELECT ACTIVITY, COUNT(CASE_ID) FROM "defaultview-4" WHERE {constraints}'
         cache_key = hash(query)  # Generate a cache key for the query
@@ -503,8 +507,12 @@ class ExplainerSignal:
             constraints = "".join(f"event_name MATCHES {constraints[0]}")
         
         # Formulate the query
-        query = f'SELECT ACTIVITY, COUNT(CASE_ID) FROM "defaultview-4" WHERE {constraints}'
-        return self.post_query_return_all(query)  # Execute the query and return the list of conformant traces
+        query = (
+            f'SELECT ACTIVITY, COUNT(CASE_ID) FROM "defaultview-4" WHERE {constraints}'
+        )
+        return self.post_query_return_all(
+            query
+        )  # Execute the query and return the list of conformant traces
 
     def post_query_return_all(self, query):
         """
@@ -516,7 +524,7 @@ class ExplainerSignal:
         cache_key = hash(query)  # Generate a cache key for the query
         if cache_key in self.cache:  # Check if the result is already in the cache
             return self.cache[cache_key]  # Return cached result if available
-        
+
         # Send the query to the server
         request = requests.post(
             self.signal_endpoint,

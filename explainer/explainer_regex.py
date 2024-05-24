@@ -214,7 +214,6 @@ class ExplainerRegex:
         if self.minimal_solution:
             self.adherent_trace = None
             length_of_trace = len(trace)
-            print(length_of_trace)
             delta = 1  # Starting with an increment of 1
             while not self.adherent_trace:
                 self.contradiction_by_length(length_of_trace)
@@ -363,12 +362,17 @@ class ExplainerRegex:
         return (len_log - non_conformant) / len_log
 
     def determine_fitness_rate(self, event_log, constraints=None):
+        """
+        Determines the fitness rate of the event log based on given constraints.
+
+        :param event_log: The event log to analyze.
+        :param constraints: The constraints to check against the event log. If None, use self.constraints.
+        :return: The fitness rate as a float between 0 and 1.
+        """
         if not self.constraints and not constraints:
             return "The explainer have no constraints"
         if constraints == None:
             constraints = self.constraints
-        if len(constraints) == 0:
-            print("hej")
         conformant = 0
         for con in constraints:
             for trace, count in event_log.log.items():
@@ -377,6 +381,14 @@ class ExplainerRegex:
         return conformant / (len(event_log) * len(constraints))
 
     def variant_ctrb_to_fitness(self, event_log, trace, constraints=None):
+        """
+        Determines the contribution of a specific trace variant to the fitness of the event log.
+
+        :param event_log: The event log to analyze.
+        :param trace: The trace variant to calculate its contribution.
+        :param constraints: The constraints to check against the event log. If None, use self.constraints.
+        :return: The contribution of the trace variant to the fitness as a float.
+        """
         if not self.constraints and not constraints:
             return "The explainer have no constraints"
         if not constraints:
@@ -445,6 +457,14 @@ class ExplainerRegex:
         return sum(sub_ctrbs)
 
     def constraint_ctrb_to_fitness(self, log, constraints, index):
+        """
+        Determines the Shapley value-based contribution of a constraint to the overall conformance rate.
+
+        :param log: The event log, where keys are strings and values are counts of trace variants.
+        :param constraints: A list of constraints (regexp strings).
+        :param index: The index of the constraint in the constraints list.
+        :return: The contribution of the constraint to the overall conformance rate as a float.
+        """
         if len(constraints) < index:
             raise Exception("Constraint not in constraint list.")
         if not self.constraints and not constraints:

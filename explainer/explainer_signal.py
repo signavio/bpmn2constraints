@@ -6,157 +6,6 @@ from itertools import combinations, chain
 import requests
 from tutorial.conf import system_instance, workspace_id, user_name, pw
 
-KEYWORDS = [
-    "ABS",
-    "ALL",
-    "ANALYZE",
-    "AND",
-    "ANY",
-    "AS",
-    "ASC",
-    "AVG",
-    "BARRIER",
-    "BEHAVIOUR",
-    "BETWEEN",
-    "BOOL_AND",
-    "BOOL_OR",
-    "BUCKET",
-    "BY",
-    "CASE",
-    "CASE_ID",
-    "CATEGORY",
-    "CEIL",
-    "CHAR_INDEX",
-    "CHAR_LENGTH",
-    "COALESCE",
-    "CONCAT",
-    "COUNT",
-    "CREATE",
-    "CURRENT",
-    "DATE_ADD",
-    "DATE_DIFF",
-    "DATE_PART",
-    "DATE_TRUNC",
-    "DEFAULT",
-    "DENSE_RANK",
-    "DESC",
-    "DESCRIBE",
-    "DISTINCT",
-    "DROP",
-    "DURATION",
-    "DURATION_BETWEEN",
-    "DURATION_FROM_DAYS",
-    "DURATION_FROM_MILLISECONDS",
-    "DURATION_TO_DAYS",
-    "DURATION_TO_MILLISECONDS",
-    "ELSE",
-    "END",
-    "END_TIME",
-    "EVENT_ID",
-    "EVENT_NAME",
-    "EVENTS",
-    "EXACT",
-    "EXPLAIN",
-    "EXTERNAL",
-    "FALSE",
-    "FILL",
-    "FILTER",
-    "FIRST",
-    "FLATTEN",
-    "FLOOR",
-    "FOLLOWING",
-    "FORMAT",
-    "FROM",
-    "GRANT",
-    "GROUP",
-    "HAVING",
-    "IF",
-    "ILIKE",
-    "IN",
-    "INVOKER",
-    "IS",
-    "JOIN",
-    "JSON",
-    "LAG",
-    "LAST",
-    "LEAD",
-    "LEFT",
-    "LIKE",
-    "LIMIT",
-    "LOCATION",
-    "LOG",
-    "MATCHES",
-    "MAX",
-    "MEDIAN",
-    "MIN",
-    "NOT",
-    "NOW",
-    "NULL",
-    "NULLS",
-    "OCCURRENCE",
-    "ODATA",
-    "OFFSET",
-    "ON",
-    "ONLY",
-    "OR",
-    "ORDER",
-    "OUTER",
-    "OVER",
-    "PARQUET",
-    "PARTITION",
-    "PERCENT",
-    "PERCENTILE_CONT",
-    "PERCENTILE_DESC",
-    "PERMISSIONS",
-    "POW",
-    "PRECEDING",
-    "PRIVATE",
-    "PUBLIC",
-    "RANGE",
-    "RANK",
-    "REGR_INTERCEPT",
-    "REGR_SLOPE",
-    "REPEATABLE",
-    "REPLACE",
-    "RIGHT",
-    "ROUND",
-    "ROW",
-    "ROW_NUMBER",
-    "ROWS",
-    "SECURITY",
-    "SELECT",
-    "SIGN",
-    "SQRT",
-    "START_TIME",
-    "STDDEV",
-    "SUBSTRING",
-    "SUBSTRING_AFTER",
-    "SUBSTRING_BEFORE",
-    "SUM",
-    "TABLE",
-    "TABULAR",
-    "TEXT",
-    "THEN",
-    "TIMESERIES",
-    "TIMESTAMP",
-    "TO",
-    "TO_NUMBER",
-    "TO_STRING",
-    "TO_TIMESTAMP",
-    "TRUE",
-    "TRUNC",
-    "UNBOUNDED",
-    "UNION",
-    "USING",
-    "VIEW",
-    "WHEN",
-    "WHERE",
-    "WITH",
-    "WITHIN",
-    "",
-]
-
-
 class ExplainerSignal:
     def __init__(self):
         self.constraints = []  # List to store constraints (constraint patterns)
@@ -180,6 +29,13 @@ class ExplainerSignal:
         self.cache = {}
 
     def set_endpoint(self, endpoint="/g/api/pi-graphql/signal"):
+        """
+        Configures the end point of the SIGNAL API
+
+        Args:
+            endpoint (str, optional): The end point address.
+            Defaults to "/g/api/pi-graphql/signal".
+        """
         self.signal_endpoint = system_instance + endpoint
         self.load_variants()
 
@@ -217,10 +73,23 @@ class ExplainerSignal:
         self.constraints.append(constr)
 
     def conformant(self, trace, constraints=None):
+        """
+        Checks if the trace is conformant according to all the constraints.
+
+        :param trace: A Trace instance.
+        :return: Boolean indicating if the trace is conformant with all constraints.
+        """
+        if constraints == None:
+            return self.post_query_trace_in_dataset(trace, self.constraints) 
         return self.post_query_trace_in_dataset(trace, constraints)
 
     def minimal_expl(self, trace):
+        """
+        Provides a minimal explanation for non-conformance, given the trace and constraints.
 
+        :param trace: A Trace instance.
+        :return: Explanation of why the trace is non-conformant.
+        """
         if self.conformant(trace):
             return "The trace is already conformant, no changes needed."
         explanations = None
@@ -240,6 +109,12 @@ class ExplainerSignal:
             return "Trace is non-conformant, but the specific constraint violation could not be determined."
 
     def counterfactual_expl(self, trace):
+        """
+        Generates a counterfactual explanation for a given trace.
+
+        :param trace: The trace to be explained.
+        :return: A string explaining why the trace is non-conformant or a message indicating no changes are needed.
+        """
         result = self.get_all_conformant_traces()
         best_score = -float("inf")
         for res in result:
@@ -251,6 +126,14 @@ class ExplainerSignal:
         return self.operate_on_trace(trace, 0, "")
 
     def counter_factual_helper(self, working_trace, explanation, depth=0):
+        """
+        Recursively explores counterfactual explanations for a working trace.
+
+        :param working_trace: The trace being explored.
+        :param explanation: The current explanation path.
+        :param depth: The current recursion depth.
+        :return: A string explaining why the working trace is non-conformant or a message indicating the maximum depth has been reached.
+        """
         if self.conformant(working_trace):
             return f"{explanation}"
         if depth > 100:
@@ -258,6 +141,15 @@ class ExplainerSignal:
         return self.operate_on_trace(working_trace, 0, explanation, depth)
 
     def operate_on_trace(self, trace, score, explanation_path, depth=0):
+        """
+        Finds and applies modifications to the trace to make it conformant.
+
+        :param trace: The trace to be modified.
+        :param score: The similarity score of the trace.
+        :param explanation_path: The current explanation path.
+        :param depth: The current recursion depth.
+        :return: A string explaining why the best subtrace is non-conformant or a message indicating the maximum depth has been reached.
+        """
         explanation = None
         counter_factuals = self.modify_subtrace(trace)
         best_subtrace = None
@@ -332,11 +224,19 @@ class ExplainerSignal:
             return list(set(self.filter_keywords(constraint)))
 
     def filter_keywords(self, text):
+        """ Extracts the events from a SIGNAL constraint
+
+        Args:
+            text (String): The SIGNAL constraint
+
+        Returns:
+            [String]: A list of the filtered events from the SIGNAL constraint 
+        """
         text = re.sub(r"\s+", "_", text.strip())
         words = re.findall(r"\b[A-Z_a-z]+\b", text)
         modified_words = [word.replace("_", " ") for word in words]
         filtered_words = [
-            word for word in modified_words if word.strip() not in KEYWORDS
+            word for word in modified_words if word.strip() not in SIGNAL_KEYWORDS
         ]
 
         return filtered_words
@@ -358,6 +258,13 @@ class ExplainerSignal:
         return normalized_score
 
     def determine_conformance_rate(self, event_log=None, constraints=None):
+        """
+        Determines the conformance rate of the event log based on the given constraints.
+
+        :param event_log: The event log to analyze.
+        :param constraints: The constraints to check against the event log.
+        :return: The conformance rate as a float between 0 and 1, or a message if no constraints are provided.
+        """
         if constraints == None:
             constraints = self.constraints
         if constraints == []:
@@ -370,6 +277,13 @@ class ExplainerSignal:
         return (len_log - non_conformant) / len_log
 
     def determine_fitness_rate(self, event_log=None, constraints=None):
+        """
+        Determines the fitness rate of the event log based on given constraints.
+
+        :param event_log: The event log to analyze.
+        :param constraints: The constraints to check against the event log. If None, use self.constraints.
+        :return: The fitness rate as a float between 0 and 1.
+        """
         if not constraints:
             constraints = self.constraints
         len_log = self.get_total_cases()
@@ -379,6 +293,14 @@ class ExplainerSignal:
         return total_conformance / (len_log * len(constraints))
 
     def variant_ctrb_to_conformance_loss(self, event_log, trace, constraints=None):
+        """
+        Calculates the contribution of a specific trace to the conformance loss of the event log.
+
+        :param event_log: The event log to analyze.
+        :param trace: The trace to calculate its contribution.
+        :param constraints: The constraints to check against the event log.
+        :return: The contribution of the trace to the conformance loss as a float between 0 and 1.
+        """
         if not self.constraints and not constraints:
             return "The explainer have no constraints"
         if not constraints:
@@ -391,6 +313,14 @@ class ExplainerSignal:
         return contribution_of_trace / total_traces
 
     def variant_ctrb_to_fitness(self, event_log, trace, constraints=None):
+        """
+        Determines the contribution of a specific trace variant to the fitness of the event log.
+
+        :param event_log: The event log to analyze.
+        :param trace: The trace variant to calculate its contribution.
+        :param constraints: The constraints to check against the event log. If None, use self.constraints.
+        :return: The contribution of the trace variant to the fitness as a float.
+        """
         if not self.constraints and not constraints:
             return "The explainer have no constraints"
         if not constraints:
@@ -398,7 +328,7 @@ class ExplainerSignal:
         total_traces = len(event_log)
         contribution_of_trace = 0
         for con in constraints:
-            if self.conformant(trace, constraints=[con]):
+            if not self.conformant(trace, constraints=[con]):
                 contribution_of_trace += 1
         nr = event_log.get_variant_count(trace)
         contribution_of_trace = contribution_of_trace / len(constraints)
@@ -443,6 +373,14 @@ class ExplainerSignal:
         return sum(sub_ctrbs)
 
     def constraint_ctrb_to_fitness(self, log=None, constraints=None, index=-1):
+        """
+        Determines the Shapley value-based contribution of a constraint to the overall conformance rate.
+
+        :param log: The event log, where keys are strings and values are counts of trace variants.
+        :param constraints: A list of constraints (regexp strings).
+        :param index: The index of the constraint in the constraints list.
+        :return: The contribution of the constraint to the overall conformance rate as a float.
+        """
         if len(constraints) < index:
             raise Exception("Constraint not in constraint list.")
         if not constraints:
@@ -450,106 +388,157 @@ class ExplainerSignal:
         if index == -1:
             return f"Add an index for the constraint:\n {constraints}"
         contributor = constraints[index]
-        ctrb_count = self.check_conformance(contributor)
+        ctrb_count = self.check_conformance(contributor, negative = False)
         len_log = self.get_total_cases()
         return ctrb_count / (len_log * len(constraints))
 
-    def check_conformance(self, constraint):
-        query = f'SELECT COUNT(CASE_ID) FROM "defaultview-4" WHERE event_name MATCHES{constraint}'
-        return self.post_query(query)
+    def check_conformance(self, constraint, negative = True):
+        """
+        Checks the conformance of the event log against a specific constraint.
+
+        :param constraint: The constraint to check.
+        :param negative: If negative is true, cases where the constraint is satisfied
+                         else, return cases where the constraint is not satisfied.
+        :return: The count of case IDs that match the constraint.
+        """
+        # Formulate the query to count case IDs matching the constraint
+        if negative:
+            query = f'SELECT COUNT(CASE_ID) FROM "defaultview-4" WHERE event_name MATCHES {constraint}'
+        else:
+            query = f'SELECT COUNT(CASE_ID) FROM "defaultview-4" WHERE NOT event_name MATCHES {constraint}'
+        return self.post_query(query)  # Execute the query and return the result
 
     def check_violations(self, constraints):
+        """
+        Checks for violations in the event log against a list of constraints.
+
+        :param constraints: A list of constraints to check for violations.
+        :return: The count of case IDs that violate any of the constraints.
+        """
+        # Combine constraints with OR to find any violations
         combined_constraints = " OR ".join(
             [f"NOT event_name MATCHES {constraint}" for constraint in constraints]
         )
-        query = (
-            f'SELECT COUNT(CASE_ID) FROM "defaultview-4" WHERE {combined_constraints}'
-        )
-        return self.post_query(query)
+        query = f'SELECT COUNT(CASE_ID) FROM "defaultview-4" WHERE {combined_constraints}'
+        return self.post_query(query)  # Execute the query and return the result
 
     def get_total_cases(self):
+        """
+        Retrieves the total number of cases in the event log.
+
+        :return: The total count of case IDs.
+        """
+        # Query to count all case IDs in the event log
         query = 'SELECT COUNT(CASE_ID) FROM "defaultview-4"'
-        return self.post_query(query)
+        return self.post_query(query)  # Execute the query and return the result
 
     def post_query(self, query):
-        cache_key = hash(query)
-        if cache_key in self.cache:
-            return self.cache[cache_key]
+        """
+        Executes a query and returns the result, using caching to optimize repeated queries.
+
+        :param query: The SIGNAL query to execute.
+        :return: The result of the query.
+        """
+        cache_key = hash(query)  # Generate a cache key for the query
+        if cache_key in self.cache:  # Check if the result is already in the cache
+            return self.cache[cache_key]  # Return cached result if available
+        
+        # Send the query to the server
         request = requests.post(
             self.signal_endpoint,
             cookies=self.cookies,
             headers=self.headers,
             json={"query": query},
         )
-        result = request.json()["data"][0][0]
-        self.cache[cache_key] = result
-        return result
+        result = request.json()["data"][0][0]  # Parse the result from the response
+        self.cache[cache_key] = result  # Cache the result for future use
+        return result  # Return the result
 
     def post_query_trace_in_dataset(self, trace, constraints):
+        """
+        Checks if a specific trace conforms to given constraints in the dataset.
+
+        :param trace: The trace to check.
+        :param constraints: The constraints to check against. If None, use self.constraints.
+        :return: True if the trace is conformant, False otherwise.
+        """
         if not constraints:
-            constraints = self.constraints
+            constraints = self.constraints  # Use self.constraints if none are provided
+        
+        # Combine constraints with AND if there are multiple, otherwise use the single constraint
         if len(constraints) > 1:
             constraints = " AND ".join(
                 [f"event_name MATCHES {constraint}" for constraint in constraints]
             )
         else:
             constraints = "".join(f"event_name MATCHES {constraints[0]}")
-        query = (
-            f'SELECT ACTIVITY, COUNT(CASE_ID) FROM "defaultview-4" WHERE {constraints}'
-        )
-        conformant = False
-        cache_key = hash(query)
-        if cache_key in self.cache:
-            for res in self.cache[cache_key]:
-                if trace.nodes == res[0]:
-                    conformant = True
-                    break
-            return conformant
+        
+        # Formulate the query
+        query = f'SELECT ACTIVITY, COUNT(CASE_ID) FROM "defaultview-4" WHERE {constraints}'
+        cache_key = hash(query)  # Generate a cache key for the query
 
-        query_request = requests.post(
-            self.signal_endpoint,
-            cookies=self.cookies,
-            headers=self.headers,
-            json={"query": query},
-        )
-        result = query_request.json()["data"]
-        self.cache[cache_key] = result  # Store the result in cache
+        if cache_key in self.cache:  # Check if the result is already in the cache
+            result = self.cache[cache_key]
+        else:
+            # Send the query to the server and cache the result
+            result = self.post_query_return_all(query)
+            self.cache[cache_key] = result  # Cache the result for future use
 
-        for res in result:
-            if trace.nodes == res[0]:
-                conformant = True
-                break
-        return conformant
+        # Check if the trace is conformant with any of the results
+        return any(trace.nodes == res[0] for res in result)
 
     def get_all_conformant_traces(self):
+        """
+        Retrieves all traces that conform to the given constraints.
+
+        :return: A list of conformant traces with their counts.
+        """
         constraints = self.constraints
+        # Combine constraints with AND if there are multiple, otherwise use the single constraint
         if len(constraints) > 1:
             constraints = " AND ".join(
                 [f"event_name MATCHES {constraint}" for constraint in constraints]
             )
         else:
             constraints = "".join(f"event_name MATCHES {constraints[0]}")
-        query = (
-            f'SELECT ACTIVITY, COUNT(CASE_ID) FROM "defaultview-4" WHERE {constraints}'
-        )
-        query_request = requests.post(
+        
+        # Formulate the query
+        query = f'SELECT ACTIVITY, COUNT(CASE_ID) FROM "defaultview-4" WHERE {constraints}'
+        return self.post_query_return_all(query)  # Execute the query and return the list of conformant traces
+
+    def post_query_return_all(self, query):
+        """
+        Executes a query and returns all results, using caching to optimize repeated queries.
+
+        :param query: The SIGNAL query to execute.
+        :return: All results of the query.
+        """
+        cache_key = hash(query)  # Generate a cache key for the query
+        if cache_key in self.cache:  # Check if the result is already in the cache
+            return self.cache[cache_key]  # Return cached result if available
+        
+        # Send the query to the server
+        request = requests.post(
             self.signal_endpoint,
             cookies=self.cookies,
             headers=self.headers,
             json={"query": query},
         )
-        return query_request.json()["data"]
+        result = request.json()["data"]  # Parse the result from the response
+        self.cache[cache_key] = result  # Cache the result for future use
+        return result  # Return the result
 
     def load_variants(self):
-        query = 'SELECT Activity From "defaultview-4"'
+        """
+        Loads all activity variants from the event log into the event_log attribute.
 
-        query_request = requests.post(
-            self.signal_endpoint,
-            cookies=self.cookies,
-            headers=self.headers,
-            json={"query": query},
-        )
-        data = query_request.json()["data"]
+        :return: None
+        """
+        # Query to retrieve all activity variants
+        query = 'SELECT Activity From "defaultview-4"'
+        data = self.post_query_return_all(query)  # Execute the query and get the data
+
+        # Add each activity variant to the event_log
         for activity in data:
             self.event_log.add_trace(Trace(activity[0]))
 

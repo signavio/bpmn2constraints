@@ -177,6 +177,7 @@ def levenshtein_distance(seq1, seq2):
                 )
     return matrix[size_x - 1][size_y - 1]
 
+
 def determine_powerset(elements):
     """Determines the powerset of a list of elements
     Args:
@@ -189,6 +190,7 @@ def determine_powerset(elements):
         combinations(lset, option) for option in range(len(lset) + 1)
     )
     return [set(ps_element) for ps_element in ps_elements]
+
 
 def get_iterative_subtrace(trace):
     """

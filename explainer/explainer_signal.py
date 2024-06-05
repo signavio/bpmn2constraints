@@ -2,9 +2,8 @@ from explainer.explainer_util import *
 import re
 import math
 from tutorial.SignavioAuthenticator import SignavioAuthenticator
-from itertools import combinations, chain
 import requests
-from tutorial.conf import system_instance, workspace_id, user_name, pw
+from tutorial.conf import *
 
 
 class ExplainerSignal:
@@ -551,31 +550,3 @@ class ExplainerSignal:
         # Add each activity variant to the event_log
         for activity in data:
             self.event_log.add_trace(Trace(activity[0]))
-
-
-def determine_powerset(elements):
-    """Determines the powerset of a list of elements
-    Args:
-        elements (set): Set of elements
-    Returns:
-        list: Powerset of elements
-    """
-    lset = list(elements)
-    ps_elements = chain.from_iterable(
-        combinations(lset, option) for option in range(len(lset) + 1)
-    )
-    return [set(ps_element) for ps_element in ps_elements]
-
-
-def get_iterative_subtrace(trace):
-    """
-    Generates all possible non-empty contiguous sublists of a list, maintaining order.
-
-    :param lst: The input list.
-            n: the minmum length of sublists
-    :return: A list of all non-empty contiguous sublists.
-    """
-    sublists = []
-    for i in range(0, len(trace)):
-        sublists.append(trace.nodes[0 : i + 1])
-    return sublists

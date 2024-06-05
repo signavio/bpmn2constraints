@@ -1,11 +1,7 @@
 import math
 import re
-from itertools import combinations, product, chain
-from explainer.explainer_util import (
-    Trace,
-    get_sublists,
-    levenshtein_distance,
-)
+from itertools import product
+from explainer.explainer_util import *
 
 
 class ExplainerRegex:
@@ -382,7 +378,7 @@ class ExplainerRegex:
 
     def variant_ctrb_to_fitness(self, event_log, trace, constraints=None):
         """
-        Determines the contribution of a specific trace variant to the fitness of the event log.
+        Determines the contribution of a specific trace variant to the fitness loss of the event log.
 
         :param event_log: The event log to analyze.
         :param trace: The trace variant to calculate its contribution.
@@ -396,7 +392,7 @@ class ExplainerRegex:
         total_traces = len(event_log)
         contribution_of_trace = 0
         for con in constraints:
-            if re.search(con, "".join(trace)):
+            if not re.search(con, "".join(trace)):
                 contribution_of_trace += 1
         nr = event_log.get_variant_count(trace)
         contribution_of_trace = contribution_of_trace / len(constraints)
@@ -458,7 +454,7 @@ class ExplainerRegex:
 
     def constraint_ctrb_to_fitness(self, log, constraints, index):
         """
-        Determines the Shapley value-based contribution of a constraint to the overall conformance rate.
+        Determines the Shapley value-based contribution of a constraint to the overall fitness rate.
 
         :param log: The event log, where keys are strings and values are counts of trace variants.
         :param constraints: A list of constraints (regexp strings).
@@ -474,34 +470,6 @@ class ExplainerRegex:
         contributor = constraints[index]
         ctrb_count = 0
         for trace, count in log.log.items():
-            if re.search(contributor, "".join(trace)):
+            if not re.search(contributor, "".join(trace)):
                 ctrb_count += count
         return ctrb_count / (len(log) * len(constraints))
-
-
-def determine_powerset(elements):
-    """Determines the powerset of a list of elements
-    Args:
-        elements (set): Set of elements
-    Returns:
-        list: Powerset of elements
-    """
-    lset = list(elements)
-    ps_elements = chain.from_iterable(
-        combinations(lset, option) for option in range(len(lset) + 1)
-    )
-    return [set(ps_element) for ps_element in ps_elements]
-
-
-def get_iterative_subtrace(trace):
-    """
-    Generates all possible non-empty contiguous sublists of a list, maintaining order.
-
-    :param lst: The input list.
-            n: the minmum length of sublists
-    :return: A list of all non-empty contiguous sublists.
-    """
-    sublists = []
-    for i in range(0, len(trace)):
-        sublists.append(trace.nodes[0 : i + 1])
-    return sublists

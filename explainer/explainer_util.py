@@ -1,4 +1,4 @@
-from itertools import combinations
+from itertools import combinations, chain
 
 
 class Trace:
@@ -176,6 +176,33 @@ def levenshtein_distance(seq1, seq2):
                     matrix[x - 1][y] + 1, matrix[x][y - 1] + 1, matrix[x - 1][y - 1] + 1
                 )
     return matrix[size_x - 1][size_y - 1]
+
+def determine_powerset(elements):
+    """Determines the powerset of a list of elements
+    Args:
+        elements (set): Set of elements
+    Returns:
+        list: Powerset of elements
+    """
+    lset = list(elements)
+    ps_elements = chain.from_iterable(
+        combinations(lset, option) for option in range(len(lset) + 1)
+    )
+    return [set(ps_element) for ps_element in ps_elements]
+
+
+def get_iterative_subtrace(trace):
+    """
+    Generates all possible non-empty contiguous sublists of a list, maintaining order.
+
+    :param lst: The input list.
+            n: the minmum length of sublists
+    :return: A list of all non-empty contiguous sublists.
+    """
+    sublists = []
+    for i in range(0, len(trace)):
+        sublists.append(trace.nodes[0 : i + 1])
+    return sublists
 
 
 SIGNAL_KEYWORDS = [

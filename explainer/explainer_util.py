@@ -190,7 +190,6 @@ def determine_powerset(elements):
     )
     return [set(ps_element) for ps_element in ps_elements]
 
-
 def get_iterative_subtrace(trace):
     """
     Generates all possible non-empty contiguous sublists of a list, maintaining order.

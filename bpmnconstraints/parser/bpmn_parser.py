@@ -25,7 +25,8 @@ class Parser:
         if is_file:
             try:
                 file_extension = Path(bpmn).suffix
-                if not file_extension or file_extension not in [".json", ".xml"]:
+                if not file_extension or file_extension not in [
+                        ".json", ".xml"]:
                     return None
                 elif file_extension == ".xml":
                     return ElementTree.parse(bpmn).getroot()
@@ -72,18 +73,23 @@ class Parser:
         Otherwise, the parser interprets the gateways as start/end events instead of the activities.
         """
 
-        item_indices = {item["name"]: index for index, item in enumerate(self.sequence)}
+        item_indices = {
+            item["name"]: index for index,
+            item in enumerate(
+                self.sequence)}
         for cfo in self.sequence:
             if cfo["is start"] and (cfo["type"] in DISCARDED_START_GATEWAYS):
                 cfo["is start"] = False
                 for successor in cfo["successor"]:
-                    self.sequence[item_indices[successor["name"]]]["is start"] = True
+                    self.sequence[item_indices[successor["name"]]
+                                  ]["is start"] = True
             if cfo["is end"] and (
                 cfo["name"] in GATEWAY_NAMES or cfo["type"] == "exclusivegateway"
             ):
                 cfo["is end"] = False
                 for predecessor in cfo["predecessor"]:
-                    self.sequence[item_indices[predecessor["name"]]]["is end"] = True
+                    self.sequence[item_indices[predecessor["name"]]
+                                  ]["is end"] = True
 
     def __mark_gateway_elements(self):
         for cfo in self.sequence:
@@ -100,7 +106,8 @@ class Parser:
                         "type"
                     ) in ALLOWED_GATEWAYS and predecessor_cfo.get("joining"):
                         continue
-                    if cfo.get("type") in ALLOWED_GATEWAYS and cfo.get("joining"):
+                    if cfo.get("type") in ALLOWED_GATEWAYS and cfo.get(
+                            "joining"):
                         continue
                     if "is in gateway" in predecessor_cfo:
                         cfo.update({"is in gateway": True})
@@ -119,7 +126,8 @@ class Parser:
     def __find_transitive_closure(self, cfo, transitivity, visited):
         # Check if the current node has already been visited to prevent a loop
         if cfo.get("id") in visited:
-            print(f"Already visited {cfo.get('id')}, skipping to avoid a loop.")
+            print(
+                f"Already visited {cfo.get('id')}, skipping to avoid a loop.")
             return
 
         # Mark the current node as visited
@@ -134,8 +142,10 @@ class Parser:
                     if "is in gateway" not in successor:
                         transitivity.append(successor)
                     for successor in cfo.get("successor"):
-                        successor_cfo = self.__get_cfo_by_id(successor.get("id"))
-                        self.__find_transitive_closure(successor_cfo, transitivity, visited)
+                        successor_cfo = self.__get_cfo_by_id(
+                            successor.get("id"))
+                        self.__find_transitive_closure(
+                            successor_cfo, transitivity, visited)
 
     def __add_transitivity(self):
         for cfo in self.sequence:
@@ -199,7 +209,8 @@ class Parser:
             return True
         if self.__is_element_gateway(elem):
             return True
-        if self.__is_element_start_event(elem) and self.__valid_start_name(elem):
+        if self.__is_element_start_event(
+                elem) and self.__valid_start_name(elem):
             return True
         if self.__is_element_end_event(elem) and self.__valid_end_name(elem):
             return True
@@ -249,7 +260,8 @@ class Parser:
                         else self.model.get_id(connection)
                     )
                     elem = self.__get_element_by_id(connection_id)
-                    if self.model.get_element_type(elem) in ALLOWED_CONNECTING_OBJECTS:
+                    if self.model.get_element_type(
+                            elem) in ALLOWED_CONNECTING_OBJECTS:
                         connection = self.model.get_outgoing_connection(elem)
                         if connection:
                             elem = (
@@ -295,7 +307,8 @@ class Parser:
                 }
 
                 try:
-                    cfo.update({"splitting": len(self.__get_successors(elem)) >= 2})
+                    cfo.update(
+                        {"splitting": len(self.__get_successors(elem)) >= 2})
                 except Exception:
                     pass
                 formatted.append(cfo)
@@ -312,29 +325,36 @@ class Parser:
             raise Exception(f"Could not find element with ID {connection_id}")
 
     def __get_activity_type(self, elem):
-        return ACTIVITY_MAPPING.get(self.model.get_element_type(elem), "Activity")
+        return ACTIVITY_MAPPING.get(
+            self.model.get_element_type(elem), "Activity")
 
     def __get_gateway_type(self, elem):
-        return GATEWAY_MAPPING.get(self.model.get_element_type(elem), "Gateway")
+        return GATEWAY_MAPPING.get(
+            self.model.get_element_type(elem), "Gateway")
 
     def __get_end_type(self, elem):
-        return END_EVENT_MAPPING.get(self.model.get_element_type(elem), "EndEvent")
+        return END_EVENT_MAPPING.get(
+            self.model.get_element_type(elem), "EndEvent")
 
     def __get_label(self, elem):
         try:
             if self.__is_element_activity(elem):
                 try:
-                    return self.sanitizer.sanitize_label(self.model.get_name(elem))
+                    return self.sanitizer.sanitize_label(
+                        self.model.get_name(elem))
                 except KeyError:
                     return self.__get_activity_type(elem)
             if self.__is_element_gateway(elem):
                 try:
-                    return self.sanitizer.sanitize_label(self.model.get_name(elem))
+                    return self.sanitizer.sanitize_label(
+                        self.model.get_name(elem))
                 except KeyError:
                     return self.__get_gateway_type(elem)
-            if self.__is_element_start_event(elem) or self.__is_element_end_event(elem):
+            if self.__is_element_start_event(
+                    elem) or self.__is_element_end_event(elem):
                 try:
-                    return self.sanitizer.sanitize_label(self.model.get_name(elem))
+                    return self.sanitizer.sanitize_label(
+                        self.model.get_name(elem))
                 except KeyError:
                     return self.model.get_element_type(elem)
         except KeyError:
@@ -368,7 +388,8 @@ class Parser:
     def __is_successor_end_event(self, successors):
         for successor in successors:
             if successor:
-                if self.model.get_element_type(successor) in ALLOWED_END_EVENTS:
+                if self.model.get_element_type(
+                        successor) in ALLOWED_END_EVENTS:
                     if self.__valid_end_name(successor):
                         return False
                     return True

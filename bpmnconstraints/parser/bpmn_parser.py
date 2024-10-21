@@ -55,6 +55,7 @@ class Parser:
                 self.__flatten_model()
             else:
                 self.model = XmlModel(self.bpmn_model)
+
             self.__parse()
             self.__mark_gateway_elements()
             if self.transitivity:
@@ -115,22 +116,36 @@ class Parser:
             if parsed_cfo.get("id") == elem_id:
                 return parsed_cfo
 
-    def __find_transitive_closure(self, cfo, transitivity):
+    def __find_transitive_closure(self, cfo, transitivity, visited):
+        # Check if the current node has already been visited to prevent a loop
+        if cfo.get("id") in visited:
+            print(f"Already visited {cfo.get('id')}, skipping to avoid a loop.")
+            return
+
+        # Mark the current node as visited
+        visited.add(cfo.get("id"))
+
         if cfo:
             for successor in cfo.get("successor"):
                 successor_id = successor.get("id")
+
                 successor = self.__get_cfo_by_id(successor_id)
                 if successor:
                     if "is in gateway" not in successor:
                         transitivity.append(successor)
                     for successor in cfo.get("successor"):
                         successor_cfo = self.__get_cfo_by_id(successor.get("id"))
-                        self.__find_transitive_closure(successor_cfo, transitivity)
+                        self.__find_transitive_closure(
+                            successor_cfo, transitivity, visited
+                        )
 
     def __add_transitivity(self):
         for cfo in self.sequence:
             transitivity = []
-            self.__find_transitive_closure(cfo, transitivity)
+
+            visited = set()  # Initialize the visited set for cycle detection
+            self.__find_transitive_closure(cfo, transitivity, visited)
+
             if transitivity:
                 cfo.update({"transitivity": transitivity})
 
